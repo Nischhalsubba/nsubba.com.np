@@ -4,30 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nischhal Raj Subba | Product Designer</title>
-    <meta name="description" content="Portfolio of Nischhal Raj Subba - Product Designer specializing in Design Systems, Enterprise UX, and Web3.">
-    
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
-    <!-- Styles -->
-    <link rel="stylesheet" href="style.css?v=3.3">
-    
-    <!-- Libraries -->
+    <link rel="stylesheet" href="style.css?v=3.4">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   </head>
   <body>
 
-    <!-- Canvas Grid System (Background) -->
     <canvas id="grid-canvas"></canvas>
-    
-    <!-- Custom Cursor -->
     <div class="custom-cursor-dot"></div>
     <div class="custom-cursor-outline"></div>
 
-    <!-- Navigation -->
     <nav class="nav-wrapper fade-in">
       <div class="nav-pill">
         <div class="nav-glider"></div>
@@ -39,88 +28,40 @@
       </div>
     </nav>
 
-    <main>
+    <main class="container">
       
-      <!-- 1. Hero Section -->
       <section id="home" class="hero-section">
-        
-        <!-- Centered Infinite Ticker -->
-        <div class="ticker-container fade-in">
-          <div class="ticker-track">
-             <div class="ticker-item accent">Product Designer</div>
-             <div class="ticker-item">Enterprise UX</div>
-             <div class="ticker-item">Design Systems</div>
-             <div class="ticker-item">Web3 & DeFi</div>
-             <div class="ticker-item">Based in Kathmandu</div>
-             <div class="ticker-item">Strategy</div>
-             <!-- Duplicate -->
-             <div class="ticker-item accent">Product Designer</div>
-             <div class="ticker-item">Enterprise UX</div>
-             <div class="ticker-item">Design Systems</div>
-             <div class="ticker-item">Web3 & DeFi</div>
-             <div class="ticker-item">Based in Kathmandu</div>
-             <div class="ticker-item">Strategy</div>
-          </div>
-        </div>
-
         <h1 class="hero-title fade-in">
           Systems thinker,<br />
-          <span class="text-serif-italic" style="font-style: italic;">Product crafter.</span>
+          <span class="text-serif-italic">Product crafter.</span>
         </h1>
-
         <p class="body-large fade-in" style="margin-bottom: 40px;">
             I help fintech and enterprise companies turn complex logic into refined, scalable digital experiences.
         </p>
-
         <div class="hero-actions fade-in">
           <a href="projects.html" class="btn btn-primary">View Selected Work</a>
           <a href="contact.html" class="btn btn-secondary">Get in Touch</a>
         </div>
-        
         <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2400" alt="Abstract Product Visual" class="hero-visual fade-in" />
       </section>
 
-      <!-- 2. Capabilities (Redesigned: Bento Grid) -->
-      <section id="approach" class="section-container">
-        <div class="section-header reveal-on-scroll">
-           <h2 class="section-title text-reveal-wrap">
-               <span class="text-outline">My Approach</span>
-               <span class="text-fill">My Approach</span>
-           </h2>
-        </div>
-        
-        <div class="bento-grid reveal-on-scroll">
-            <div class="bento-card wide">
-                <div class="bento-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h.01"/><path d="M7 20v-4"/><path d="M12 20v-8"/><path d="M17 20V8"/><path d="M22 4v16"/></svg></div>
-                <h3>Scalable Systems</h3>
-                <p>I don't just design screens; I build atomic systems. From token structure to component APIs, I ensure your product scales without technical debt.</p>
-            </div>
-            <div class="bento-card">
-                <div class="bento-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></div>
-                <h3>Complex Problem Solving</h3>
-                <p>I thrive on complexity. Whether it's a multi-step fintech flow or a data-heavy dashboard, I simplify without oversimplifying.</p>
-            </div>
-            <div class="bento-card">
-                <div class="bento-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/></svg></div>
-                <h3>Interaction & Motion</h3>
-                <p>Motion isn't decoration; it's communication. I use animation to guide attention and provide feedback, not just to look pretty.</p>
-            </div>
-        </div>
-      </section>
-
-      <!-- 3. Selected Work -->
+      <!-- SELECTED WORK WITH FILTER -->
       <section id="work" class="section-container">
         <div class="section-header reveal-on-scroll">
-          <h2 class="section-title text-reveal-wrap">
-              <span class="text-outline">Selected Work</span>
-              <span class="text-fill">Selected Work</span>
-          </h2>
+          <h2 class="section-title">Selected Work</h2>
           <a href="projects.html" class="btn btn-secondary">View All</a>
+        </div>
+
+        <div class="filter-bar reveal-on-scroll">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="fintech">Fintech</button>
+            <button class="filter-btn" data-filter="web3">Web3</button>
+            <button class="filter-btn" data-filter="system">Systems</button>
         </div>
 
         <div class="project-grid">
            <!-- Project 1 -->
-           <a href="project-detail.html" class="project-card reveal-on-scroll">
+           <a href="project-detail.html" class="project-card reveal-on-scroll" data-category="fintech system">
                <div class="card-media-wrap">
                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2400" loading="lazy" alt="MAS DataHub Dashboard">
                    <div class="card-overlay"><span class="view-case-btn">View Case Study →</span></div>
@@ -131,10 +72,9 @@
                </div>
            </a>
            <!-- Project 2 -->
-           <a href="project-detail.html" class="project-card reveal-on-scroll">
+           <a href="project-detail.html" class="project-card reveal-on-scroll" data-category="web3 mobile">
                 <div class="card-media-wrap">
                     <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=1200" loading="lazy" alt="Yarsha Web3 Interface">
-                    <div class="card-overlay"><span class="view-case-btn">View Case Study →</span></div>
                 </div>
                 <div class="card-content">
                     <h3>Yarsha</h3>
@@ -144,16 +84,38 @@
         </div>
       </section>
 
-      <!-- 4. Writing (Redesigned with Images) -->
+      <!-- TESTIMONIAL CAROUSEL -->
+      <section id="testimonials" class="testimonial-section reveal-on-scroll">
+         <div class="t-track">
+             <div class="t-slide active">
+                 <p class="t-quote">"Nischhal transformed our vague product idea into a world-class interface. His ability to balance aesthetic polish with complex functionality is rare."</p>
+                 <div class="t-author">
+                     <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah">
+                     <h5>Sarah Jenkins</h5>
+                     <span>CTO, Nova Financial</span>
+                 </div>
+             </div>
+             <div class="t-slide">
+                 <p class="t-quote">"Saved us weeks of engineering time. The design system was scalable and remarkably well-documented."</p>
+                 <div class="t-author">
+                     <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="David">
+                     <h5>David Chen</h5>
+                     <span>Product Lead, Orbit</span>
+                 </div>
+             </div>
+         </div>
+         <div class="t-controls">
+             <button id="t-prev" class="t-btn">←</button>
+             <button id="t-next" class="t-btn">→</button>
+         </div>
+      </section>
+
+      <!-- WRITING -->
       <section id="writing" class="section-container">
           <div class="section-header reveal-on-scroll">
-              <h2 class="section-title text-reveal-wrap">
-                  <span class="text-outline">Writing</span>
-                  <span class="text-fill">Writing</span>
-              </h2>
+              <h2 class="section-title">Writing</h2>
               <a href="blog.html" class="btn btn-secondary">Read All</a>
           </div>
-          
           <div class="writing-list reveal-on-scroll">
               <a href="blog-detail.html" class="writing-card">
                   <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=200" alt="Code" class="wc-img">
@@ -172,113 +134,38 @@
           </div>
       </section>
 
-      <!-- 5. FAQ (Carousel + Accordion) -->
-      <section id="faq" class="section-container">
-        <div class="section-header reveal-on-scroll">
-           <h2 class="section-title text-reveal-wrap">
-               <span class="text-outline">Q&A</span>
-               <span class="text-fill">Q&A</span>
-           </h2>
-        </div>
-        
-        <div class="faq-carousel-wrapper reveal-on-scroll">
-            <div class="faq-track">
-                
-                <!-- Slide 1 -->
-                <div class="faq-slide">
-                    <div class="faq-accordion-group">
-                        <div class="faq-item">
-                            <button class="faq-question">What is your typical timeline?<span class="faq-icon"></span></button>
-                            <div class="faq-answer"><p>Most end-to-end product design projects take between 4-8 weeks. Design system projects vary based on complexity but typically start at 6 weeks for a comprehensive v1 release.</p></div>
-                        </div>
-                        <div class="faq-item">
-                            <button class="faq-question">Do you handle development?<span class="faq-icon"></span></button>
-                            <div class="faq-answer"><p>My core expertise is design. However, I am proficient in HTML/CSS and Webflow. For complex web apps, I partner with trusted engineering teams or work alongside your developers.</p></div>
-                        </div>
-                        <div class="faq-item">
-                            <button class="faq-question">How do revisions work?<span class="faq-icon"></span></button>
-                            <div class="faq-answer"><p>I work in weekly sprints with frequent check-ins, which minimizes the need for massive "revisions" at the end. Feedback is incorporated continuously throughout the process.</p></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 2 -->
-                <div class="faq-slide">
-                    <div class="faq-accordion-group">
-                        <div class="faq-item">
-                            <button class="faq-question">What tools do you use?<span class="faq-icon"></span></button>
-                            <div class="faq-answer"><p>I primarily use Figma for design and prototyping. For motion, I use After Effects or Rive. For documentation, I use Notion or Zeroheight.</p></div>
-                        </div>
-                        <div class="faq-item">
-                            <button class="faq-question">Are you available for freelance?<span class="faq-icon"></span></button>
-                            <div class="faq-answer"><p>Yes, I am currently accepting new projects for Q3 2026. Please reach out via the contact form to discuss availability.</p></div>
-                        </div>
-                        <div class="faq-item">
-                            <button class="faq-question">Do you work with startups?<span class="faq-icon"></span></button>
-                            <div class="faq-answer"><p>Absolutely. I love the energy of early-stage startups and helping them define their MVP and product vision.</p></div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            
-            <div class="faq-controls">
-                <button id="faq-prev" class="faq-btn" disabled>←</button>
-                <button id="faq-next" class="faq-btn">→</button>
-            </div>
-        </div>
-      </section>
-
     </main>
 
     <a href="#" class="floating-resume-btn" download>Download Resume</a>
 
-    <!-- FOOTER -->
     <footer class="site-footer">
-      <div class="footer-container">
-        
+      <div class="container">
         <div class="footer-hero reveal-on-scroll">
             <h2>Let's create something<br><span class="text-serif-italic">awesome together.</span></h2>
-            <div class="footer-socials-row">
-                <a href="#" class="f-social-icon">in</a>
-                <a href="#" class="f-social-icon">Be</a>
-                <a href="#" class="f-social-icon">Dr</a>
-                <a href="#" class="f-social-icon">Gh</a>
+            <div class="footer-links-layout">
+                <div class="fl-col">
+                    <h5>Pages</h5>
+                    <a href="index.html">Home</a>
+                    <a href="projects.html">Work</a>
+                    <a href="about.html">About</a>
+                </div>
+                <div class="fl-col">
+                    <h5>Connect</h5>
+                    <a href="https://linkedin.com/in/nischhal/">LinkedIn</a>
+                    <a href="https://behance.net/nischhal">Behance</a>
+                    <a href="mailto:hello@example.com">Email</a>
+                </div>
+                <div class="fl-col">
+                    <h5>Legal</h5>
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                </div>
             </div>
-            <div class="footer-center-img">
-                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1000&auto=format&fit=crop" alt="Nischhal">
-            </div>
-        </div>
-
-        <div class="footer-links-layout reveal-on-scroll">
-            <div class="fl-col">
-                <h5>Pages</h5>
-                <a href="index.html">Home</a>
-                <a href="projects.html">Work</a>
-                <a href="about.html">About</a>
-                <a href="blog.html">Writing</a>
-            </div>
-            <div class="fl-col">
-                <h5>Work</h5>
-                <a href="project-detail.html">MAS DataHub</a>
-                <a href="project-detail.html">Yarsha</a>
-                <a href="project-detail.html">Morajaa</a>
-                <a href="project-detail.html">Zapp Today</a>
-            </div>
-            <div class="fl-col">
-                <h5>Products</h5>
-                <a href="products.html">UI Kit</a>
-                <a href="products.html">Design System</a>
-                <a href="products.html">Icons</a>
+            <div class="footer-bottom">
+               <span>Built by Nischhal Raj Subba</span>
+               <span>© 2026 Refined.</span>
             </div>
         </div>
-
-        <div class="footer-bottom reveal-on-scroll">
-           <span>Built by Nischhal Raj Subba</span>
-           <span>© 2026 Refined. All rights reserved.</span>
-           <button class="btn-sm" onclick="window.scrollTo(0,0)">Back to Top ↑</button>
-        </div>
-
       </div>
     </footer>
     

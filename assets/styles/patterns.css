@@ -1,0 +1,45 @@
+/* --- Patterns (Organisms) --- */
+
+/* Ticker (Hero) */
+.ticker-wrap {
+    width: 100%;
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    
+    .ticker {
+        display: flex;
+        width: max-content;
+        gap: 12px;
+    }
+}
+
+/* Nav Dock (Floating) */
+.nav-dock {
+    background: rgba(13, 13, 13, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--s-dock);
+}
+
+/* Section Header (Title + Divider) */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+    margin-bottom: 40px;
+    
+    .section-line {
+        flex-grow: 1;
+        height: 1px;
+        background-color: rgba(255, 255, 255, 0.08);
+    }
+}
+
+/* Hero Image Masking */
+.hero-blend-mask {
+    mask-image: linear-gradient(to top, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, black 60%, transparent 100%);
+}

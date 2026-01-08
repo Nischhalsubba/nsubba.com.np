@@ -1,0 +1,31 @@
+/* 
+  --- TOKENS (Variables) ---
+  Edit these values to globally update the site's look.
+  These interact directly with Tailwind config.
+*/
+
+:root {
+    /* --- Palette --- */
+    --c-bg: #0d0d0d;
+    --c-surface: #161616;
+    --c-surface-light: #1f1f1f;
+    
+    --c-text: #FFFFFF;
+    --c-muted: #888888;
+    
+    --c-accent: #CAE8BD;
+    --c-accent-hover: #B6D6A8;
+    
+    --c-border: rgba(255, 255, 255, 0.06);
+    --c-white-10: rgba(255, 255, 255, 0.1);
+    --c-white-20: rgba(255, 255, 255, 0.2);
+
+    /* --- Shadows --- */
+    --s-glow: 0 0 25px rgba(202, 232, 189, 0.1);
+    --s-card: 0 20px 40px -10px rgba(0,0,0,0.7);
+    --s-dock: 0px 8px 32px rgba(0, 0, 0, 0.5);
+
+    /* --- Typography --- */
+    --f-serif: 'Halant', serif;
+    --f-sans: 'Inter', sans-serif;
+}

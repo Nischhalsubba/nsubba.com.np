@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Main CSS (v=2 forces browser to reload styles) -->
-    <link rel="stylesheet" href="style.css?v=2">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="style.css?v=3">
     
     <!-- Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -20,13 +20,13 @@
   </head>
   <body>
 
-    <!-- Navigation Dock -->
+    <!-- Top Navigation Dock -->
     <nav class="nav-dock">
       <div class="nav-dock-inner">
         <a href="#home" class="nav-item active" aria-label="Home"><i data-lucide="home"></i></a>
-        <a href="#work" class="nav-item" aria-label="Work"><i data-lucide="briefcase"></i></a>
-        <a href="#solutions" class="nav-item" aria-label="Solutions"><i data-lucide="layers"></i></a>
-        <a href="#pricing" class="nav-item" aria-label="Pricing"><i data-lucide="credit-card"></i></a>
+        <a href="#work" class="nav-item" aria-label="Work"><i data-lucide="shopping-bag"></i></a>
+        <a href="#solutions" class="nav-item" aria-label="Solutions"><i data-lucide="briefcase"></i></a>
+        <a href="#blog" class="nav-item" aria-label="Blog"><i data-lucide="pen-tool"></i></a>
         <a href="#contact" class="nav-item" aria-label="Contact"><i data-lucide="mail"></i></a>
       </div>
     </nav>
@@ -56,13 +56,15 @@
 
         <!-- Actions -->
         <div class="hero-actions fade-in">
-          <a href="#work" class="btn btn-primary">See work</a>
-          <a href="#pricing" class="btn btn-secondary">Shop products</a>
+          <a href="#work" class="btn btn-white">See work</a>
+          <a href="#goods" class="btn btn-dark">Shop products</a>
         </div>
 
         <!-- Hero Image (Portrait) -->
         <div class="hero-image-wrapper fade-in">
-            <img src="assets/me.png" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop'" alt="Portrait" class="hero-img">
+             <!-- Using a gradient placeholder that looks like the reference's moody lighting if image fails -->
+            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1000&auto=format&fit=crop" alt="Portrait" class="hero-img">
+            <div class="hero-gradient-overlay"></div>
         </div>
 
       </section>
@@ -77,10 +79,10 @@
         <!-- Large Feature Project -->
         <article class="project-card large reveal-on-scroll">
            <div class="card-media">
-               <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200" alt="Halo">
+               <img src="https://images.unsplash.com/photo-1614850523060-8da1d56ae167?q=80&w=2000" alt="Halo">
                <div class="card-badge">Identity, Development</div>
                <div class="card-center-logo">
-                   <i data-lucide="clover" size="64" color="white"></i>
+                   <i data-lucide="flower-2" size="64" color="white"></i>
                    <span class="font-serif text-3xl ml-3 text-white">Halo</span>
                </div>
            </div>
@@ -90,31 +92,35 @@
            </div>
         </article>
 
-        <div class="spacer-80"></div>
-
         <!-- Standard Grid -->
-        <div class="project-grid">
+        <div class="project-grid mt-10">
            <!-- Meridian -->
            <article class="project-card reveal-on-scroll">
             <div class="card-media">
-              <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800" alt="Meridian">
+              <img src="https://images.unsplash.com/photo-1620641788427-7e9643a200a5?q=80&w=1200" alt="Meridian">
               <div class="card-badge">Web Design</div>
+               <div class="card-center-logo">
+                   <i data-lucide="aperture" size="48" color="white"></i>
+               </div>
             </div>
             <div class="card-content mt-4">
               <h3>Meridian</h3>
-              <p>A fresh identity for a brand that needed clarity and confidence.</p>
+              <p>A fresh identity for a brand that needed clarity.</p>
             </div>
           </article>
           
           <!-- Voxel -->
            <article class="project-card reveal-on-scroll">
             <div class="card-media">
-              <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=800" alt="Voxel">
+              <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=1200" alt="Voxel">
               <div class="card-badge">Web3 Product</div>
+               <div class="card-center-logo">
+                   <i data-lucide="box" size="48" color="white"></i>
+               </div>
             </div>
             <div class="card-content mt-4">
               <h3>Voxel</h3>
-              <p>Designing trustless transaction flows for decentralized finance.</p>
+              <p>Designing trustless transaction flows for DeFi.</p>
             </div>
           </article>
         </div>
@@ -173,6 +179,50 @@
         </div>
       </section>
 
+      <!-- Digital Goods -->
+      <section id="goods" class="section-container">
+        <div class="section-header">
+            <h2 class="section-title">Digital goods <sup class="count">(2)</sup></h2>
+            <a href="#" class="link-subtle">See all</a>
+        </div>
+
+        <div class="project-grid">
+            <!-- Guidy -->
+            <article class="project-card reveal-on-scroll">
+                <div class="card-media">
+                  <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1200" alt="Guidy">
+                  <div class="card-price-pill">$99</div>
+                  <div class="card-center-logo text-center">
+                    <h3 class="font-serif text-3xl italic">BRAND<br>BOOK</h3>
+                  </div>
+                </div>
+                <div class="card-content mt-4">
+                  <div class="flex justify-between">
+                      <h3>Guidy</h3>
+                  </div>
+                  <p>Brand Book Template</p>
+                </div>
+            </article>
+
+            <!-- Feature -->
+            <article class="project-card reveal-on-scroll">
+                <div class="card-media">
+                  <img src="https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1200" alt="Feature">
+                  <div class="card-price-pill">Free</div>
+                   <div class="card-center-logo text-center">
+                    <h3 class="text-2xl font-bold">Turn data<br><span class="text-serif-italic font-normal">into decisions</span></h3>
+                  </div>
+                </div>
+                <div class="card-content mt-4">
+                  <div class="flex justify-between">
+                      <h3>Feature</h3>
+                  </div>
+                  <p>SaaS template</p>
+                </div>
+            </article>
+        </div>
+      </section>
+
       <!-- Logo Wall -->
       <section class="logo-wall reveal-on-scroll">
           <img src="https://upload.wikimedia.org/wikipedia/commons/e/e3/Mailchimp_Logo.svg" alt="Mailchimp" class="client-logo">
@@ -194,7 +244,7 @@
                     <h3>Turning critique into creative opportunities</h3>
                     <div class="blog-meta">Oct 24, 2025 • 2 min</div>
                 </div>
-                <div class="blog-arrow"><i data-lucide="arrow-up-right"></i></div>
+                <div class="blog-arrow"><i data-lucide="corner-down-right"></i></div>
             </a>
             
             <a href="#" class="blog-row reveal-on-scroll">
@@ -202,7 +252,7 @@
                     <h3>Creating compelling narratives through design</h3>
                     <div class="blog-meta">Oct 20, 2025 • 4 min</div>
                 </div>
-                <div class="blog-arrow"><i data-lucide="arrow-up-right"></i></div>
+                <div class="blog-arrow"><i data-lucide="corner-down-right"></i></div>
             </a>
 
             <a href="#" class="blog-row reveal-on-scroll">
@@ -210,7 +260,15 @@
                     <h3>Tools and techniques for better productivity</h3>
                     <div class="blog-meta">Oct 8, 2025 • 1 min</div>
                 </div>
-                <div class="blog-arrow"><i data-lucide="arrow-up-right"></i></div>
+                <div class="blog-arrow"><i data-lucide="corner-down-right"></i></div>
+            </a>
+            
+            <a href="#" class="blog-row reveal-on-scroll">
+                <div class="blog-info">
+                    <h3>Choosing the right fonts for your design projects</h3>
+                    <div class="blog-meta">Sep 24, 2025 • 2 min</div>
+                </div>
+                <div class="blog-arrow"><i data-lucide="corner-down-right"></i></div>
             </a>
         </div>
       </section>
@@ -226,16 +284,38 @@
                 <div class="testi-user">
                     <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100" alt="Jordan">
                     <div>
-                        <h4>Jordan P. <i data-lucide="badge-check" size="14" fill="#0C8CE9" class="inline-icon"></i></h4>
-                        <span>@jordanp</span>
+                        <h4>Juno C. <i data-lucide="badge-check" size="14" fill="#0C8CE9" class="inline-icon"></i></h4>
+                        <span>@juno123</span>
                     </div>
                 </div>
-                <p>Alex is a designer who actually listens. Every round of feedback felt understood and reflected in the next version. That kind of collaboration is rare.</p>
+                <p>Alex just gets it. Clean design, smart structure, and an eye for detail that makes everything feel intentional.</p>
             </div>
 
             <div class="testi-card reveal-on-scroll">
                 <div class="testi-user">
                     <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" alt="Marc">
+                    <div>
+                        <h4>Nina S. <i data-lucide="badge-check" size="14" fill="#0C8CE9" class="inline-icon"></i></h4>
+                        <span>@ninas95</span>
+                    </div>
+                </div>
+                <p>Working with Alex was one of the best creative decisions we made this year. He took our scattered ideas and turned them into a cohesive digital experience.</p>
+            </div>
+            
+            <div class="testi-card reveal-on-scroll">
+                <div class="testi-user">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt="Lucas">
+                    <div>
+                        <h4>Lucas M. <i data-lucide="badge-check" size="14" fill="#0C8CE9" class="inline-icon"></i></h4>
+                        <span>@lucasm</span>
+                    </div>
+                </div>
+                <p>Found Alex through one of his Framer templates and was instantly impressed. The final site he built for us feels effortless.</p>
+            </div>
+            
+             <div class="testi-card reveal-on-scroll">
+                <div class="testi-user">
+                    <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100" alt="Marc">
                     <div>
                         <h4>Marc K. <i data-lucide="badge-check" size="14" fill="#0C8CE9" class="inline-icon"></i></h4>
                         <span>@kuipermarc</span>
@@ -290,6 +370,35 @@
             </div>
           </div>
       </section>
+      
+      <!-- FAQ -->
+      <section class="section-container">
+           <div class="section-header">
+              <h2 class="section-title">Most asked questions <sup class="count">(6)</sup></h2>
+          </div>
+          <div class="faq-list">
+              <div class="faq-item reveal-on-scroll">
+                  <span>What types of digital products do you design?</span>
+                  <i data-lucide="plus"></i>
+              </div>
+               <div class="faq-item reveal-on-scroll">
+                  <span>What is your design process like?</span>
+                  <i data-lucide="plus"></i>
+              </div>
+               <div class="faq-item reveal-on-scroll">
+                  <span>What is your typical timeline for projects?</span>
+                  <i data-lucide="plus"></i>
+              </div>
+              <div class="faq-item reveal-on-scroll">
+                  <span>What do you need from me to get started?</span>
+                  <i data-lucide="plus"></i>
+              </div>
+              <div class="faq-item reveal-on-scroll">
+                  <span>How do you handle revisions and feedback?</span>
+                  <i data-lucide="plus"></i>
+              </div>
+          </div>
+      </section>
 
       <!-- Footer -->
       <footer id="contact" class="site-footer reveal-on-scroll">
@@ -333,7 +442,7 @@
          </div>
       </footer>
 
-      <!-- Floating Resume Button -->
+      <!-- Floating Get Template Button -->
       <div class="floating-cta">
           <a href="#" class="btn-pill-white">
               <i data-lucide="download" width="16"></i> Get template

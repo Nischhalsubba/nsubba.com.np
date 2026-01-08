@@ -3,15 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- CONFIGURATION ---
     const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // --- 1. SCANNER BEAM INTERACTION ---
+    // --- 1. SCANNER BEAM INTERACTION (Refined) ---
     const scanner = document.querySelector('.grid-scanner');
     if (scanner && !REDUCED_MOTION) {
         let scannerY = 0;
         let direction = 1;
-        let speed = 1.5; // Base speed
-        let frameId;
-
-        // Track Mouse
+        let baseSpeed = 1.0; 
+        let currentSpeed = baseSpeed;
+        
         let mouseX = 0;
         let mouseY = 0;
         window.addEventListener('mousemove', (e) => {
@@ -22,8 +21,16 @@ document.addEventListener('DOMContentLoaded', () => {
         function animateScanner() {
             const windowHeight = window.innerHeight;
             
-            // Move Scanner
-            scannerY += speed * direction;
+            // Interaction: If mouse is close vertically, "glitch" direction or speed
+            const distY = Math.abs(mouseY - scannerY);
+            if (distY < 60) {
+                 if (Math.random() > 0.92) direction *= -1; // Random direction flip
+                 currentSpeed = 4.0; // Speed up near mouse
+            } else {
+                 currentSpeed += (baseSpeed - currentSpeed) * 0.1; // Ease back to normal
+            }
+
+            scannerY += currentSpeed * direction;
 
             // Bounce at edges
             if (scannerY > windowHeight) {
@@ -34,22 +41,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 direction = 1;
             }
 
-            // Mouse Interaction: "Glitch" if cursor is near
-            // If the mouse Y is close to the scanner Y (within 50px)
-            if (Math.abs(mouseY - scannerY) < 50) {
-                // Randomly flip direction or speed up momentarily
-                if (Math.random() > 0.8) {
-                    direction *= -1; 
-                }
-                // Push away slightly to avoid getting stuck
-                scannerY += (direction * 10); 
-            }
-
             scanner.style.transform = `translateY(${scannerY}px)`;
-            frameId = requestAnimationFrame(animateScanner);
+            requestAnimationFrame(animateScanner);
         }
 
-        frameId = requestAnimationFrame(animateScanner);
+        requestAnimationFrame(animateScanner);
     }
 
     // --- 2. CUSTOM CURSOR ---
@@ -81,50 +77,30 @@ document.addEventListener('DOMContentLoaded', () => {
             el.addEventListener('mouseenter', () => {
                 cursorOutline.style.width = '60px';
                 cursorOutline.style.height = '60px';
-                cursorOutline.style.background = 'rgba(59, 130, 246, 0.1)'; // Blue tint
-                cursorOutline.style.borderColor = 'var(--accent-blue)';
+                cursorOutline.style.background = 'rgba(255, 255, 255, 0.05)';
+                cursorOutline.style.borderColor = 'rgba(255, 255, 255, 0.5)';
             });
             el.addEventListener('mouseleave', () => {
                 cursorOutline.style.width = '40px';
                 cursorOutline.style.height = '40px';
                 cursorOutline.style.background = 'transparent';
-                cursorOutline.style.borderColor = 'rgba(255,255,255,0.2)';
+                cursorOutline.style.borderColor = 'rgba(255, 255, 255, 0.2)';
             });
         });
     }
 
-    // --- 3. CAPABILITIES HOVER ---
-    const capCards = document.querySelectorAll('.cap-card');
-    capCards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            card.style.background = `radial-gradient(600px circle at ${x}px ${y}px, rgba(255,255,255,0.06), rgba(255,255,255,0.01))`;
-            card.style.borderColor = 'rgba(255,255,255,0.15)';
-        });
-        card.addEventListener('mouseleave', () => {
-            card.style.background = '';
-            card.style.borderColor = '';
-        });
-    });
-
-    // --- 4. NAV ACTIVE STATE & GLIDER ---
+    // --- 3. NAV GLIDER ---
     const navLinks = document.querySelectorAll('.nav-link');
     const glider = document.querySelector('.nav-glider');
     const navPill = document.querySelector('.nav-pill');
-    
     const currentPath = window.location.pathname;
     
+    // Set Active Class
     navLinks.forEach(link => {
         link.classList.remove('active');
         const href = link.getAttribute('href');
-        if (href === currentPath) {
+        if (href === currentPath || (currentPath === '/' && href === '/index.html')) {
             link.classList.add('active');
-        } else if (currentPath === '/' && href === '/index.html') {
-             link.classList.add('active');
-        } else if (href !== '/index.html' && currentPath.includes(href)) {
-             link.classList.add('active');
         }
     });
 
@@ -134,12 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const rect = element.getBoundingClientRect();
             const parentRect = navPill.getBoundingClientRect();
             
-            const relLeft = rect.left - parentRect.left;
-            const relTop = rect.top - parentRect.top; 
-            
             gsap.to(glider, {
-                x: relLeft,
-                y: relTop,
+                x: rect.left - parentRect.left,
+                y: rect.top - parentRect.top,
                 width: rect.width,
                 height: rect.height,
                 opacity: 1,
@@ -158,73 +131,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const initialActive = document.querySelector('.nav-link.active');
-        if (initialActive) {
-            setTimeout(() => moveGlider(initialActive), 100);
-        }
+        if (initialActive) setTimeout(() => moveGlider(initialActive), 100);
     }
 
-    // --- 5. TESTIMONIAL CAROUSEL ---
-    const track = document.querySelector('.testimonial-track');
-    const slides = document.querySelectorAll('.t-slide');
-    const dots = document.querySelectorAll('.t-dot');
-    
-    if (track && dots.length > 0) {
-        let currentSlide = 0;
-        const totalSlides = dots.length;
-        
-        const updateSlide = (index) => {
-            currentSlide = index;
-            // 3 slides = 100% / 3 = 33.333%
-            const offset = currentSlide * -33.333; 
-            
-            track.style.transform = `translateX(${offset}%)`;
-            
-            slides.forEach((slide, i) => {
-                if(i === currentSlide) {
-                    slide.classList.add('active-slide');
-                    gsap.to(slide, {opacity: 1, scale: 1, duration: 0.5});
-                } else {
-                    slide.classList.remove('active-slide');
-                    gsap.to(slide, {opacity: 0.3, scale: 0.95, duration: 0.5});
-                }
-            });
-
-            dots.forEach((dot, i) => {
-                if (i === currentSlide) dot.classList.add('active');
-                else dot.classList.remove('active');
-            });
-        };
-
-        // Initialize First Slide
-        updateSlide(0);
-
-        dots.forEach(dot => {
-            dot.addEventListener('click', () => {
-                const index = parseInt(dot.getAttribute('data-index'));
-                updateSlide(index);
-            });
-        });
-
-        // Auto play
-        setInterval(() => {
-            const next = (currentSlide + 1) % totalSlides;
-            updateSlide(next);
-        }, 5000);
-    }
-
-    // --- 6. FAQ ACCORDION ---
+    // --- 4. FAQ ACCORDION (Fixed) ---
     const faqItems = document.querySelectorAll('.faq-item');
     
     faqItems.forEach(item => {
         const trigger = item.querySelector('.faq-trigger');
         const answer = item.querySelector('.faq-answer');
-        const inner = item.querySelector('.faq-inner');
         
         trigger.addEventListener('click', (e) => {
             e.preventDefault();
             const isActive = item.classList.contains('active');
             
-            // Close all others
+            // Close others
             faqItems.forEach(other => {
                 if (other !== item && other.classList.contains('active')) {
                     other.classList.remove('active');
@@ -234,9 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!isActive) {
                 item.classList.add('active');
-                // Calculate height dynamically
-                const height = inner.offsetHeight;
-                gsap.to(answer, { height: height, duration: 0.3, ease: "power2.out" });
+                // Use 'auto' to let GSAP calculate height
+                gsap.to(answer, { height: "auto", duration: 0.3, ease: "power2.out" });
             } else {
                 item.classList.remove('active');
                 gsap.to(answer, { height: 0, duration: 0.3, ease: "power2.out" });
@@ -244,40 +164,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- 7. ANIMATIONS (GSAP) ---
+    // --- 5. ANIMATIONS (GSAP) ---
     if (window.gsap && window.ScrollTrigger && !REDUCED_MOTION) {
-        const gsap = window.gsap;
-        const ScrollTrigger = window.ScrollTrigger;
         gsap.registerPlugin(ScrollTrigger);
 
-        // A. Hero Sequence
+        // A. Hero Load
         const timeline = gsap.timeline({ defaults: { ease: "power3.out" } });
-        
         timeline.fromTo(".nav-wrapper", { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 })
-                .fromTo(".pill-item", 
-                    { y: 20, opacity: 0 }, 
-                    { y: 0, opacity: 1, duration: 0.6, stagger: 0.1 }, 
-                    "-=0.6") 
+                .fromTo(".ticker-container", { opacity: 0 }, { opacity: 1, duration: 0.8 }, "-=0.6")
                 .fromTo(".hero-title", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1 }, "-=0.6")
                 .fromTo(".body-large.fade-in", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 }, "-=0.8")
                 .fromTo(".hero-actions", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 }, "-=0.8")
                 .fromTo(".hero-visual", { opacity: 0, scale: 0.95 }, { opacity: 0.9, scale: 1, duration: 1.2 }, "-=0.5");
 
-        // B. Standard Scroll Reveal
+        // B. Scroll Reveal
         document.querySelectorAll(".reveal-on-scroll").forEach(el => {
             gsap.fromTo(el, 
-                { y: 40, opacity: 0 },
+                { y: 30, opacity: 0 },
                 {
                     y: 0, opacity: 1, duration: 0.8, ease: "power2.out",
-                    scrollTrigger: {
-                        trigger: el,
-                        start: "top 85%"
-                    }
+                    scrollTrigger: { trigger: el, start: "top 85%" }
                 }
             );
         });
 
-        // C. Text Reveal
+        // C. Text Reveal (Scrub Fix)
         document.querySelectorAll(".text-reveal-wrap").forEach(title => {
             const fill = title.querySelector(".text-fill");
             if (fill) {
@@ -288,8 +199,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         ease: "none",
                         scrollTrigger: {
                             trigger: title,
-                            start: "top 80%",
-                            end: "top 30%", 
+                            start: "top 90%", // Trigger earlier
+                            end: "top 40%",   // End later
                             scrub: 1
                         }
                     }
@@ -297,8 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    
-    // --- 8. FORM SUBMISSION ---
+
+    // --- 6. CONTACT FORM ---
     const form = document.getElementById('contact-form');
     if (form) {
         form.addEventListener('submit', (e) => {

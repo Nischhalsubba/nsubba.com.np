@@ -45,13 +45,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 2. NAV GLIDER LOGIC ---
+    // --- 2. NAV ACTIVE STATE & GLIDER ---
     const navLinks = document.querySelectorAll('.nav-link');
     const glider = document.querySelector('.nav-glider');
     const navPill = document.querySelector('.nav-pill');
+    
+    // Set Active Link based on URL
+    const currentPath = window.location.pathname;
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        const href = link.getAttribute('href');
+        if (href === currentPath || (href !== '/index.html' && currentPath.includes(href))) {
+            link.classList.add('active');
+        } else if (currentPath === '/' && href === '/index.html') {
+            link.classList.add('active');
+        }
+    });
 
     if (glider && navPill) {
         function moveGlider(element) {
+            if (!element) return;
             // Calculate relative position inside the nav-pill
             const rect = element.getBoundingClientRect();
             const parentRect = navPill.getBoundingClientRect();
@@ -114,6 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- 4. ANIMATIONS (GSAP) ---
+    // Ensure content is visible if JS/GSAP fails by setting opacity:1 in CSS.
+    // We use .fromTo here to handle the "hidden" start state programmatically.
     if (window.gsap && window.ScrollTrigger && !REDUCED_MOTION) {
         const gsap = window.gsap;
         const ScrollTrigger = window.ScrollTrigger;
@@ -122,17 +137,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // Page Load Sequence (Hero)
         const timeline = gsap.timeline({ defaults: { ease: "power3.out" } });
         
-        timeline.from(".nav-wrapper", { y: -20, opacity: 0, duration: 0.8 })
-                .from(".hero-pills-row", { y: 20, opacity: 0, duration: 0.8 }, "-=0.6")
-                .from(".hero-title", { y: 40, opacity: 0, duration: 1 }, "-=0.6")
-                .from(".body-large.fade-in", { y: 20, opacity: 0, duration: 0.8 }, "-=0.8")
-                .from(".hero-actions", { y: 20, opacity: 0, duration: 0.8 }, "-=0.8");
+        // Use fromTo to strictly define start and end states
+        timeline.fromTo(".nav-wrapper", { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 })
+                .fromTo(".hero-pills-row", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 }, "-=0.6")
+                .fromTo(".hero-title", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1 }, "-=0.6")
+                .fromTo(".body-large.fade-in", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 }, "-=0.8")
+                .fromTo(".hero-actions", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 }, "-=0.8");
 
         // Scroll Reveals
         const revealElements = document.querySelectorAll(".reveal-on-scroll");
         revealElements.forEach(el => {
             gsap.fromTo(el, 
-                { y: 30, opacity: 0 },
+                { y: 40, opacity: 0 },
                 {
                     y: 0, opacity: 1, duration: 0.8, ease: "power2.out",
                     scrollTrigger: {
@@ -155,13 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-    } else {
-        // Fallback: Make everything visible if reduced motion or no JS
-        document.querySelectorAll('.fade-in, .reveal-on-scroll').forEach(el => {
-            el.style.opacity = 1;
-            el.style.transform = 'none';
-        });
-    }
+    } 
+    // Fallback handled by CSS opacity: 1
 
     // --- 5. TIME DISPLAY ---
     const timeDisplay = document.getElementById('time-display');
@@ -169,7 +180,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const updateTime = () => {
             const now = new Date();
             const options = { timeZone: 'Asia/Kathmandu', hour: '2-digit', minute: '2-digit', hour12: true };
-            timeDisplay.textContent = now.toLocaleTimeString('en-US', options) + " KTH";
+            try {
+                const timeString = now.toLocaleTimeString('en-US', options);
+                timeDisplay.textContent = `${timeString} KTH`;
+            } catch (e) {
+                timeDisplay.textContent = "Kathmandu";
+            }
         };
         updateTime();
         setInterval(updateTime, 1000);

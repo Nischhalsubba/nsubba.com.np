@@ -174,8 +174,13 @@ h1, h2, h3, h4, h5 {
   white-space: nowrap;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover {
   color: var(--text-primary);
+}
+
+.nav-link.active {
+  color: var(--text-primary);
+  text-shadow: 0 0 10px rgba(255,255,255,0.3);
 }
 
 /* The Glider (Animated Background) */
@@ -210,8 +215,9 @@ h1, h2, h3, h4, h5 {
   gap: 12px;
   margin-bottom: 48px;
   overflow-x: auto;
-  max-width: 100vw;
-  padding: 4px 24px; /* Room for shadow */
+  max-width: 90vw;
+  padding: 4px 12px;
+  /* Scrollbar hide */
   scrollbar-width: none;
   -ms-overflow-style: none;
   mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
@@ -272,7 +278,7 @@ h1, h2, h3, h4, h5 {
 }
 
 .btn-secondary:hover {
-  border-color: var(--text-secondary);
+  border-color: var(--text-primary); /* Darker border on hover for contrast */
   background: rgba(255,255,255,0.03);
 }
 
@@ -408,10 +414,10 @@ h1, h2, h3, h4, h5 {
 }
 
 .metric-label {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-tertiary);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
 }
 
 /* Principles Grid */
@@ -632,7 +638,15 @@ main {
   padding-bottom: 24px;
 }
 
-.reveal-on-scroll { opacity: 0; } /* Handled by GSAP */
+/* 
+   CRITICAL: Default to visible (opacity 1). 
+   JS will handle the "from 0" animation. 
+   This prevents "black screen" if JS fails.
+*/
+.reveal-on-scroll { 
+  opacity: 1; 
+  transform: translateY(0);
+}
 
 /* --- 13. FOOTER --- */
 .site-footer {

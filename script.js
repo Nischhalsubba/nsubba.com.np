@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. CUSTOM CURSOR (Redesigned for Smoothness) ---
+    // --- 1. VANILLA JS CUSTOM CURSOR (No GSAP dependency) ---
     const cursorDot = document.createElement('div');
     const cursorOutline = document.createElement('div');
     cursorDot.className = 'cursor-dot';
@@ -8,34 +8,37 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(cursorDot);
     document.body.appendChild(cursorOutline);
 
-    // Initial position to avoid jump
-    gsap.set(cursorDot, {xPercent: -50, yPercent: -50});
-    gsap.set(cursorOutline, {xPercent: -50, yPercent: -50});
+    // Enable custom cursor styles via class
+    document.body.classList.add('custom-cursor-enabled');
 
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
-
+    
+    // Smoothness config
+    let outlineX = mouseX;
+    let outlineY = mouseY;
+    
+    // Track mouse position
     window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
         
         // Dot follows instantly
-        gsap.to(cursorDot, {
-            x: mouseX, 
-            y: mouseY, 
-            duration: 0.01, 
-            overwrite: true
-        });
-
-        // Outline follows with smooth lag
-        gsap.to(cursorOutline, {
-            x: mouseX,
-            y: mouseY,
-            duration: 0.15,
-            ease: "power2.out",
-            overwrite: true
-        });
+        cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
     });
+
+    // Animation Loop for smooth outline
+    const animateCursor = () => {
+        // Linear interpolation for smooth lag
+        const speed = 0.15;
+        outlineX += (mouseX - outlineX) * speed;
+        outlineY += (mouseY - outlineY) * speed;
+        
+        cursorOutline.style.transform = `translate(${outlineX}px, ${outlineY}px) translate(-50%, -50%)`;
+        
+        requestAnimationFrame(animateCursor);
+    };
+    animateCursor();
 
     // Hover Scaling logic
     const clickables = document.querySelectorAll('a, button, input, textarea, .clickable');
@@ -52,39 +55,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- 2. GSAP SCROLL ANIMATIONS ---
-    const ScrollTrigger = window.ScrollTrigger;
-    gsap.registerPlugin(ScrollTrigger);
+    if (window.gsap && window.ScrollTrigger) {
+        const gsap = window.gsap;
+        const ScrollTrigger = window.ScrollTrigger;
+        gsap.registerPlugin(ScrollTrigger);
 
-    // Hero Fade In sequence
-    const tl = gsap.timeline();
-    tl.to(".fade-in", {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        stagger: 0.1,
-        ease: "power3.out",
-        onStart: () => {
-            gsap.set(".fade-in", {y: 30});
-        }
-    });
+        // Hero Fade In - Using .from() ensures elements are visible by default if JS fails
+        // and only jump to hidden state when animation starts.
+        gsap.from(".fade-in", {
+            y: 50,
+            opacity: 0,
+            duration: 1.2,
+            stagger: 0.1,
+            ease: "power3.out",
+            delay: 0.2
+        });
 
-    // Scroll Reveal Elements
-    const revealElements = document.querySelectorAll(".reveal-on-scroll");
-    revealElements.forEach((element) => {
-        gsap.fromTo(element, 
-            { y: 50, opacity: 0 },
-            {
-                y: 0,
-                opacity: 1,
+        // Scroll Reveal Elements
+        const revealElements = document.querySelectorAll(".reveal-on-scroll");
+        revealElements.forEach((element) => {
+            gsap.from(element, {
+                y: 50,
+                opacity: 0,
                 duration: 1,
                 ease: "power3.out",
                 scrollTrigger: {
                     trigger: element,
                     start: "top 85%",
                 }
-            }
-        );
-    });
+            });
+        });
+    }
 
     // --- 3. TIME DISPLAY ---
     const timeDisplay = document.getElementById('time-display');
@@ -106,12 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
         link.classList.remove('active');
         const href = link.getAttribute('href').replace('./', '');
         
-        // Exact match for non-home pages or home page
-        if (currentPath.endsWith(href) || (href === 'index.html' && currentPath === '/')) {
+        // Exact match or home logic
+        if (currentPath.endsWith(href) || (href === 'index.html' && (currentPath === '/' || currentPath === ''))) {
             link.classList.add('active');
         }
         
-        // Hash link check
+        // Hash link logic (if on same page)
         if(href.startsWith('#')) {
              link.addEventListener('click', () => {
                  navLinks.forEach(l => l.classList.remove('active'));

@@ -1,6 +1,6 @@
 /* 
   STYLE.CSS
-  Refined Portfolio Theme v2
+  Refined Portfolio Theme v3
 */
 
 /* --- 1. TOKENS --- */
@@ -23,17 +23,13 @@
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-light: rgba(255, 255, 255, 0.15);
   
-  /* Typography */
-  --font-serif: 'Playfair Display', serif;
-  --font-sans: 'Inter', sans-serif;
-  
   /* Dimensions */
-  --container-width: 1400px; /* Increased from 1200/840 */
+  --container-width: 1400px;
   --radius-card: 24px;
   --radius-pill: 999px;
   
   /* Z-Index */
-  --z-cursor: 99999;
+  --z-cursor: 2147483647; /* Max integer */
   --z-nav: 1000;
 }
 
@@ -42,7 +38,14 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  cursor: none !important; /* Force custom cursor everywhere */
+}
+
+/* Only hide default cursor if JS successfully enables custom cursor */
+body.custom-cursor-enabled,
+body.custom-cursor-enabled *, 
+body.custom-cursor-enabled a, 
+body.custom-cursor-enabled button {
+  cursor: none !important;
 }
 
 html {
@@ -53,7 +56,7 @@ html {
 body {
   background-color: var(--bg-body);
   color: var(--text-primary);
-  font-family: var(--font-sans);
+  font-family: 'Inter', sans-serif;
   line-height: 1.5;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -70,34 +73,38 @@ img {
   display: block;
 }
 
-/* --- 3. CUSTOM CURSOR (GSAP) --- */
-.cursor-dot {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 8px;
-  height: 8px;
-  background-color: white;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: var(--z-cursor);
-  transform: translate(-50%, -50%);
-  mix-blend-mode: exclusion; /* Ensures visibility on white */
-}
-
+/* --- 3. CUSTOM CURSOR (Vanilla JS Styles) --- */
+.cursor-dot,
 .cursor-outline {
   position: fixed;
   top: 0;
   left: 0;
-  width: 40px;
-  height: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 50%;
   pointer-events: none;
   z-index: var(--z-cursor);
   transform: translate(-50%, -50%);
-  transition: width 0.2s, height 0.2s, background-color 0.2s;
+  display: none; /* Hidden by default until JS activates */
+}
+
+/* Visible when enabled */
+body.custom-cursor-enabled .cursor-dot,
+body.custom-cursor-enabled .cursor-outline {
+  display: block;
+}
+
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background-color: white;
   mix-blend-mode: exclusion;
+}
+
+.cursor-outline {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  mix-blend-mode: exclusion;
+  transition: width 0.2s, height 0.2s, background-color 0.2s;
 }
 
 /* Hover States */
@@ -111,21 +118,21 @@ body.hovering .cursor-outline {
 body.hovering-card .cursor-outline {
   width: 100px;
   height: 100px;
-  background-color: rgba(202, 232, 189, 0.2); /* Accent Color */
+  background-color: rgba(202, 232, 189, 0.2);
   border-color: var(--accent-primary);
-  mix-blend-mode: normal; /* Restore color for accent */
+  mix-blend-mode: normal; 
 }
 
 /* --- 4. TYPOGRAPHY --- */
 h1, h2, h3, h4 {
-  font-family: var(--font-serif);
+  font-family: 'Playfair Display', serif;
   font-weight: 400;
   color: var(--text-primary);
   letter-spacing: -0.02em;
 }
 
 .text-serif-italic {
-  font-family: var(--font-serif);
+  font-family: 'Playfair Display', serif;
   font-style: italic;
   font-weight: 400;
 }
@@ -144,7 +151,7 @@ h1, h2, h3, h4 {
   transition: transform 0.2s ease;
   letter-spacing: 0.01em;
   border: none;
-  cursor: none;
+  cursor: pointer;
 }
 
 .btn:hover {
@@ -207,6 +214,7 @@ h1, h2, h3, h4 {
   font-size: 0.9rem;
   font-weight: 500;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .nav-link svg {
@@ -227,7 +235,6 @@ h1, h2, h3, h4 {
 
 .nav-link.active svg { opacity: 1; }
 
-/* Mobile Nav Tweak */
 @media (max-width: 768px) {
     .nav-link span { display: none; }
     .nav-link { padding: 12px; }
@@ -239,6 +246,8 @@ main {
   margin: 0 auto;
   padding: 0 40px;
   width: 100%;
+  /* Ensure visibility if JS fails */
+  opacity: 1; 
 }
 
 .section-container {
@@ -260,7 +269,7 @@ main {
 }
 
 .section-title sup {
-    font-family: var(--font-sans);
+    font-family: 'Inter', sans-serif;
     font-size: 1rem;
     color: var(--text-secondary);
     margin-left: 8px;
@@ -310,7 +319,7 @@ main {
 }
 
 .hero-title {
-    font-size: clamp(4rem, 8vw, 8rem);
+    font-size: clamp(3.5rem, 8vw, 7.5rem);
     line-height: 1.05;
     margin-bottom: 32px;
 }
@@ -341,6 +350,8 @@ main {
     display: flex;
     flex-direction: column;
     gap: 24px;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .project-card.large {
@@ -396,7 +407,7 @@ main {
     font-size: 1.1rem;
 }
 
-/* --- 10. FORM SECTION (New) --- */
+/* --- 10. FORM SECTION --- */
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -455,6 +466,7 @@ main {
     color: white;
     font-size: 1rem;
     transition: border-color 0.2s;
+    font-family: inherit;
 }
 
 .form-input:focus, .form-textarea:focus {
@@ -462,7 +474,7 @@ main {
     border-color: var(--text-secondary);
 }
 
-/* --- 11. FOOTER (Redesigned) --- */
+/* --- 11. FOOTER --- */
 .site-footer {
     padding: 100px 0 40px;
     background: var(--bg-surface);
@@ -487,7 +499,7 @@ main {
 }
 
 .footer-col h4 {
-    font-family: var(--font-sans);
+    font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
     text-transform: uppercase;
     color: var(--text-tertiary);
@@ -504,6 +516,7 @@ main {
 .footer-link {
     color: var(--text-secondary);
     transition: color 0.2s;
+    cursor: pointer;
 }
 
 .footer-link:hover {
@@ -526,6 +539,62 @@ main {
     .footer-grid { grid-template-columns: 1fr; gap: 40px; }
 }
 
-/* --- UTILS --- */
-.fade-in { opacity: 0; }
-.reveal-on-scroll { opacity: 0; }
+/* Detail Page Specific */
+.detail-hero {
+    text-align: center;
+    padding: 120px 0 60px;
+}
+
+.hero-tags {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.pill {
+    padding: 6px 16px;
+    border-radius: 99px;
+    border: 1px solid var(--border-subtle);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.detail-meta {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.meta-item span {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.meta-item p {
+    font-size: 1.1rem;
+}
+
+.prose {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #ccc;
+}
+.prose h3 {
+    margin-top: 48px;
+    margin-bottom: 24px;
+    font-size: 1.8rem;
+    color: white;
+}
+.prose p { margin-bottom: 24px; }
+.prose ul { padding-left: 20px; margin-bottom: 24px; }
+.prose li { margin-bottom: 12px; }
+
+/* Remove old opacity classes that were causing visibility issues */
+.fade-in, .reveal-on-scroll { opacity: 1; }

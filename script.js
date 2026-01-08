@@ -1,8 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("Portfolio Script Loaded");
-
-    // 0. Page Transition (Fade In)
-    document.body.classList.add('loaded');
+    console.log("Script Initialized");
 
     // Initialize Lucide Icons
     if (window.lucide) {
@@ -16,73 +13,78 @@ document.addEventListener('DOMContentLoaded', () => {
     if (gsap && ScrollTrigger) {
         gsap.registerPlugin(ScrollTrigger);
 
-        // 1. Hero Parallax (Requirement 8)
-        // Image moves at 50% scroll speed relative to scroll
+        // 1. Hero Animations (Timeline)
+        const tl = gsap.timeline();
+        
+        // Ensure initial state
+        gsap.set(".fade-in", { y: 30, opacity: 0 });
+        
+        tl.to(".fade-in", {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            stagger: 0.15,
+            ease: "power3.out",
+            delay: 0.2
+        });
+
+        // 2. Parallax Effect (Requirement 8)
+        // Only run if image exists
+        const heroImgWrapper = document.querySelector('.hero-image-wrapper');
         const heroImg = document.querySelector('.hero-img');
-        if (heroImg) {
+        
+        if (heroImgWrapper && heroImg) {
             gsap.to(heroImg, {
-                yPercent: 20, // Move down slightly as we scroll down
+                yPercent: 20, // Moves image down slowly
                 ease: "none",
                 scrollTrigger: {
-                    trigger: ".hero-image-wrapper",
-                    start: "top top",
+                    trigger: heroImgWrapper,
+                    start: "top top", 
                     end: "bottom top",
                     scrub: true
                 }
             });
         }
 
-        // 2. Hero Content Fade In
-        const tl = gsap.timeline();
-        tl.from(".fade-in", {
-            y: 30,
-            opacity: 0,
-            duration: 1,
-            stagger: 0.2,
-            ease: "power3.out"
-        });
-
         // 3. Scroll Reveals
         const revealElements = document.querySelectorAll(".reveal-on-scroll");
         revealElements.forEach((element) => {
-            gsap.from(element, {
-                scrollTrigger: {
-                    trigger: element,
-                    start: "top 85%",
-                    toggleActions: "play none none reverse"
-                },
-                y: 40,
-                opacity: 0,
-                duration: 1,
-                ease: "power2.out"
-            });
+            gsap.fromTo(element, 
+                { y: 50, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 1,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: element,
+                        start: "top 85%", // Triggers when top of element hits 85% viewport
+                        toggleActions: "play none none reverse"
+                    }
+                }
+            );
         });
 
-        // 4. Staggered Blog Animation (Requirement 6)
-        // Select all blog rows and animate them sequentially
-        const blogRows = document.querySelectorAll('.blog-row');
-        if (blogRows.length > 0) {
-            gsap.to(blogRows, {
-                scrollTrigger: {
-                    trigger: ".blog-list",
-                    start: "top 80%"
-                },
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                stagger: 0.25, // 0.25s delay between each
-                ease: "power2.out",
-                onStart: () => {
-                    // Ensure they are set to visible if CSS hid them differently
-                    blogRows.forEach(row => row.style.opacity = '1');
-                }
-            });
-            // Initial state set via GSAP to ensure smooth start
-            gsap.set(blogRows, { y: 20, opacity: 0 });
-        }
+        // 4. Staggered Blog/List Animation
+        // Use batch to handle dynamic lists better
+        ScrollTrigger.batch(".blog-row", {
+            start: "top 85%",
+            onEnter: batch => gsap.to(batch, {
+                opacity: 1, 
+                y: 0, 
+                stagger: 0.2, 
+                duration: 0.8, 
+                ease: "power2.out"
+            }),
+            onLeaveBack: batch => gsap.to(batch, { opacity: 0, y: 30 }) // Optional fade out
+        });
+        
+        // Initial set for batch items
+        gsap.set(".blog-row", { y: 30, opacity: 0 });
     }
 
     // 5. Custom Cursor (Requirement 4)
+    // Create cursor elements dynamically
     const cursorDot = document.createElement('div');
     const cursorOutline = document.createElement('div');
     cursorDot.className = 'cursor-dot';
@@ -90,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(cursorDot);
     document.body.appendChild(cursorOutline);
 
+    // Track mouse
     window.addEventListener('mousemove', (e) => {
         const posX = e.clientX;
         const posY = e.clientY;
@@ -98,16 +101,16 @@ document.addEventListener('DOMContentLoaded', () => {
         cursorDot.style.left = `${posX}px`;
         cursorDot.style.top = `${posY}px`;
 
-        // Outline follows with slight delay (GSAP)
+        // Outline follows with lag
         gsap.to(cursorOutline, {
             x: posX,
             y: posY,
-            duration: 0.15, // smooth lag
+            duration: 0.15,
             ease: "power2.out"
         });
     });
 
-    // Hover effects for cursor
+    // Hover states
     const interactiveElements = document.querySelectorAll('a, button, .clickable, .project-card, .blog-row');
     interactiveElements.forEach(el => {
         el.addEventListener('mouseenter', () => {
@@ -132,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const dot = document.createElement('div');
             dot.classList.add('dot');
             if (index === 0) dot.classList.add('active');
+            
             dot.addEventListener('click', () => {
                 goToSlide(index);
                 resetTimer();
@@ -146,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
             slides.forEach(s => s.classList.remove('active'));
             dots.forEach(d => d.classList.remove('active'));
 
-            // Show current
+            // Show target
             slides[index].classList.add('active');
             dots[index].classList.add('active');
             currentSlide = index;
@@ -158,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function startTimer() {
-            slideInterval = setInterval(nextSlide, 5000); // 5 seconds
+            slideInterval = setInterval(nextSlide, 5000); // 5s interval
         }
 
         function resetTimer() {
@@ -166,27 +170,24 @@ document.addEventListener('DOMContentLoaded', () => {
             startTimer();
         }
 
-        // Start
         startTimer();
     }
 
-    // 7. Navigation Active State
+    // 7. Nav Active State
     const navItems = document.querySelectorAll(".nav-item");
     const currentPath = window.location.pathname;
-
-    // Highlight based on page
+    
     navItems.forEach(item => {
         item.classList.remove('active');
         const href = item.getAttribute('href');
         
-        if (currentPath.includes('index.html') || currentPath === '/') {
-             if (href === 'index.html' || href === '#home') item.classList.add('active');
-        } else if (currentPath.includes('projects') && href.includes('projects')) {
+        // Simple logic for active state
+        if (href === 'index.html' && (currentPath.endsWith('index.html') || currentPath === '/')) {
             item.classList.add('active');
-        } else if (currentPath.includes('blog') && href.includes('blog')) {
+        } else if (href.includes('.html') && currentPath.includes(href)) {
             item.classList.add('active');
-        } else if (href === '#contact' && window.location.hash === '#contact') {
-            item.classList.add('active');
+        } else if (href.startsWith('#')) {
+            // Anchor link check handled by scroll listener if needed, but keeping it simple for now
         }
     });
 

@@ -8,98 +8,62 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=10">
+    <link rel="stylesheet" href="style.css?v=14">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   </head>
   <body>
 
-    <nav class="nav-wrapper">
+    <!-- Custom Cursor -->
+    <div class="custom-cursor-dot"></div>
+    <div class="custom-cursor-outline"></div>
+
+    <nav class="nav-wrapper fade-in">
       <div class="nav-pill">
-        <a href="/index.html" class="nav-link">
-            <span>Home</span>
-        </a>
-        <a href="/projects.html" class="nav-link">
-            <span>Case Studies</span>
-        </a>
-        <a href="/about.html" class="nav-link">
-            <span>About</span>
-        </a>
-        <a href="/blog.html" class="nav-link active">
-            <span>Writing</span>
-        </a>
-        <a href="/index.html#contact" class="nav-link">
-            <span>Contact</span>
-        </a>
+        <div class="nav-glider"></div>
+        <a href="/index.html" class="nav-link">Home</a>
+        <a href="/projects.html" class="nav-link">Work</a>
+        <a href="/about.html" class="nav-link">About</a>
+        <a href="/blog.html" class="nav-link active">Writing</a>
+        <a href="#contact" class="nav-link">Contact</a>
       </div>
     </nav>
 
     <main>
       <article>
-        <header class="detail-hero">
-            <span class="pill fade-in" style="margin-bottom: 24px; display: inline-block;">Design Systems</span>
-            <h1 class="hero-title fade-in" style="font-size: 3.5rem; line-height: 1.1;">The future of Design Systems in 2026</h1>
-            <div class="detail-meta fade-in" style="border: none; padding-top: 0; margin-top: 24px; justify-content: center;">
-                 <span style="color: #888; font-size: 0.9rem;">Oct 24, 2025 • 5 min read</span>
-            </div>
+        <header class="hero-section" style="min-height: 50vh;">
+            <span class="badge fade-in" style="margin-bottom: 24px;">Design Systems</span>
+            <h1 class="hero-title fade-in" style="font-size: 3.5rem; line-height: 1.1; max-width: 800px;">The future of Design Systems in 2026</h1>
+            <div class="meta-text fade-in" style="margin-top: 24px;">Oct 24, 2025 • 5 min read</div>
         </header>
 
-        <section class="section-container">
-            <div class="prose reveal-on-scroll" style="max-width: 680px; margin: 0 auto;">
-                <p>Design systems have evolved significantly over the last decade. What started as simple sticker sheets in Sketch has transformed into complex, code-aligned ecosystems that drive the products we use every day.</p>
+        <section class="section-container" style="padding-top: 0;">
+            <div class="body-large reveal-on-scroll" style="max-width: 680px; margin: 0 auto; color: var(--text-secondary);">
+                <p style="margin-bottom: 24px;">Design systems have evolved significantly over the last decade. What started as simple sticker sheets in Sketch has transformed into complex, code-aligned ecosystems that drive the products we use every day.</p>
                 
-                <h3>From Static to Dynamic</h3>
-                <p>In 2026, we are seeing the death of the static component library. Design systems are no longer just Figma files; they are living, breathing code repositories. Tools that sync tokens directly from design to production are now the standard.</p>
+                <h3 style="margin: 40px 0 16px; color: var(--text-primary);">From Static to Dynamic</h3>
+                <p style="margin-bottom: 24px;">In 2026, we are seeing the death of the static component library. Design systems are no longer just Figma files; they are living, breathing code repositories. Tools that sync tokens directly from design to production are now the standard.</p>
 
-                <h3>AI-Generated Components</h3>
-                <p>With the rise of generative AI, we aren't just building components manually anymore. We are defining the <strong>rules</strong> and <strong>constraints</strong>, and letting AI generate the permutations. This shifts the role of the System Designer from a "builder" to a "curator".</p>
+                <h3 style="margin: 40px 0 16px; color: var(--text-primary);">AI-Generated Components</h3>
+                <p style="margin-bottom: 24px;">With the rise of generative AI, we aren't just building components manually anymore. We are defining the <strong>rules</strong> and <strong>constraints</strong>, and letting AI generate the permutations. This shifts the role of the System Designer from a "builder" to a "curator".</p>
                 
                 <p>Imagine a system where you define the brand color and typography, and the AI automatically generates accessibility-compliant button states for dark mode, light mode, and high contrast mode. That future is already here.</p>
-
-                <h3>The Human Element</h3>
-                <p>Despite the automation, the human element remains crucial. A design system that lacks soul feels robotic. The challenge for the next generation of designers is injecting brand personality into these rigid systems without breaking scalability.</p>
             </div>
         </section>
       </article>
 
       <div class="section-container" style="text-align: center;">
-          <a href="/blog.html" class="btn btn-dark clickable">Back to Writing</a>
+          <a href="/blog.html" class="btn btn-secondary">Back to Writing</a>
       </div>
 
     </main>
 
-    <footer class="site-footer reveal-on-scroll">
-        <div style="max-width: 1400px; margin: 0 auto; padding: 0 40px;">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <h2>NRS.</h2>
-                    <p>Designing interfaces that are as functional as they are beautiful.</p>
-                </div>
-                
-                <div class="footer-col">
-                    <h4>Navigate</h4>
-                    <div class="footer-links">
-                        <a href="/index.html" class="footer-link clickable">Home</a>
-                        <a href="/projects.html" class="footer-link clickable">Case Studies</a>
-                        <a href="/about.html" class="footer-link clickable">About</a>
-                        <a href="/blog.html" class="footer-link clickable">Writing</a>
-                    </div>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Connect</h4>
-                    <div class="footer-links">
-                        <a href="https://www.linkedin.com/in/nischhal/" target="_blank" class="footer-link clickable">LinkedIn ↗</a>
-                        <a href="https://dribbble.com/Nischhal" target="_blank" class="footer-link clickable">Dribbble ↗</a>
-                        <a href="https://www.instagram.com/nischhalsubba" target="_blank" class="footer-link clickable">Instagram ↗</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <span>© 2026 Nischhal Raj Subba. All Rights Reserved.</span>
-                <span>Kathmandu, Nepal</span>
+    <footer class="site-footer">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+             <div class="footer-bottom">
+                <span>© 2026 Nischhal Raj Subba</span>
+                <span id="time-display">00:00 KTH</span>
             </div>
         </div>
     </footer>

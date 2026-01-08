@@ -8,160 +8,75 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=11">
+    <link rel="stylesheet" href="style.css?v=14">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   </head>
   <body>
+    
+    <!-- Custom Cursor -->
+    <div class="custom-cursor-dot"></div>
+    <div class="custom-cursor-outline"></div>
 
     <!-- Navigation -->
-    <nav class="nav-wrapper">
+    <nav class="nav-wrapper fade-in">
       <div class="nav-pill">
-        <a href="/index.html" class="nav-link">
-            <span>Home</span>
-        </a>
-        <a href="/projects.html" class="nav-link active">
-            <span>Case Studies</span>
-        </a>
-        <a href="/about.html" class="nav-link">
-            <span>About</span>
-        </a>
-        <a href="/blog.html" class="nav-link">
-            <span>Writing</span>
-        </a>
-        <a href="/index.html#contact" class="nav-link">
-            <span>Contact</span>
-        </a>
+        <div class="nav-glider"></div>
+        <a href="/index.html" class="nav-link">Home</a>
+        <a href="/projects.html" class="nav-link active">Work</a>
+        <a href="/about.html" class="nav-link">About</a>
+        <a href="/blog.html" class="nav-link">Writing</a>
+        <a href="#contact" class="nav-link">Contact</a>
       </div>
     </nav>
 
     <main>
       <article>
-        <header class="detail-hero">
-            <div class="hero-tags fade-in">
-                 <span class="pill">Fintech</span>
-                 <span class="pill">Mobile App</span>
+        <header class="hero-section" style="min-height: 50vh; padding-bottom: 40px;">
+            <div class="hero-pills-row fade-in" style="margin-bottom: 24px; padding: 0;">
+                 <span class="pill-item">Fintech</span>
+                 <span class="pill-item">Mobile App</span>
             </div>
-            <h1 class="hero-title fade-in" style="font-size: 4rem; margin-top: 24px;">Nova Financial</h1>
-            <p class="hero-subtitle fade-in" style="margin: 0 auto;">Redefining the mobile banking experience for a new generation of investors.</p>
-            
-            <div class="detail-meta fade-in">
-                <div class="meta-item">
-                    <span>Role</span>
-                    <p>Lead Product Designer</p>
-                </div>
-                <div class="meta-item">
-                    <span>Timeline</span>
-                    <p>3 Months</p>
-                </div>
-                <div class="meta-item">
-                    <span>Client</span>
-                    <p>Nova Corp</p>
-                </div>
-            </div>
+            <h1 class="hero-title fade-in" style="font-size: 4rem;">Nova Financial</h1>
+            <p class="body-large fade-in" style="max-width: 600px;">Redefining the mobile banking experience for a new generation of investors.</p>
         </header>
 
         <section class="reveal-on-scroll" style="margin: 0 auto; max-width: 1000px; margin-bottom: 80px;">
-             <img src="https://images.unsplash.com/photo-1614850523060-8da1d56ae167?q=80&w=2000" alt="Nova App Hero Image" style="border-radius: 20px;">
+             <img src="https://images.unsplash.com/photo-1614850523060-8da1d56ae167?q=80&w=2000" alt="Nova App Hero Image" style="border-radius: 16px;">
         </section>
 
-        <!-- New Case Study Layout with Sidebar -->
-        <section class="section-container">
-            <div class="case-study-grid">
+        <section class="section-container" style="padding-top: 0;">
+             <!-- Simplified prose wrapper for detail page content -->
+             <div class="body-large reveal-on-scroll" style="max-width: 720px; margin: 0 auto;">
+                <h3 style="margin-bottom: 16px;">The Challenge</h3>
+                <p style="margin-bottom: 40px; color: var(--text-secondary);">Nova Financial wanted to expand their user base to include Gen Z investors. However, their legacy application was cluttered, slow, and full of financial jargon that intimidated new users. The drop-off rate during onboarding was nearly 60%.</p>
                 
-                <!-- Sticky Sidebar -->
-                <aside class="case-sidebar reveal-on-scroll">
-                    <a class="toc-link active" onclick="document.getElementById('challenge').scrollIntoView({behavior: 'smooth'})">The Challenge</a>
-                    <a class="toc-link" onclick="document.getElementById('approach').scrollIntoView({behavior: 'smooth'})">My Approach</a>
-                    <a class="toc-link" onclick="document.getElementById('process').scrollIntoView({behavior: 'smooth'})">Process & Design</a>
-                    <a class="toc-link" onclick="document.getElementById('outcome').scrollIntoView({behavior: 'smooth'})">The Outcome</a>
-                </aside>
+                <h3 style="margin-bottom: 16px;">My Approach</h3>
+                <ul style="margin-bottom: 40px; color: var(--text-secondary); list-style-type: disc; padding-left: 20px;">
+                    <li style="margin-bottom: 8px;">Conducted user interviews with 15 participants aged 18-25.</li>
+                    <li style="margin-bottom: 8px;">Analyzed key competitors to identify UX gaps.</li>
+                    <li>Proposed a "Progressive Disclosure" model.</li>
+                </ul>
 
-                <!-- Content -->
-                <div class="case-content reveal-on-scroll">
-                    <div id="challenge">
-                        <h3>The Challenge</h3>
-                        <p>Nova Financial wanted to expand their user base to include Gen Z investors. However, their legacy application was cluttered, slow, and full of financial jargon that intimidated new users. The drop-off rate during onboarding was nearly 60%.</p>
-                        <p><strong>Goal:</strong> Simplify the interface without losing advanced functionality required by power users, and increase retention by 20%.</p>
-                    </div>
-                    
-                    <div id="approach">
-                        <h3>My Approach</h3>
-                        <ul>
-                            <li><strong>Discovery:</strong> Conducted user interviews with 15 participants aged 18-25 to understand investing habits and jargon pain-points.</li>
-                            <li><strong>Audit:</strong> Analyzed key competitors (Robinhood, Revolut, Monzo) to identify UX gaps and opportunity areas.</li>
-                            <li><strong>Strategy:</strong> Proposed a "Progressive Disclosure" model where complex tools are hidden until needed.</li>
-                        </ul>
-                    </div>
-
-                    <div id="process">
-                        <h3>Process & Design</h3>
-                        <p>I started with low-fidelity wireframes focusing on a "One action per screen" philosophy for the onboarding flow. This reduced cognitive load significantly.</p>
-                        <p>For the UI, I developed a dark-mode first system to align with modern aesthetic preferences and battery saving needs. We used vibrant green accents to signal positive financial growth, but kept the rest of the palette muted.</p>
-                        
-                        <div style="margin: 40px 0;">
-                             <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200" alt="Wireframes" style="border-radius: 12px;">
-                             <p style="font-size: 0.9rem; margin-top: 12px; color: var(--text-tertiary);">High-fidelity mockups showing the progressive onboarding flow.</p>
-                        </div>
-
-                        <p>We also introduced "Nova Academy", a gamified learning hub that rewards users for learning financial literacy. This required close collaboration with the content team to ensure the design supported bite-sized learning.</p>
-                    </div>
-
-                    <div id="outcome">
-                        <h3>The Outcome</h3>
-                        <p>After a 3-month redesign and development cycle, we launched the V2 app to a test group of 10,000 users.</p>
-                        <ul>
-                            <li><strong>Retention:</strong> Day-30 retention increased by 15%, missing the 20% goal but still a massive improvement.</li>
-                            <li><strong>Onboarding:</strong> Completion rate jumped from 40% to 75%.</li>
-                            <li><strong>Feedback:</strong> Users specifically cited the "clean look" and "lack of confusion" in App Store reviews.</li>
-                        </ul>
-                        <p>This project taught me the importance of stripping away features to add value. Sometimes, less really is more.</p>
-                    </div>
-                </div>
-
-            </div>
+                <h3 style="margin-bottom: 16px;">The Outcome</h3>
+                <p style="color: var(--text-secondary);">After a 3-month redesign and development cycle, we launched the V2 app to a test group of 10,000 users. Retention increased by 15%.</p>
+             </div>
         </section>
 
       </article>
 
       <div class="section-container" style="text-align: center;">
-          <a href="/projects.html" class="btn btn-dark clickable">View Next Project</a>
+          <a href="/projects.html" class="btn btn-secondary">View Next Project</a>
       </div>
 
     </main>
 
-    <footer class="site-footer reveal-on-scroll">
-        <div style="max-width: 1400px; margin: 0 auto; padding: 0 40px;">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <h2>NRS.</h2>
-                    <p>Designing interfaces that are as functional as they are beautiful.</p>
-                </div>
-                
-                <div class="footer-col">
-                    <h4>Navigate</h4>
-                    <div class="footer-links">
-                        <a href="/index.html" class="footer-link clickable">Home</a>
-                        <a href="/projects.html" class="footer-link clickable">Case Studies</a>
-                        <a href="/about.html" class="footer-link clickable">About</a>
-                        <a href="/blog.html" class="footer-link clickable">Writing</a>
-                    </div>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Connect</h4>
-                    <div class="footer-links">
-                        <a href="https://www.linkedin.com/in/nischhal/" target="_blank" class="footer-link clickable">LinkedIn ↗</a>
-                        <a href="https://dribbble.com/Nischhal" target="_blank" class="footer-link clickable">Dribbble ↗</a>
-                        <a href="https://www.instagram.com/nischhalsubba" target="_blank" class="footer-link clickable">Instagram ↗</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <span>© 2026 Nischhal Raj Subba. All Rights Reserved.</span>
-                <span>Kathmandu, Nepal</span>
+    <footer class="site-footer">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+             <div class="footer-bottom">
+                <span>© 2026 Nischhal Raj Subba</span>
+                <span id="time-display">00:00 KTH</span>
             </div>
         </div>
     </footer>

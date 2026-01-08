@@ -1,72 +1,169 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. FAQ ACCORDION LOGIC ---
-    const faqItems = document.querySelectorAll('.faq-item');
+    // --- CONFIGURATION ---
+    const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // --- 1. CUSTOM CURSOR (Refined) ---
+    const cursorDot = document.querySelector('.custom-cursor-dot');
+    const cursorOutline = document.querySelector('.custom-cursor-outline');
     
+    if (!REDUCED_MOTION && window.matchMedia('(pointer: fine)').matches && cursorDot) {
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let outlineX = mouseX;
+        let outlineY = mouseY;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            // Dot moves instantly
+            cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+        });
+
+        // Loop for smooth outline following
+        const animateCursor = () => {
+            outlineX += (mouseX - outlineX) * 0.15;
+            outlineY += (mouseY - outlineY) * 0.15;
+            cursorOutline.style.transform = `translate(${outlineX}px, ${outlineY}px) translate(-50%, -50%)`;
+            requestAnimationFrame(animateCursor);
+        };
+        animateCursor();
+
+        // Hover states
+        const clickables = document.querySelectorAll('a, button, input, select, textarea');
+        clickables.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorOutline.style.width = '60px';
+                cursorOutline.style.height = '60px';
+                cursorOutline.style.background = 'rgba(255,255,255,0.05)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorOutline.style.width = '40px';
+                cursorOutline.style.height = '40px';
+                cursorOutline.style.background = 'transparent';
+            });
+        });
+    }
+
+    // --- 2. NAV GLIDER LOGIC ---
+    const navLinks = document.querySelectorAll('.nav-link');
+    const glider = document.querySelector('.nav-glider');
+    const navPill = document.querySelector('.nav-pill');
+
+    if (glider && navPill) {
+        function moveGlider(element) {
+            // Calculate relative position inside the nav-pill
+            const rect = element.getBoundingClientRect();
+            const parentRect = navPill.getBoundingClientRect();
+            
+            const relLeft = rect.left - parentRect.left;
+            const relTop = rect.top - parentRect.top; // Should be consistent usually
+            
+            // Animate using GSAP for smoothness
+            gsap.to(glider, {
+                x: relLeft,
+                y: relTop,
+                width: rect.width,
+                height: rect.height,
+                opacity: 1,
+                duration: 0.3,
+                ease: "power2.out"
+            });
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('mouseenter', () => moveGlider(link));
+            // On mouse leave, return to active link if it exists inside
+            link.addEventListener('mouseleave', () => {
+                const active = document.querySelector('.nav-link.active');
+                if (active) moveGlider(active);
+                else gsap.to(glider, { opacity: 0 });
+            });
+        });
+
+        // Initialize on Active
+        const initialActive = document.querySelector('.nav-link.active');
+        if (initialActive) {
+            // Small timeout to wait for layout
+            setTimeout(() => moveGlider(initialActive), 100);
+        }
+    }
+
+    // --- 3. FAQ ACCORDION ---
+    const faqItems = document.querySelectorAll('.faq-item');
     faqItems.forEach(item => {
         const trigger = item.querySelector('.faq-trigger');
-        const content = item.querySelector('.faq-content');
+        const answer = item.querySelector('.faq-answer');
         
-        trigger.addEventListener('click', () => {
+        trigger.addEventListener('click', (e) => {
+            e.preventDefault();
             const isActive = item.classList.contains('active');
             
-            // Close all others
-            faqItems.forEach(otherItem => {
-                otherItem.classList.remove('active');
-                const otherContent = otherItem.querySelector('.faq-content');
-                if(otherContent) otherContent.style.maxHeight = null;
+            // Close others
+            faqItems.forEach(other => {
+                other.classList.remove('active');
+                gsap.to(other.querySelector('.faq-answer'), { height: 0, duration: 0.3 });
             });
 
-            // Toggle current
             if (!isActive) {
                 item.classList.add('active');
-                content.style.maxHeight = content.scrollHeight + "px";
-            } else {
-                item.classList.remove('active');
-                content.style.maxHeight = null;
+                gsap.set(answer, { height: "auto" });
+                gsap.from(answer, { height: 0, duration: 0.3, ease: "power2.out" });
             }
         });
     });
 
-    // --- 2. GSAP SCROLL ANIMATIONS ---
-    if (window.gsap && window.ScrollTrigger) {
+    // --- 4. ANIMATIONS (GSAP) ---
+    if (window.gsap && window.ScrollTrigger && !REDUCED_MOTION) {
         const gsap = window.gsap;
         const ScrollTrigger = window.ScrollTrigger;
         gsap.registerPlugin(ScrollTrigger);
 
-        // Hero Fade In sequence
-        const heroElements = document.querySelectorAll(".hero-section .fade-in");
-        if(heroElements.length > 0) {
-            gsap.from(heroElements, {
-                y: 30,
-                opacity: 0,
-                duration: 1.2,
-                stagger: 0.15,
-                ease: "power3.out",
-                delay: 0.2
-            });
-        }
+        // Page Load Sequence (Hero)
+        const timeline = gsap.timeline({ defaults: { ease: "power3.out" } });
+        
+        timeline.from(".nav-wrapper", { y: -20, opacity: 0, duration: 0.8 })
+                .from(".hero-pills-row", { y: 20, opacity: 0, duration: 0.8 }, "-=0.6")
+                .from(".hero-title", { y: 40, opacity: 0, duration: 1 }, "-=0.6")
+                .from(".body-large.fade-in", { y: 20, opacity: 0, duration: 0.8 }, "-=0.8")
+                .from(".hero-actions", { y: 20, opacity: 0, duration: 0.8 }, "-=0.8");
 
-        // General Scroll Reveal
+        // Scroll Reveals
         const revealElements = document.querySelectorAll(".reveal-on-scroll");
-        revealElements.forEach((element) => {
-            gsap.fromTo(element, 
-                { y: 40, opacity: 0 },
+        revealElements.forEach(el => {
+            gsap.fromTo(el, 
+                { y: 30, opacity: 0 },
                 {
-                    y: 0,
-                    opacity: 1,
-                    duration: 1,
-                    ease: "power3.out",
+                    y: 0, opacity: 1, duration: 0.8, ease: "power2.out",
                     scrollTrigger: {
-                        trigger: element,
-                        start: "top 85%",
+                        trigger: el,
+                        start: "top 85%"
                     }
                 }
             );
         });
+
+        // Project Card Hover Effect (subtle parallax on image)
+        const cards = document.querySelectorAll('.project-card');
+        cards.forEach(card => {
+            const img = card.querySelector('img');
+            card.addEventListener('mouseenter', () => {
+                gsap.to(img, { scale: 1.05, duration: 0.5, ease: "power2.out" });
+            });
+            card.addEventListener('mouseleave', () => {
+                gsap.to(img, { scale: 1, duration: 0.5, ease: "power2.out" });
+            });
+        });
+
+    } else {
+        // Fallback: Make everything visible if reduced motion or no JS
+        document.querySelectorAll('.fade-in, .reveal-on-scroll').forEach(el => {
+            el.style.opacity = 1;
+            el.style.transform = 'none';
+        });
     }
 
-    // --- 3. TIME DISPLAY ---
+    // --- 5. TIME DISPLAY ---
     const timeDisplay = document.getElementById('time-display');
     if (timeDisplay) {
         const updateTime = () => {
@@ -76,5 +173,31 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         updateTime();
         setInterval(updateTime, 1000);
+    }
+    
+    // --- 6. FORM SUBMIT SIMULATION ---
+    const form = document.getElementById('contact-form');
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('button');
+            const originalText = btn.textContent;
+            
+            btn.textContent = "Sending...";
+            btn.style.opacity = "0.7";
+            
+            setTimeout(() => {
+                btn.textContent = "Message Sent!";
+                btn.style.background = "#ffffff";
+                btn.style.color = "#000000";
+                btn.style.opacity = "1";
+                form.reset();
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = "";
+                    btn.style.color = "";
+                }, 3000);
+            }, 1500);
+        });
     }
 });

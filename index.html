@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <!-- Styles -->
-    <link rel="stylesheet" href="style.css?v=13">
+    <link rel="stylesheet" href="style.css?v=14">
     
     <!-- Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -20,9 +20,14 @@
   </head>
   <body>
 
-    <!-- Navigation (Floating Pill) -->
-    <nav class="nav-wrapper">
-      <div class="nav-pill">
+    <!-- Custom Cursor -->
+    <div class="custom-cursor-dot"></div>
+    <div class="custom-cursor-outline"></div>
+
+    <!-- Navigation (Floating Pill with Glider) -->
+    <nav class="nav-wrapper fade-in">
+      <div class="nav-pill" id="nav-pill">
+        <div class="nav-glider"></div> <!-- Animated background -->
         <a href="/index.html" class="nav-link active">Home</a>
         <a href="/projects.html" class="nav-link">Work</a>
         <a href="/about.html" class="nav-link">About</a>
@@ -61,39 +66,35 @@
 
       </section>
 
-      <!-- 2. Selected Work (Specific Content) -->
+      <!-- 2. Selected Work -->
       <section id="work" class="section-container">
-        <div class="section-header">
+        <div class="section-header reveal-on-scroll">
           <h2 class="section-title">Selected Work</h2>
           <a href="/projects.html" class="btn btn-secondary">View All</a>
         </div>
 
         <div class="project-grid">
-           <!-- Project 1 -->
+           <!-- Project 1: MAS DataHub -->
            <a href="/project-detail.html" class="project-card reveal-on-scroll">
-               <div class="card-image-wrap">
-                   <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2400" alt="MAS DataHub">
-                   <div class="card-overlay">
-                       <span class="overlay-btn">View Case Study</span>
-                   </div>
+               <div class="card-media-wrap">
+                   <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2400" loading="lazy" alt="MAS DataHub">
+                   <div class="card-overlay"><span class="view-case-btn">View Case Study →</span></div>
                </div>
                <div class="card-content">
                    <h3>MAS DataHub</h3>
                    <div class="card-meta-line">
-                       <span>Enterprise Data Integration</span>
+                       <span>Enterprise Data</span>
                        <span>2024</span>
                        <span>Web App</span>
                    </div>
                </div>
            </a>
 
-           <!-- Project 2 -->
+           <!-- Project 2: Yarsha -->
            <a href="/project-detail.html" class="project-card reveal-on-scroll">
-                <div class="card-image-wrap">
-                    <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=1200" alt="Yarsha">
-                    <div class="card-overlay">
-                       <span class="overlay-btn">View Case Study</span>
-                   </div>
+                <div class="card-media-wrap">
+                    <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=1200" loading="lazy" alt="Yarsha">
+                    <div class="card-overlay"><span class="view-case-btn">View Case Study →</span></div>
                 </div>
                 <div class="card-content">
                     <h3>Yarsha</h3>
@@ -105,13 +106,11 @@
                 </div>
            </a>
           
-           <!-- Project 3 -->
+           <!-- Project 3: Morajaa -->
            <a href="/project-detail.html" class="project-card reveal-on-scroll">
-                <div class="card-image-wrap">
-                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200" alt="Morajaa">
-                    <div class="card-overlay">
-                       <span class="overlay-btn">View Case Study</span>
-                   </div>
+                <div class="card-media-wrap">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200" loading="lazy" alt="Morajaa">
+                    <div class="card-overlay"><span class="view-case-btn">View Case Study →</span></div>
                 </div>
                 <div class="card-content">
                     <h3>Morajaa</h3>
@@ -123,13 +122,11 @@
                 </div>
            </a>
 
-           <!-- Project 4 -->
+           <!-- Project 4: Zapp Today -->
            <a href="/project-detail.html" class="project-card reveal-on-scroll">
-                <div class="card-image-wrap">
-                    <img src="https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?q=80&w=1200" alt="Zapp Today">
-                    <div class="card-overlay">
-                       <span class="overlay-btn">View Case Study</span>
-                   </div>
+                <div class="card-media-wrap">
+                    <img src="https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?q=80&w=1200" loading="lazy" alt="Zapp Today">
+                    <div class="card-overlay"><span class="view-case-btn">View Case Study →</span></div>
                 </div>
                 <div class="card-content">
                     <h3>Zapp Today</h3>
@@ -143,8 +140,32 @@
         </div>
       </section>
 
-      <!-- 3. Metrics -->
-      <section id="metrics" class="reveal-on-scroll" style="margin-bottom: 80px;">
+      <!-- 3. Principles -->
+      <section id="principles" class="section-container reveal-on-scroll">
+        <div class="section-header">
+           <h2 class="section-title">Approach</h2>
+        </div>
+        <div class="principles-grid">
+            <div class="principle-card">
+                <svg class="principle-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/></svg>
+                <h4>Systems over Pages</h4>
+                <p class="body-large" style="font-size: 1rem; margin-top: 12px;">Building interconnected patterns that scale, not isolated screens.</p>
+            </div>
+            <div class="principle-card">
+                <svg class="principle-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                <h4>Design with Code</h4>
+                <p class="body-large" style="font-size: 1rem; margin-top: 12px;">Designs that are technically feasible and developer-friendly from day one.</p>
+            </div>
+            <div class="principle-card">
+                <svg class="principle-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <h4>Speed & Rigor</h4>
+                <p class="body-large" style="font-size: 1rem; margin-top: 12px;">Balancing rapid exploration with rigorous documentation.</p>
+            </div>
+        </div>
+      </section>
+
+      <!-- 4. Metrics -->
+      <section id="metrics" class="reveal-on-scroll">
           <div class="metrics-grid">
               <div class="metric-item">
                   <span class="metric-val">6+</span>
@@ -165,33 +186,31 @@
           </div>
       </section>
 
-      <!-- 4. Testimonials -->
+      <!-- 5. Testimonials -->
       <section id="testimonials" class="section-container">
-        <div class="section-header">
+        <div class="section-header reveal-on-scroll">
            <h2 class="section-title">Endorsements</h2>
         </div>
         
         <div class="testimonials-grid reveal-on-scroll">
-            <!-- Featured -->
-            <div class="testi-card-large">
-                <p class="quote-large">"Nischhal transformed our vague product idea into a world-class interface. His ability to balance aesthetic polish with complex functionality is rare."</p>
+            <div class="testi-card-lg">
+                <p class="quote-lg">"Nischhal transformed our vague product idea into a world-class interface. His ability to balance aesthetic polish with complex functionality is rare."</p>
                 <div class="author-block">
                     <h5>Sarah Jenkins</h5>
                     <span>CTO, Nova Financial</span>
                 </div>
             </div>
 
-            <!-- Compact Column -->
             <div class="compact-col">
-                <div class="testi-card-small">
-                    <p class="quote-small">"Saved us weeks of engineering time. The design system he built was scalable and well-documented."</p>
+                <div class="testi-card-sm">
+                    <p class="quote-sm">"Saved us weeks of engineering time. The design system he built was scalable and well-documented."</p>
                     <div class="author-block">
                         <h5>David Chen</h5>
                         <span>Product Lead, Orbit SaaS</span>
                     </div>
                 </div>
-                <div class="testi-card-small">
-                    <p class="quote-small">"Working with Nischhal felt less like hiring a freelancer and more like adding a senior partner."</p>
+                <div class="testi-card-sm">
+                    <p class="quote-sm">"Working with Nischhal felt less like hiring a freelancer and more like adding a senior partner."</p>
                     <div class="author-block">
                         <h5>Elena Rodriguez</h5>
                         <span>Founder, Ether Flow</span>
@@ -201,114 +220,128 @@
         </div>
       </section>
 
-      <!-- 5. Writing / Thoughts -->
+      <!-- 6. Writing -->
       <section id="writing" class="section-container">
-          <div class="section-header">
+          <div class="section-header reveal-on-scroll">
               <h2 class="section-title">Writing</h2>
               <a href="/blog.html" class="btn btn-secondary">Read All</a>
           </div>
           <div class="writing-grid reveal-on-scroll">
               <a href="/blog-detail.html" class="writing-card">
                   <div>
-                      <span class="w-badge">Strategy</span>
+                      <span class="badge">Strategy</span>
                       <h4 class="w-title">The future of Design Systems in 2026</h4>
                   </div>
                   <div class="w-meta">5 min read • Oct 2025</div>
               </a>
               <a href="/blog-detail.html" class="writing-card">
                   <div>
-                      <span class="w-badge">Process</span>
+                      <span class="badge">Process</span>
                       <h4 class="w-title">Bridging the gap between Design and Code</h4>
                   </div>
                   <div class="w-meta">4 min read • Sep 2025</div>
               </a>
               <a href="/blog-detail.html" class="writing-card">
                   <div>
-                      <span class="w-badge">Accessibility</span>
-                      <h4 class="w-title">Inclusive by default: A guide</h4>
+                      <span class="badge">Resources</span>
+                      <h4 class="w-title">Orbit UI Kit (Free)</h4>
                   </div>
-                  <div class="w-meta">6 min read • Aug 2025</div>
+                  <div class="w-meta">Figma Resource</div>
               </a>
           </div>
       </section>
 
-      <!-- 6. FAQ (Accordion) -->
+      <!-- 7. FAQ -->
       <section id="faq" class="section-container">
-        <div class="section-header">
+        <div class="section-header reveal-on-scroll">
            <h2 class="section-title">Common Questions</h2>
         </div>
         <div class="faq-list reveal-on-scroll">
             <div class="faq-item">
                 <button class="faq-trigger">
                     <h4>What is your typical project timeline?</h4>
-                    <div class="faq-icon"></div>
+                    <div class="icon-plus"></div>
                 </button>
-                <div class="faq-content">
-                    <div class="faq-inner">
-                        Most end-to-end product design projects take between 4-8 weeks. Design system projects vary based on complexity but typically start at 6 weeks for a comprehensive v1 release.
-                    </div>
+                <div class="faq-answer">
+                    <p>Most end-to-end product design projects take between 4-8 weeks. Design system projects vary based on complexity but typically start at 6 weeks for a comprehensive v1 release.</p>
                 </div>
             </div>
             <div class="faq-item">
                 <button class="faq-trigger">
                     <h4>Do you handle development?</h4>
-                    <div class="faq-icon"></div>
+                    <div class="icon-plus"></div>
                 </button>
-                <div class="faq-content">
-                    <div class="faq-inner">
-                        My core expertise is design. However, I am proficient in HTML/CSS and Webflow for marketing sites. For complex web apps, I partner with trusted engineering teams or work alongside your in-house developers.
-                    </div>
+                <div class="faq-answer">
+                    <p>My core expertise is design. However, I am proficient in HTML/CSS and Webflow for marketing sites. For complex web apps, I partner with trusted engineering teams or work alongside your in-house developers.</p>
                 </div>
             </div>
             <div class="faq-item">
                 <button class="faq-trigger">
                     <h4>How do you handle revisions?</h4>
-                    <div class="faq-icon"></div>
+                    <div class="icon-plus"></div>
                 </button>
-                <div class="faq-content">
-                    <div class="faq-inner">
-                        I work in weekly sprints with frequent check-ins, which minimizes the need for massive "revisions" at the end. Feedback is incorporated continuously throughout the process.
-                    </div>
+                <div class="faq-answer">
+                    <p>I work in weekly sprints with frequent check-ins, which minimizes the need for massive "revisions" at the end. Feedback is incorporated continuously throughout the process.</p>
                 </div>
             </div>
         </div>
       </section>
 
-      <!-- 7. Contact -->
-      <section id="contact" class="section-container" style="text-align: center; padding-bottom: 120px;">
-          <h2 class="section-title" style="font-size: 3rem; margin-bottom: 24px;">Ready to build?</h2>
-          <p class="body-large" style="margin: 0 auto 40px auto;">
-              I'm currently opening my schedule for Q1 2026. Let's discuss your product goals.
-          </p>
-          <a href="mailto:hello@nischhal.design" class="btn btn-primary">hello@nischhal.design</a>
+      <!-- 8. Contact -->
+      <section id="contact" class="section-container" style="padding-bottom: 120px;">
+          <div class="contact-container reveal-on-scroll">
+              <h2 class="section-title" style="text-align: center; margin-bottom: 16px;">Let's build something refined.</h2>
+              <p class="body-large" style="text-align: center; margin-bottom: 48px;">I'm opening my schedule for Q1 2026.</p>
+              
+              <form id="contact-form">
+                  <div class="form-group">
+                      <label class="form-label">Name</label>
+                      <input type="text" class="form-input" placeholder="Your name" required>
+                  </div>
+                  <div class="form-group">
+                      <label class="form-label">Email</label>
+                      <input type="email" class="form-input" placeholder="name@example.com" required>
+                  </div>
+                  <div class="form-group">
+                      <label class="form-label">Project Type</label>
+                      <select class="form-select" required>
+                          <option value="" disabled selected>Select an option</option>
+                          <option value="ds">Design System</option>
+                          <option value="product">Product Design</option>
+                          <option value="web3">Web3 / DeFi</option>
+                      </select>
+                  </div>
+                  <div class="form-group">
+                      <label class="form-label">Message</label>
+                      <textarea class="form-textarea" rows="4" placeholder="How can I help?" required></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+              </form>
+          </div>
       </section>
 
     </main>
 
     <!-- Footer -->
-    <footer class="site-footer">
+    <footer class="site-footer reveal-on-scroll">
         <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
-            <div class="footer-inner">
-                <div class="footer-group">
-                    <h5 style="font-size: 1.25rem; font-family: var(--font-serif);">NRS.</h5>
-                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Kathmandu, Nepal</p>
+            <div class="footer-grid">
+                <div>
+                    <h5 style="font-size: 1.25rem; font-family: var(--font-serif); margin-bottom: 12px;">NRS.</h5>
+                    <p class="body-large" style="font-size: 0.9rem;">Kathmandu, Nepal</p>
                 </div>
-                
-                <div class="footer-group">
-                    <h5>Sitemap</h5>
+                <div>
                     <a href="/index.html" class="footer-link">Home</a>
                     <a href="/projects.html" class="footer-link">Work</a>
                     <a href="/about.html" class="footer-link">About</a>
                 </div>
-
-                <div class="footer-group">
-                    <h5>Socials</h5>
-                    <a href="https://linkedin.com" class="footer-link">LinkedIn ↗</a>
-                    <a href="https://dribbble.com" class="footer-link">Dribbble ↗</a>
-                    <a href="https://instagram.com" class="footer-link">Instagram ↗</a>
+                <div>
+                    <a href="https://linkedin.com" target="_blank" class="footer-link">LinkedIn ↗</a>
+                    <a href="https://dribbble.com" target="_blank" class="footer-link">Dribbble ↗</a>
+                    <a href="mailto:hello@nischhal.design" class="footer-link">Email ↗</a>
                 </div>
             </div>
-            <div style="margin-top: 60px; pt: 20px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; color: var(--text-tertiary); font-size: 0.8rem;">
+            <div class="footer-bottom">
                 <span>© 2026 Nischhal Raj Subba</span>
                 <span id="time-display">00:00 KTH</span>
             </div>

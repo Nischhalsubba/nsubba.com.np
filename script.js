@@ -39,10 +39,13 @@ const navItems = document.querySelectorAll(".nav-item");
 
 window.addEventListener("scroll", () => {
     let current = "";
+    const scrollY = window.pageYOffset;
+    
     sections.forEach((section) => {
         const sectionTop = section.offsetTop;
         const sectionHeight = section.clientHeight;
-        if (pageYOffset >= sectionTop - sectionHeight / 3) {
+        // Logic: if we have scrolled past the top - 1/3 of screen
+        if (scrollY >= sectionTop - window.innerHeight / 3) {
             current = section.getAttribute("id");
         }
     });

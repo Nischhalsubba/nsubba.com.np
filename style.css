@@ -1,7 +1,7 @@
 /* 
   STYLE.CSS
   Standard CSS 3
-  Formatted for readability and ease of editing.
+  Designed to be "Easy to Edit" - Change variables in ROOT to update the site.
 */
 
 /* --- 1. TOKENS (Variables) --- */
@@ -15,7 +15,7 @@
   --text-secondary: #999999;
   
   /* Accents */
-  --accent-green: #C9E2B8; /* Pale Green from screenshot */
+  --accent-green: #C9E2B8; /* Pale Green */
   --accent-green-hover: #b4d1a1;
   --accent-dark: #222222;
   --accent-dark-hover: #333333;
@@ -33,7 +33,6 @@
   --radius-lg: 24px;
   --radius-md: 12px;
   --radius-pill: 999px;
-  --header-height: 80px;
 }
 
 /* --- 2. RESET & BASE --- */
@@ -96,6 +95,15 @@ h1, h2, h3, h4 {
   color: var(--text-secondary);
 }
 
+.font-serif {
+    font-family: var(--font-serif);
+}
+
+.text-2xl { font-size: 1.5rem; }
+.text-3xl { font-size: 2rem; }
+.font-bold { font-weight: 700; }
+.ml-3 { margin-left: 12px; }
+
 /* --- 4. NAVIGATION DOCK --- */
 .nav-dock {
   position: fixed;
@@ -105,7 +113,7 @@ h1, h2, h3, h4 {
   display: flex;
   justify-content: center;
   z-index: 1000;
-  pointer-events: none; /* Allows clicking through the empty space */
+  pointer-events: none;
 }
 
 .nav-dock-inner {
@@ -153,10 +161,10 @@ h1, h2, h3, h4 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 16px 36px;
+  padding: 14px 32px;
   border-radius: var(--radius-pill);
-  font-weight: 500;
-  font-size: 15px;
+  font-weight: 600;
+  font-size: 14px;
   letter-spacing: 0.01em;
   transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
   cursor: pointer;
@@ -190,19 +198,18 @@ h1, h2, h3, h4 {
 
 .pill {
   font-size: 12px;
-  padding: 8px 20px;
+  padding: 8px 16px;
   border-radius: var(--radius-pill);
   background: var(--accent-dark);
   color: var(--text-secondary);
   border: 1px solid var(--border-subtle);
-  text-transform: capitalize;
-  letter-spacing: 0.02em;
+  font-weight: 500;
 }
 
 .btn-pill-white {
   background: white;
   color: black;
-  padding: 10px 20px;
+  padding: 12px 24px;
   border-radius: var(--radius-pill);
   font-weight: 600;
   font-size: 14px;
@@ -226,7 +233,7 @@ main {
 }
 
 .section-container {
-  padding: 120px 0;
+  padding: 100px 0;
 }
 
 .section-header {
@@ -255,14 +262,17 @@ main {
 .link-subtle {
   font-size: 0.95rem;
   color: var(--text-secondary);
-  border-bottom: 1px solid transparent;
-  padding-bottom: 2px;
 }
 
 .link-subtle:hover {
   color: var(--text-primary);
-  border-bottom-color: var(--border-focus);
 }
+
+.spacer-80 {
+    height: 80px;
+}
+
+.mt-4 { margin-top: 16px; }
 
 /* --- 7. HERO SECTION --- */
 .hero-section {
@@ -285,8 +295,8 @@ main {
 
 .hero-title {
   font-size: clamp(3.5rem, 8vw, 6.5rem);
-  line-height: 1;
-  letter-spacing: -0.04em;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
   margin-bottom: 32px;
 }
 
@@ -311,25 +321,21 @@ main {
 .hero-image-wrapper {
   width: 100%;
   max-width: 600px;
-  height: 600px;
   position: relative;
-  /* Use mask to fade bottom */
   mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
 }
 
 .hero-img {
   width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: bottom;
-  opacity: 0.9;
+  height: auto;
+  opacity: 0.85;
 }
 
 /* --- 8. PROJECT GRID --- */
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 40px;
 }
 
@@ -341,6 +347,11 @@ main {
 
 .project-card {
   cursor: pointer;
+  display: block;
+}
+
+.project-card.large .card-media {
+    aspect-ratio: 16/9;
 }
 
 .card-media {
@@ -348,7 +359,6 @@ main {
   border-radius: var(--radius-lg);
   overflow: hidden;
   aspect-ratio: 16/11;
-  margin-bottom: 24px;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   transition: border-color 0.3s;
@@ -363,31 +373,43 @@ main {
   height: 100%;
   object-fit: cover;
   transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s;
-  opacity: 0.85;
+  opacity: 0.8;
 }
 
 .project-card:hover .card-media img {
   transform: scale(1.05);
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 .card-badge {
   position: absolute;
   top: 20px;
   right: 20px;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.4);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   padding: 8px 16px;
   border-radius: var(--radius-pill);
   font-size: 12px;
-  font-weight: 500;
   color: white;
   border: 1px solid rgba(255,255,255,0.1);
   z-index: 2;
 }
 
-.card-logo-overlay {
+.card-price {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    padding: 8px 16px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+    z-index: 2;
+}
+
+.card-center-logo {
   position: absolute;
   inset: 0;
   display: flex;
@@ -395,17 +417,18 @@ main {
   justify-content: center;
   opacity: 0;
   transition: opacity 0.4s ease;
-  background: rgba(0,0,0,0.2);
   z-index: 1;
+  text-align: center;
 }
 
-.project-card:hover .card-logo-overlay {
+/* Digital goods or large cards show logo on hover */
+.project-card:hover .card-center-logo {
   opacity: 1;
 }
 
 .card-content h3 {
-  font-size: 1.75rem;
-  margin-bottom: 8px;
+  font-size: 1.5rem;
+  margin-bottom: 6px;
 }
 
 .card-content p {
@@ -430,12 +453,12 @@ main {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  padding: 48px;
+  padding: 40px;
   transition: background-color 0.3s, border-color 0.3s;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 300px;
+  min-height: 280px;
 }
 
 .solution-card:hover {
@@ -451,16 +474,16 @@ main {
 }
 
 .sol-num {
-  font-family: var(--font-sans); /* Changed to Sans for cleaner look in corner */
-  font-size: 1.25rem;
+  font-family: var(--font-sans); 
+  font-size: 1.2rem;
   color: var(--text-secondary);
   opacity: 0.5;
 }
 
 .sol-icon {
   color: var(--accent-green);
-  background: rgba(201, 226, 184, 0.05);
-  padding: 14px;
+  background: rgba(201, 226, 184, 0.08);
+  padding: 12px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -468,7 +491,7 @@ main {
 }
 
 .sol-body h3 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   margin-bottom: 12px;
 }
 
@@ -478,7 +501,29 @@ main {
   line-height: 1.6;
 }
 
-/* --- 10. BLOG LIST --- */
+/* --- 10. CLIENT LOGO WALL --- */
+.logo-wall {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    padding: 60px 0;
+    opacity: 0.5;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.client-logo {
+    height: 30px;
+    filter: invert(1) grayscale(1);
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.client-logo:hover {
+    opacity: 1;
+}
+
+/* --- 11. BLOG LIST --- */
 .blog-list {
   display: flex;
   flex-direction: column;
@@ -534,7 +579,134 @@ main {
   opacity: 1;
 }
 
-/* --- 11. FOOTER --- */
+/* --- 12. TESTIMONIALS --- */
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+@media (max-width: 768px) {
+    .testimonials-grid { grid-template-columns: 1fr; }
+}
+
+.testi-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+}
+
+.testi-user {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.testi-user img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.testi-user h4 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.testi-user span {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.inline-icon {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+/* --- 13. PRICING --- */
+.pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+@media (max-width: 768px) {
+    .pricing-grid { grid-template-columns: 1fr; }
+}
+
+.pricing-card {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.pricing-header h3 {
+    font-family: var(--font-sans);
+    font-size: 1.25rem;
+    margin-bottom: 12px;
+}
+
+.pricing-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: 32px;
+}
+
+.price-tag {
+    margin-bottom: 32px;
+}
+
+.price-tag .label {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.price-tag .amount {
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+}
+
+.price-tag .period {
+    color: var(--text-secondary);
+}
+
+.full-width {
+    width: 100%;
+    margin-bottom: 32px;
+}
+
+.pricing-features {
+    list-style: none;
+    padding: 0;
+}
+
+.pricing-features li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.pricing-features li svg {
+    width: 18px;
+    height: 18px;
+    color: var(--accent-green);
+}
+
+/* --- 14. FOOTER --- */
 .site-footer {
   padding-top: 80px;
   padding-bottom: 40px;
@@ -572,7 +744,7 @@ main {
 .footer-links-grid {
   display: flex;
   justify-content: center;
-  gap: 120px;
+  gap: 100px;
   text-align: left;
   margin-bottom: 80px;
 }
@@ -620,7 +792,7 @@ main {
   margin: 0 auto;
 }
 
-/* --- 12. FLOATING RESUME --- */
+/* --- 15. FLOATING CTA --- */
 .floating-cta {
   position: fixed;
   bottom: 32px;
@@ -628,7 +800,7 @@ main {
   z-index: 900;
 }
 
-/* --- 13. UTILITIES --- */
+/* --- 16. UTILITIES --- */
 .fade-in {
   opacity: 0;
   transform: translateY(20px);

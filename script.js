@@ -101,22 +101,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 4. NAVIGATION ACTIVE STATE ---
     const navLinks = document.querySelectorAll('.nav-link');
-    const currentPath = window.location.pathname;
-    
+    const currentPath = window.location.pathname; // e.g., "/" or "/index.html" or "/projects.html"
+
     navLinks.forEach(link => {
         link.classList.remove('active');
-        const href = link.getAttribute('href').replace('./', '');
+        const href = link.getAttribute('href'); // e.g. "index.html", "projects.html"
         
-        // Exact match or home logic
-        if (currentPath.endsWith(href) || (href === 'index.html' && (currentPath === '/' || currentPath === ''))) {
+        // Strict match logic for flat file structure
+        let isActive = false;
+
+        // Clean href to just filename
+        const cleanHref = href.split('#')[0]; // remove hash if present
+
+        if (cleanHref === 'index.html') {
+             // Home matches "/" or "/index.html"
+             if (currentPath === '/' || currentPath.endsWith('/index.html') || currentPath.endsWith('/')) {
+                 isActive = true;
+             }
+        } else if (cleanHref) {
+             // Other pages match if path ends with filename
+             if (currentPath.endsWith(cleanHref)) {
+                 isActive = true;
+             }
+        }
+
+        if (isActive) {
             link.classList.add('active');
         }
         
-        // Hash link logic (if on same page)
-        if(href.startsWith('#')) {
-             link.addEventListener('click', () => {
-                 navLinks.forEach(l => l.classList.remove('active'));
-                 link.classList.add('active');
+        // Hash link logic for smooth scrolling
+        if(href.includes('#')) {
+             link.addEventListener('click', (e) => {
+                 // Only prevent default if we are on the same page
+                 const targetId = href.split('#')[1];
+                 const targetEl = document.getElementById(targetId);
+                 if(targetEl) {
+                     navLinks.forEach(l => l.classList.remove('active'));
+                     link.classList.add('active');
+                 }
              });
         }
     });

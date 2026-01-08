@@ -14,10 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
         gsap.registerPlugin(ScrollTrigger);
 
         // 1. Hero Animations
+        // We use .from() so the elements start at opacity 1 in CSS (visible)
+        // and GSAP snaps them to 0 immediately and animates to 1.
         const tl = gsap.timeline();
-        tl.to(".fade-in", {
-            y: 0,
-            opacity: 1,
+        tl.from(".fade-in", {
+            y: 30,
+            opacity: 0,
             duration: 1,
             stagger: 0.2,
             ease: "power3.out"
@@ -26,15 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // 2. Scroll Reveals
         const revealElements = document.querySelectorAll(".reveal-on-scroll");
         revealElements.forEach((element) => {
-            gsap.to(element, {
+            gsap.from(element, {
                 scrollTrigger: {
                     trigger: element,
                     start: "top 85%",
                     toggleActions: "play none none reverse"
                 },
-                y: 0,
-                opacity: 1,
-                duration: 0.8,
+                y: 40,
+                opacity: 0,
+                duration: 1,
                 ease: "power2.out"
             });
         });

@@ -143,13 +143,14 @@ h1, h2, h3, h4 {
 
 .nav-dock-inner {
   pointer-events: auto;
-  background: rgba(20, 20, 20, 0.8);
+  background: rgba(20, 20, 20, 0.9); /* Increased opacity for visibility */
   backdrop-filter: blur(12px);
   padding: 6px 8px;
   border-radius: 999px;
   display: flex;
   gap: 4px;
   border: 1px solid var(--border-subtle);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.8);
 }
 
 .nav-item {
@@ -163,7 +164,7 @@ h1, h2, h3, h4 {
 }
 
 .nav-item:hover, .nav-item.active {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.15);
   color: white;
 }
 
@@ -513,8 +514,17 @@ main {
   z-index: 90;
 }
 
-.fade-in { opacity: 0; transform: translateY(20px); }
-.reveal-on-scroll { opacity: 0; transform: translateY(30px); }
+/* 
+   IMPORTANT: These classes now DO NOT hide elements by default.
+   We rely on GSAP to set initial opacity: 0 via .from()
+*/
+.fade-in { 
+    visibility: visible;
+}
+.reveal-on-scroll { 
+    visibility: visible;
+}
+
 .spacer-80 { height: 80px; }
 .mt-4 { margin-top: 16px; }
 

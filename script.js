@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     animateCursor();
 
     // Hover Scaling logic
-    const clickables = document.querySelectorAll('a, button, input, textarea, .clickable');
+    const clickables = document.querySelectorAll('a, button, input, textarea, select, .clickable');
     clickables.forEach(el => {
         el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
         el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
@@ -60,8 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const ScrollTrigger = window.ScrollTrigger;
         gsap.registerPlugin(ScrollTrigger);
 
-        // Hero Fade In - Using .from() ensures elements are visible by default if JS fails
-        // and only jump to hidden state when animation starts.
+        // Hero Fade In
         gsap.from(".fade-in", {
             y: 50,
             opacity: 0,
@@ -101,25 +100,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 4. NAVIGATION ACTIVE STATE ---
     const navLinks = document.querySelectorAll('.nav-link');
-    const currentPath = window.location.pathname; // e.g., "/" or "/index.html" or "/projects.html"
+    const currentPath = window.location.pathname;
 
     navLinks.forEach(link => {
         link.classList.remove('active');
-        const href = link.getAttribute('href'); // e.g. "index.html", "projects.html"
-        
-        // Strict match logic for flat file structure
+        const href = link.getAttribute('href');
         let isActive = false;
-
-        // Clean href to just filename
-        const cleanHref = href.split('#')[0]; // remove hash if present
+        const cleanHref = href.split('#')[0]; 
 
         if (cleanHref === 'index.html') {
-             // Home matches "/" or "/index.html"
              if (currentPath === '/' || currentPath.endsWith('/index.html') || currentPath.endsWith('/')) {
                  isActive = true;
              }
         } else if (cleanHref) {
-             // Other pages match if path ends with filename
              if (currentPath.endsWith(cleanHref)) {
                  isActive = true;
              }
@@ -129,10 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
             link.classList.add('active');
         }
         
-        // Hash link logic for smooth scrolling
         if(href.includes('#')) {
              link.addEventListener('click', (e) => {
-                 // Only prevent default if we are on the same page
                  const targetId = href.split('#')[1];
                  const targetEl = document.getElementById(targetId);
                  if(targetEl) {
@@ -142,5 +133,67 @@ document.addEventListener('DOMContentLoaded', () => {
              });
         }
     });
+
+    // --- 5. TESTIMONIAL CAROUSEL ---
+    const slides = document.querySelectorAll('.testimonial-slide');
+    if (slides.length > 0) {
+        let currentSlide = 0;
+        const dots = document.querySelectorAll('.t-dot');
+        const totalSlides = slides.length;
+        let slideInterval;
+
+        const showSlide = (index) => {
+            slides.forEach(s => s.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+            
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+        };
+
+        const startSlideTimer = () => {
+            slideInterval = setInterval(() => {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                showSlide(currentSlide);
+            }, 6000); 
+        };
+
+        dots.forEach((dot) => {
+            dot.addEventListener('click', (e) => {
+                clearInterval(slideInterval);
+                const index = parseInt(e.target.getAttribute('data-index'));
+                currentSlide = index;
+                showSlide(currentSlide);
+                startSlideTimer();
+            });
+        });
+
+        startSlideTimer();
+    }
+
+    // --- 6. CASE STUDY SIDEBAR SCROLL SPY ---
+    const tocLinks = document.querySelectorAll('.toc-link');
+    if (tocLinks.length > 0) {
+        window.addEventListener('scroll', () => {
+            let current = "";
+            const sections = ['challenge', 'approach', 'process', 'outcome'];
+            
+            sections.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    const top = el.offsetTop;
+                    if (window.scrollY >= top - 200) {
+                        current = id;
+                    }
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('onclick').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    }
 
 });

@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=10">
+    <link rel="stylesheet" href="style.css?v=11">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -66,29 +66,63 @@
              <img src="https://images.unsplash.com/photo-1614850523060-8da1d56ae167?q=80&w=2000" alt="Nova App Hero Image" style="border-radius: 20px;">
         </section>
 
+        <!-- New Case Study Layout with Sidebar -->
         <section class="section-container">
-            <div class="prose reveal-on-scroll" style="max-width: 720px; margin: 0 auto;">
-                <h3>The Challenge</h3>
-                <p>Nova Financial wanted to expand their user base to include Gen Z investors. However, their legacy application was cluttered, slow, and full of financial jargon that intimidated new users. The goal was to simplify the interface without losing advanced functionality required by power users.</p>
+            <div class="case-study-grid">
                 
-                <h3>My Approach</h3>
-                <ul>
-                    <li><strong>Research:</strong> Conducted user interviews with 15 participants aged 18-25 to understand investing habits.</li>
-                    <li><strong>Audit:</strong> Analyzed key competitors (Robinhood, Revolut, Monzo) to identify UX gaps.</li>
-                    <li><strong>Wireframing:</strong> Created low-fidelity wireframes focusing on a "One action per screen" philosophy.</li>
-                    <li><strong>UI Design:</strong> Developed a dark-mode first system to align with modern aesthetic preferences and battery saving needs.</li>
-                </ul>
+                <!-- Sticky Sidebar -->
+                <aside class="case-sidebar reveal-on-scroll">
+                    <a class="toc-link active" onclick="document.getElementById('challenge').scrollIntoView({behavior: 'smooth'})">The Challenge</a>
+                    <a class="toc-link" onclick="document.getElementById('approach').scrollIntoView({behavior: 'smooth'})">My Approach</a>
+                    <a class="toc-link" onclick="document.getElementById('process').scrollIntoView({behavior: 'smooth'})">Process & Design</a>
+                    <a class="toc-link" onclick="document.getElementById('outcome').scrollIntoView({behavior: 'smooth'})">The Outcome</a>
+                </aside>
 
-                <h3>The Solution</h3>
-                <p>I designed a dashboard that prioritizes net worth visualization and quick actions. We moved complex trading tools to a secondary layer, keeping the primary interface clean. We also introduced "Nova Academy", a gamified learning hub that rewards users for learning financial literacy.</p>
+                <!-- Content -->
+                <div class="case-content reveal-on-scroll">
+                    <div id="challenge">
+                        <h3>The Challenge</h3>
+                        <p>Nova Financial wanted to expand their user base to include Gen Z investors. However, their legacy application was cluttered, slow, and full of financial jargon that intimidated new users. The drop-off rate during onboarding was nearly 60%.</p>
+                        <p><strong>Goal:</strong> Simplify the interface without losing advanced functionality required by power users, and increase retention by 20%.</p>
+                    </div>
+                    
+                    <div id="approach">
+                        <h3>My Approach</h3>
+                        <ul>
+                            <li><strong>Discovery:</strong> Conducted user interviews with 15 participants aged 18-25 to understand investing habits and jargon pain-points.</li>
+                            <li><strong>Audit:</strong> Analyzed key competitors (Robinhood, Revolut, Monzo) to identify UX gaps and opportunity areas.</li>
+                            <li><strong>Strategy:</strong> Proposed a "Progressive Disclosure" model where complex tools are hidden until needed.</li>
+                        </ul>
+                    </div>
+
+                    <div id="process">
+                        <h3>Process & Design</h3>
+                        <p>I started with low-fidelity wireframes focusing on a "One action per screen" philosophy for the onboarding flow. This reduced cognitive load significantly.</p>
+                        <p>For the UI, I developed a dark-mode first system to align with modern aesthetic preferences and battery saving needs. We used vibrant green accents to signal positive financial growth, but kept the rest of the palette muted.</p>
+                        
+                        <div style="margin: 40px 0;">
+                             <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200" alt="Wireframes" style="border-radius: 12px;">
+                             <p style="font-size: 0.9rem; margin-top: 12px; color: var(--text-tertiary);">High-fidelity mockups showing the progressive onboarding flow.</p>
+                        </div>
+
+                        <p>We also introduced "Nova Academy", a gamified learning hub that rewards users for learning financial literacy. This required close collaboration with the content team to ensure the design supported bite-sized learning.</p>
+                    </div>
+
+                    <div id="outcome">
+                        <h3>The Outcome</h3>
+                        <p>After a 3-month redesign and development cycle, we launched the V2 app to a test group of 10,000 users.</p>
+                        <ul>
+                            <li><strong>Retention:</strong> Day-30 retention increased by 15%, missing the 20% goal but still a massive improvement.</li>
+                            <li><strong>Onboarding:</strong> Completion rate jumped from 40% to 75%.</li>
+                            <li><strong>Feedback:</strong> Users specifically cited the "clean look" and "lack of confusion" in App Store reviews.</li>
+                        </ul>
+                        <p>This project taught me the importance of stripping away features to add value. Sometimes, less really is more.</p>
+                    </div>
+                </div>
+
             </div>
         </section>
 
-        <section class="section-container">
-            <div class="reveal-on-scroll" style="margin: 0 auto; max-width: 1000px;">
-                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000" alt="Nova App Interface Mockups" style="border-radius: 20px;">
-            </div>
-        </section>
       </article>
 
       <div class="section-container" style="text-align: center;">

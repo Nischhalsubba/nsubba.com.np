@@ -1,7 +1,7 @@
 /* 
   STYLE.CSS
   Refined Premium Dark Theme
-  v5.2 - Other Cases Redesign & Home CTA
+  v5.4 - Ticker Animation & Hero Colors
 */
 
 /* --- 1. DESIGN TOKENS --- */
@@ -99,10 +99,19 @@ h1, h2, h3, h4, h5 {
   letter-spacing: -0.02em;
 }
 
+/* Updated Hero Title - Two Tone Color */
 .hero-title {
   font-size: clamp(3.5rem, 8vw, 5.5rem);
   line-height: 1.05;
   margin-bottom: 32px;
+  color: rgba(255, 255, 255, 0.4); /* Dimmed first line */
+  font-style: normal; /* Keep regular styling for first line */
+}
+
+.hero-highlight {
+    color: #FFFFFF; /* Bright white second line */
+    font-style: italic; /* Keep the italic accent */
+    display: block; /* Ensure breaks cleanly */
 }
 
 /* Title Scroll Reveal Effect */
@@ -142,7 +151,46 @@ h1, h2, h3, h4, h5 {
 
 .body-large { font-size: 1.15rem; line-height: 1.6; color: var(--text-secondary); max-width: 60ch; }
 
-/* --- 4. NAVIGATION --- */
+/* --- 4. TICKER ANIMATION (Infinite Pills) --- */
+.ticker-wrap {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  margin-bottom: 48px;
+  max-width: 800px; /* Constrain width so it looks like pill cluster */
+  /* Gradient mask for fade out edges */
+  mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+}
+
+.ticker {
+  display: inline-flex;
+  gap: 12px;
+  animation: ticker-scroll 30s linear infinite;
+  padding-left: 100%; /* Start off screen */
+}
+
+.ticker-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 24px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+  user-select: none;
+}
+
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+/* --- 5. NAVIGATION --- */
 .nav-wrapper {
   position: fixed; top: 24px; left: 0; right: 0;
   display: flex; justify-content: center;
@@ -163,7 +211,7 @@ h1, h2, h3, h4, h5 {
   background: rgba(255, 255, 255, 0.1); border-radius: 9999px; z-index: 1; pointer-events: none; opacity: 0;
 }
 
-/* --- 5. CUSTOM CURSOR (Fixed) --- */
+/* --- 6. CUSTOM CURSOR (Fixed) --- */
 .custom-cursor-dot {
     position: fixed; top: 0; left: 0; width: 10px; height: 10px;
     background-color: white; border-radius: 50%;
@@ -183,7 +231,7 @@ h1, h2, h3, h4, h5 {
     mix-blend-mode: difference;
 }
 
-/* --- 6. BUTTONS & UI --- */
+/* --- 7. BUTTONS & UI --- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
   padding: 14px 28px; border-radius: 9999px;
@@ -204,7 +252,7 @@ h1, h2, h3, h4, h5 {
 }
 .floating-resume-btn:hover { background: var(--text-primary); color: #000; transform: translateY(-4px); }
 
-/* --- 7. HERO & PORTRAIT --- */
+/* --- 8. HERO & PORTRAIT --- */
 .hero-section {
   position: relative; min-height: 100vh;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -227,7 +275,7 @@ h1, h2, h3, h4, h5 {
     transform: scale(1.02);
 }
 
-/* --- 8. PROJECT WORK LAYOUT --- */
+/* --- 9. PROJECT WORK LAYOUT --- */
 .section-header-row {
   display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 24px;
 }
@@ -254,7 +302,7 @@ h1, h2, h3, h4, h5 {
 .card-content h3 { font-size: 1.8rem; margin-bottom: 8px; color: var(--text-primary); }
 .card-meta-line { display: flex; gap: 12px; color: var(--text-secondary); font-size: 1rem; }
 
-/* --- 9. WRITING LIST --- */
+/* --- 10. WRITING LIST --- */
 .writing-list { 
     display: flex; flex-direction: column; 
     border-top: 1px solid var(--border-faint); 
@@ -296,7 +344,7 @@ h1, h2, h3, h4, h5 {
 .writing-item:hover .w-arrow { opacity: 1; transform: translateX(0); }
 .writing-item.hidden { display: none; }
 
-/* --- 10. FOOTER --- */
+/* --- 11. FOOTER --- */
 .site-footer {
   border-top: 1px solid var(--border-faint);
   background: #000;
@@ -331,7 +379,7 @@ h1, h2, h3, h4, h5 {
 }
 .social-icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
 
-/* --- 11. ABOUT PAGE STYLES --- */
+/* --- 12. ABOUT PAGE STYLES --- */
 .about-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 80px; align-items: start; }
 .about-bio h3 { font-size: 2rem; margin-bottom: 24px; }
 .about-bio p { color: var(--text-secondary); margin-bottom: 24px; font-size: 1.1rem; }
@@ -380,7 +428,7 @@ h1, h2, h3, h4, h5 {
 .edu-school { font-size: 1rem; color: var(--text-secondary); }
 .edu-year { font-size: 0.9rem; color: var(--text-tertiary); }
 
-/* --- 12. CONTACT PAGE STYLES --- */
+/* --- 13. CONTACT PAGE STYLES --- */
 .contact-split { display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; }
 .contact-detail-group { margin-bottom: 40px; }
 .contact-detail-label { display: block; font-size: 0.8rem; text-transform: uppercase; color: var(--text-tertiary); letter-spacing: 0.05em; margin-bottom: 8px; }
@@ -394,7 +442,7 @@ h1, h2, h3, h4, h5 {
 }
 .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--text-primary); }
 
-/* --- 13. TESTIMONIALS & ARROWS --- */
+/* --- 14. TESTIMONIALS & ARROWS --- */
 .testimonial-section { position: relative; overflow: hidden; padding: 0 0 100px; }
 .t-track { display: flex; transition: transform 0.5s ease; width: 100%; }
 .t-slide { min-width: 100%; padding: 0 10%; text-align: center; opacity: 0.4; transform: scale(0.95); transition: all 0.5s; }
@@ -420,7 +468,7 @@ h1, h2, h3, h4, h5 {
 .t-btn svg { width: 24px; height: 24px; fill: currentColor; }
 .t-btn:hover { background: var(--text-primary); color: #000; border-color: var(--text-primary); transform: scale(1.1); }
 
-/* --- 14. OTHER CASES (Redesigned - Halo/Atlas Style) --- */
+/* --- 15. OTHER CASES (Redesigned - Halo/Atlas Style) --- */
 .other-cases-section {
     margin-top: 120px;
     padding-bottom: 80px;
@@ -571,7 +619,7 @@ h1, h2, h3, h4, h5 {
     font-family: var(--font-sans);
 }
 
-/* --- 15. HOME CTA SECTION --- */
+/* --- 16. HOME CTA SECTION --- */
 .home-cta-section {
     padding: 140px 0 100px;
     text-align: center;

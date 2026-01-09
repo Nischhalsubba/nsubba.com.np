@@ -1,7 +1,7 @@
 /* 
   STYLE.CSS
   Refined Premium Theme (Dark/Light)
-  v6.0 - Theming & SEO
+  v6.1 - Cursor Fix & Light Mode Image Support
 */
 
 /* --- 1. DESIGN TOKENS --- */
@@ -52,14 +52,14 @@
 
 /* --- LIGHT THEME OVERRIDES --- */
 [data-theme="light"] {
-  --bg-root: #FAFAFA;
-  --bg-surface: #FFFFFF;
-  --bg-card: #F0F0F0;
+  --bg-root: #FFFFFF; /* Pure white for cleaner look */
+  --bg-surface: #F3F4F6;
+  --bg-card: #FFFFFF;
   --bg-nav: rgba(255, 255, 255, 0.85);
   
-  --text-primary: #111111;
-  --text-secondary: #555555;
-  --text-tertiary: #999999;
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+  --text-tertiary: #9CA3AF;
   
   --border-faint: rgba(0, 0, 0, 0.08);
   --border-light: rgba(0, 0, 0, 0.15);
@@ -290,21 +290,23 @@ h1, h2, h3, h4, h5 {
 /* --- 6. CUSTOM CURSOR --- */
 .custom-cursor-dot {
     position: fixed; top: 0; left: 0; width: 10px; height: 10px;
-    background-color: var(--text-primary); border-radius: 50%;
+    background-color: white; /* Always white so difference blend mode works on both BGs */
+    border-radius: 50%;
     pointer-events: none; z-index: var(--z-cursor);
     transform: translate(-50%, -50%); 
     mix-blend-mode: difference;
-    transition: background-color 0.3s;
+    transition: transform 0.1s;
 }
 
 .custom-cursor-outline {
     position: fixed; top: 0; left: 0; width: 40px; height: 40px;
-    border: 1px solid var(--cursor-outline); border-radius: 50%;
+    border: 1px solid white; /* Always white for difference mode */
+    border-radius: 50%;
     pointer-events: none; z-index: var(--z-cursor);
     transform: translate(-50%, -50%); 
     transition: width 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
                 height 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
-                background-color 0.2s, border-color 0.3s;
+                background-color 0.2s;
     mix-blend-mode: difference;
 }
 
@@ -355,12 +357,20 @@ h1, h2, h3, h4, h5 {
   width: 100%; height: 100%; object-fit: contain; object-position: bottom;
   mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  /* Filter only on dark mode to blend better, reset in JS for light mode logic or handle here */
   filter: grayscale(40%) contrast(1.1);
-  transition: transform 0.5s ease-out, filter 0.5s ease;
+  transition: transform 0.5s ease-out, filter 0.5s ease, opacity 0.5s ease;
+}
+[data-theme="light"] .hero-portrait-img {
+    filter: none; /* Look bright and friendly in light mode */
 }
 .hero-portrait-container:hover .hero-portrait-img {
     transform: scale(1.02);
     filter: grayscale(0%) contrast(1.1);
+}
+[data-theme="light"] .hero-portrait-container:hover .hero-portrait-img {
+    transform: scale(1.02);
+    filter: none;
 }
 
 /* --- 9. PROJECT WORK LAYOUT --- */
@@ -448,6 +458,8 @@ h1, h2, h3, h4, h5 {
     background: var(--bg-surface);
 }
 .footer-portrait-container:hover .footer-portrait-img { filter: grayscale(0%); transform: scale(1.05); }
+[data-theme="light"] .footer-portrait-img { filter: none; }
+
 .footer-links-row { display: flex; gap: 100px; text-align: left; flex-wrap: wrap; justify-content: center; }
 .fl-col h5 { font-size: 0.8rem; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 24px; letter-spacing: 0.05em; }
 .fl-col a { display: block; margin-bottom: 12px; color: var(--text-secondary); font-size: 1rem; transition: 0.2s; }

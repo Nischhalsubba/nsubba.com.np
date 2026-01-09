@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact | Nischhal Raj Subba</title>
+    <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+    <link rel="stylesheet" href="style.css?v=9.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  </head>
+  <body>
+    <canvas id="grid-canvas"></canvas>
+    <div class="custom-cursor-dot"></div>
+    <div class="custom-cursor-outline"></div>
+
+    <button class="mobile-nav-toggle" aria-label="Menu"><span></span><span></span></button>
+    <a href="index.html" class="mobile-logo">NRS</a>
+
+    <div class="mobile-nav-overlay">
+        <nav class="mobile-nav-links">
+            <a href="index.html">Home</a>
+            <a href="projects.html">Work</a>
+            <a href="about.html">About</a>
+            <a href="blog.html">Writing</a>
+            <a href="contact.html" class="active">Contact</a>
+        </nav>
+    </div>
+
+    <button id="theme-toggle" class="theme-toggle-btn"></button>
+    <nav class="nav-wrapper"><div class="nav-pill"><div class="nav-glider"></div><a href="index.html" class="nav-link">Home</a><a href="projects.html" class="nav-link">Work</a><a href="about.html" class="nav-link">About</a><a href="blog.html" class="nav-link">Writing</a><a href="contact.html" class="nav-link active">Contact</a></div></nav>
+
+    <main class="container">
+      <section class="section-container" style="padding-top: var(--section-gap);">
+          <div class="contact-split reveal-on-scroll" style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px;">
+              <div class="contact-info">
+                  <h2 class="section-title">Get in Touch</h2>
+                  <p class="body-large">Open for opportunities in Enterprise UX, Design Systems, and Web3 Product Design.</p>
+                  <div style="margin-top: 40px;">
+                      <a href="mailto:hinischalsubba@gmail.com" style="font-size: 1.5rem; border-bottom: 1px solid currentColor;">hinischalsubba@gmail.com</a>
+                  </div>
+              </div>
+              
+              <div class="contact-form-wrapper">
+                  <form id="contact-form" style="display: flex; flex-direction: column; gap: 24px;">
+                      <input type="text" class="search-input" placeholder="Name" style="width: 100%;">
+                      <input type="email" class="search-input" placeholder="Email" style="width: 100%;">
+                      <textarea class="search-input" rows="5" placeholder="Message" style="width: 100%; border-radius: 12px;"></textarea>
+                      <button type="submit" class="btn btn-primary">Send Message</button>
+                  </form>
+              </div>
+          </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content container">
+            <div class="footer-hero-text"><h2>Let's build<br><span style="font-style: italic;">the future.</span></h2></div>
+            <div class="footer-links-row">
+                <div class="fl-col"><h5>Navigation</h5><a href="index.html">Home</a><a href="projects.html">Work</a><a href="contact.html">Contact</a></div>
+            </div>
+        </div>
+        <div class="footer-bottom"><span>© 2026 Nischhal Raj Subba.</span><span>Kathmandu, Nepal</span></div>
+    </footer>
+    <script src="script.js?v=9.0"></script>
+  </body>
+</html>

@@ -1,0 +1,84 @@
+/* --- Foundations (Base Styles) --- */
+
+body {
+    cursor: default;
+    overflow-x: hidden;
+    background-color: var(--c-bg);
+    color: var(--c-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Nesting (SCSS Style) */
+    &.hovering .custom-cursor-outline {
+        width: 60px;
+        height: 60px;
+        background-color: rgba(202, 232, 189, 0.05);
+        border-color: var(--c-accent);
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    &.hovering .custom-cursor-dot {
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    
+    &-track {
+        background: var(--c-bg);
+    }
+    
+    &-thumb {
+        background: #333;
+        border-radius: 3px;
+    }
+}
+
+/* Custom Cursor */
+@media (hover: hover) and (pointer: fine) {
+    body {
+        cursor: none;
+    }
+    .custom-cursor-dot,
+    .custom-cursor-outline {
+        display: block;
+    }
+}
+
+.custom-cursor-dot {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    background-color: var(--c-accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s;
+}
+
+.custom-cursor-outline {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--c-white-20);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, background-color 0.3s, border-color 0.3s, transform 0.3s;
+}
+
+/* Utilities */
+.reveal-el {
+    opacity: 0;
+    transform: translateY(30px);
+}

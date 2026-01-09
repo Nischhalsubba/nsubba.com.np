@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 4. NAV GLIDER LOGIC ---
+    // --- 4. NAV GLIDER LOGIC (Fixed) ---
     const navLinks = document.querySelectorAll('.nav-link');
     const glider = document.querySelector('.nav-glider');
     
@@ -249,13 +249,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (glider) {
         const moveGlider = (el) => {
-            const rect = el.getBoundingClientRect();
-            const parent = el.parentElement.getBoundingClientRect();
+            // Use offsetLeft/Width which are relative to the parent (.nav-pill)
+            // This is safer than getBoundingClientRect regarding padding.
             gsap.to(glider, {
-                x: rect.left - parent.left,
-                width: rect.width,
+                x: el.offsetLeft, // Positions glider at exact start of link
+                width: el.offsetWidth, // Matches link width (including padding)
                 opacity: 1,
-                duration: 0.3
+                duration: 0.3,
+                ease: "power2.out"
             });
         };
         const activeLink = document.querySelector('.nav-link.active');
@@ -270,35 +271,59 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 5. FILTER LOGIC ---
-    const setupFilters = (btnClass, itemClass, attrName) => {
+    // --- 5. FILTER & SEARCH LOGIC ---
+    const setupFilters = (btnClass, itemClass, attrName, searchId) => {
         const filterBtns = document.querySelectorAll(btnClass);
         const items = document.querySelectorAll(itemClass);
+        const searchInput = document.getElementById(searchId);
         
-        if(filterBtns.length === 0) return;
+        if(filterBtns.length === 0 && !searchInput) return;
 
+        let currentCategory = 'all';
+        let currentSearch = '';
+
+        const filterItems = () => {
+            items.forEach(el => {
+                const tags = el.getAttribute(attrName);
+                // For text search, we look at the entire text content of the card/item
+                const textContent = el.innerText.toLowerCase(); 
+                
+                const matchesCategory = currentCategory === 'all' || (tags && tags.includes(currentCategory));
+                const matchesSearch = currentSearch === '' || textContent.includes(currentSearch);
+
+                if (matchesCategory && matchesSearch) {
+                    el.classList.remove('hidden');
+                    // Reset animation trigger if hidden
+                    gsap.to(el, { opacity: 1, y: 0, duration: 0.4, display: 'flex' }); // Flex or Grid depending on CSS
+                } else {
+                    el.classList.add('hidden');
+                    gsap.to(el, { opacity: 0, display: 'none', duration: 0 });
+                }
+            });
+        };
+
+        // Button Clicks
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 filterBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                
-                const category = btn.getAttribute('data-filter');
-                
-                items.forEach(el => {
-                    const tags = el.getAttribute(attrName);
-                    if (category === 'all' || (tags && tags.includes(category))) {
-                        el.classList.remove('hidden');
-                        gsap.fromTo(el, {y: 20, opacity:0}, {y:0, opacity:1, duration: 0.4});
-                    } else {
-                        el.classList.add('hidden');
-                    }
-                });
+                currentCategory = btn.getAttribute('data-filter');
+                filterItems();
             });
         });
+
+        // Search Input
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                currentSearch = e.target.value.toLowerCase();
+                filterItems();
+            });
+        }
     };
 
-    setupFilters('.filter-btn', '.project-card', 'data-category');
-    setupFilters('.blog-filter-btn', '.writing-item', 'data-category');
+    // Apply to Work and Writing pages if present
+    setupFilters('.filter-btn', '.project-card', 'data-category', 'search-work');
+    setupFilters('.blog-filter-btn', '.writing-item', 'data-category', 'search-blog');
 
 
     // --- 6. TESTIMONIAL CAROUSEL ---

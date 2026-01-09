@@ -17,15 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateImages(theme) {
         const targetSrc = theme === 'light' ? LIGHT_IMG : DARK_IMG;
         
-        // Update Hero Portrait
         const heroImg = document.querySelector('.hero-portrait-img');
         if(heroImg) heroImg.src = targetSrc;
 
-        // Update Footer Portrait
         const footerImg = document.querySelector('.footer-portrait-img');
         if(footerImg) footerImg.src = targetSrc;
         
-        // Update About Profile Image
         const aboutImg = document.querySelector('.profile-img');
         if(aboutImg) aboutImg.src = targetSrc;
     }
@@ -83,9 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const gridSize = 60; 
             const spotlightRadius = 400;
 
-            // Theme-aware colors
             const gridColor = isLight ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)';
-            const spotlightColorStart = isLight ? 'rgba(37, 99, 235, 0.15)' : 'rgba(59, 130, 246, 0.15)'; // Darker blue for light mode
+            const spotlightColorStart = isLight ? 'rgba(37, 99, 235, 0.15)' : 'rgba(59, 130, 246, 0.15)'; 
             const spotlightColorEnd = isLight ? 'rgba(37, 99, 235, 0)' : 'rgba(59, 130, 246, 0)';
 
             ctx.lineWidth = 1;
@@ -124,13 +120,16 @@ document.addEventListener('DOMContentLoaded', () => {
         drawGrid();
     }
 
-    // --- 2. CUSTOM CURSOR (Fixed & Smooth) ---
+    // --- 2. CUSTOM CURSOR (Fixed & Safe) ---
     const cursorDot = document.querySelector('.custom-cursor-dot');
     const cursorOutline = document.querySelector('.custom-cursor-outline');
     
     // Only enable if pointer is fine (mouse) and elements exist
     if (!REDUCED_MOTION && window.matchMedia('(pointer: fine)').matches && cursorDot) {
         
+        // Add class to body to hide default cursor ONLY when this logic is active
+        document.body.classList.add('custom-cursor-active');
+
         let mouseX = window.innerWidth / 2;
         let mouseY = window.innerHeight / 2;
         let outlineX = mouseX;
@@ -176,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     width: 40, 
                     height: 40, 
                     backgroundColor: 'transparent', 
-                    borderColor: 'var(--cursor-border)', // Use variable
+                    borderColor: 'var(--cursor-border)',
                     duration: 0.3 
                 });
                 gsap.to(cursorDot, { scale: 1, duration: 0.3 });
@@ -196,9 +195,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     ease: 'none',
                     scrollTrigger: {
                         trigger: title,
-                        start: 'top 85%', // Start filling when top of title hits 85% of viewport
-                        end: 'bottom 45%', // Finish filling when bottom hits 45%
-                        scrub: 1 // Link animation to scroll bar
+                        start: 'top 85%',
+                        end: 'bottom 45%',
+                        scrub: 1
                     }
                 });
             }

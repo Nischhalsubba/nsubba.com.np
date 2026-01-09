@@ -1,7 +1,7 @@
 /* 
   STYLE.CSS
   Refined Premium Theme (Dark/Light)
-  v6.2 - Cursor Visibility & Z-Index Fixes
+  v6.3 - Safe Cursor & Hero Animation
 */
 
 /* --- 1. DESIGN TOKENS --- */
@@ -50,13 +50,13 @@
   --z-canvas: 0; 
   --z-content: 10;
   --z-nav: 1000;
-  --z-toggle: 1002; /* Above Nav */
+  --z-toggle: 2000; /* SUPER HIGH to ensure clickability */
   --z-cursor: 9999;
 }
 
 /* --- LIGHT THEME OVERRIDES --- */
 [data-theme="light"] {
-  --bg-root: #FFFFFF; /* Pure white for cleaner look */
+  --bg-root: #FFFFFF;
   --bg-surface: #F3F4F6;
   --bg-card: #FFFFFF;
   --bg-nav: rgba(255, 255, 255, 0.85);
@@ -93,7 +93,6 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   overflow-y: scroll;
-  cursor: auto; /* Default, overridden by JS/Media Query */
 }
 
 body {
@@ -158,10 +157,10 @@ h1, h2, h3, h4, h5 {
 .hero-highlight {
     color: var(--text-primary);
     font-style: italic;
-    display: block;
+    display: inline-block; /* Ensure transforms work */
 }
 
-/* Section Title - Text Reveal Effect */
+/* Text Reveal Effect */
 .section-title {
     font-family: var(--font-serif);
     font-size: clamp(2.5rem, 5vw, 3.5rem);
@@ -174,7 +173,7 @@ h1, h2, h3, h4, h5 {
 .text-reveal-wrap {
     position: relative;
     display: inline-block;
-    /* Ensure the wrapper takes space */
+    white-space: nowrap; /* Prevent wrap mid-animation */
 }
 
 .text-outline {
@@ -184,6 +183,13 @@ h1, h2, h3, h4, h5 {
     -webkit-text-stroke: 1px var(--stroke-color);
     display: block;
     transition: -webkit-text-stroke 0.3s;
+}
+
+/* If hero highlight is inside outline, it needs stroke too */
+.text-outline.hero-highlight {
+    font-style: italic;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--text-primary); /* Stronger stroke for highlight */
 }
 
 .text-fill {
@@ -207,7 +213,6 @@ h1, h2, h3, h4, h5 {
   position: relative;
   margin-bottom: 48px;
   max-width: 800px; 
-  /* Smooth fade mask */
   mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
   -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 }
@@ -267,7 +272,7 @@ h1, h2, h3, h4, h5 {
     position: fixed;
     top: 24px;
     right: 24px;
-    z-index: var(--z-toggle); /* Explicitly higher than nav */
+    z-index: var(--z-toggle); /* High Z-Index */
     width: 44px;
     height: 44px;
     border-radius: 50%;
@@ -279,6 +284,7 @@ h1, h2, h3, h4, h5 {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    pointer-events: auto; /* Ensure clickable */
     transition: all 0.3s ease;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
@@ -302,7 +308,7 @@ h1, h2, h3, h4, h5 {
     pointer-events: none; z-index: var(--z-cursor);
     transform: translate(-50%, -50%); 
     transition: transform 0.1s, background-color 0.2s;
-    /* Removed blend mode to ensure visibility on white theme */
+    display: none; /* Hidden by default */
 }
 
 .custom-cursor-outline {
@@ -314,11 +320,20 @@ h1, h2, h3, h4, h5 {
     transition: width 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
                 height 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
                 background-color 0.2s, border-color 0.2s;
+    display: none; /* Hidden by default */
 }
 
-/* Hide default cursor only if on desktop */
-@media (hover: hover) and (pointer: fine) {
-    html, body, a, button, input { cursor: none; }
+/* SAFE CURSOR LOGIC: Only hide default cursor if 'custom-cursor-active' class is added by JS */
+body.custom-cursor-active, 
+body.custom-cursor-active a, 
+body.custom-cursor-active button, 
+body.custom-cursor-active input { 
+    cursor: none; 
+}
+
+body.custom-cursor-active .custom-cursor-dot,
+body.custom-cursor-active .custom-cursor-outline {
+    display: block;
 }
 
 /* --- 7. BUTTONS & UI --- */
@@ -365,12 +380,11 @@ h1, h2, h3, h4, h5 {
   width: 100%; height: 100%; object-fit: contain; object-position: bottom;
   mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-  /* Filter only on dark mode to blend better, reset in JS for light mode logic or handle here */
   filter: grayscale(40%) contrast(1.1);
   transition: transform 0.5s ease-out, filter 0.5s ease, opacity 0.5s ease;
 }
 [data-theme="light"] .hero-portrait-img {
-    filter: none; /* Look bright and friendly in light mode */
+    filter: none;
 }
 .hero-portrait-container:hover .hero-portrait-img {
     transform: scale(1.02);
@@ -434,7 +448,6 @@ h1, h2, h3, h4, h5 {
     font-size: 1.5rem; font-family: var(--font-serif); line-height: 1.2;
     transition: color 0.3s;
 }
-/* No explicit hover color change for title needed if text-primary handles it, but let's ensure contrast */
 .writing-item:hover .w-title { color: var(--text-primary); }
 .w-summary { display: none; } 
 .w-arrow { 
@@ -447,7 +460,7 @@ h1, h2, h3, h4, h5 {
 /* --- 11. FOOTER --- */
 .site-footer {
   border-top: 1px solid var(--border-faint);
-  background: var(--bg-surface); /* Changed from #000 to match theme */
+  background: var(--bg-surface);
   min-height: 80vh;
   display: flex; flex-direction: column; justify-content: center;
   position: relative; overflow: hidden;
@@ -497,7 +510,6 @@ h1, h2, h3, h4, h5 {
 .about-bio p { color: var(--text-secondary); margin-bottom: 16px; font-size: 1.1rem; }
 .about-bio ul { list-style: disc; padding-left: 20px; color: var(--text-secondary); margin-bottom: 24px; }
 
-/* Experience Timeline */
 .timeline-list { border-left: 1px solid var(--border-faint); padding-left: 40px; margin-top: 40px; }
 .timeline-item { position: relative; padding-bottom: 60px; }
 .timeline-item:last-child { padding-bottom: 0; }
@@ -511,7 +523,6 @@ h1, h2, h3, h4, h5 {
 .timeline-company { font-size: 1rem; color: var(--text-secondary); margin-bottom: 12px; }
 .timeline-desc { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; }
 
-/* Skills Grid */
 .skills-category { margin-bottom: 40px; }
 .skills-category h4 { font-size: 0.9rem; color: var(--text-primary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
 .skills-list { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -524,7 +535,6 @@ h1, h2, h3, h4, h5 {
     color: var(--text-secondary); 
 }
 
-/* Awards & Certs */
 .award-item { 
     margin-bottom: 24px; 
     padding: 24px; 
@@ -536,7 +546,6 @@ h1, h2, h3, h4, h5 {
 .award-meta { font-size: 0.9rem; color: var(--text-tertiary); }
 .award-link { font-size: 0.85rem; color: var(--accent-blue); margin-top: 8px; display: inline-block; }
 
-/* Education */
 .edu-item { margin-bottom: 24px; }
 .edu-degree { font-size: 1.1rem; color: var(--text-primary); font-weight: 500; }
 .edu-school { font-size: 1rem; color: var(--text-secondary); }
@@ -615,6 +624,5 @@ h1, h2, h3, h4, h5 {
   .writing-item { grid-template-columns: 1fr; gap: 8px; }
   .project-grid { gap: 60px; }
   .hero-portrait-container { height: 350px; }
-  .custom-cursor-dot, .custom-cursor-outline { display: none; }
   .theme-toggle-btn { top: 16px; right: 16px; width: 40px; height: 40px; }
 }

@@ -1,7 +1,7 @@
 /* 
   STYLE.CSS
   Refined Premium Dark Theme
-  v4.2 - Resume Integration, Fixed Arrows, Subtle Grid
+  v4.3 - Other Cases Grid (Card Hover Arrows)
 */
 
 /* --- 1. DESIGN TOKENS --- */
@@ -416,38 +416,138 @@ h1, h2, h3, h4, h5 {
 .t-btn svg { width: 24px; height: 24px; fill: currentColor; }
 .t-btn:hover { background: var(--text-primary); color: #000; border-color: var(--text-primary); transform: scale(1.1); }
 
-/* --- 14. PROJECT NAV --- */
-.project-nav-container {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
-    margin-top: 80px; padding-top: 40px; border-top: 1px solid var(--border-faint);
+/* --- 14. OTHER CASES (Redesigned Nav) --- */
+.other-cases-section {
+    margin-top: 120px;
+    padding-bottom: 80px;
+    border-top: 1px solid var(--border-faint);
 }
-.project-nav-card {
-    position: relative; padding: 60px 40px;
-    background: var(--bg-surface); border: 1px solid var(--border-faint); border-radius: 16px;
-    display: flex; flex-direction: column; justify-content: center;
-    overflow: hidden; transition: all 0.3s; cursor: pointer;
+
+.section-header-line {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin-bottom: 48px;
+    margin-top: 60px;
 }
-.project-nav-card:hover { background: var(--bg-card); border-color: var(--border-light); }
-.nav-arrow-overlay {
-    position: absolute; top: 50%; width: 60px; height: 60px;
-    font-size: 2.5rem; color: var(--text-primary);
-    opacity: 0; transform: translateY(-50%) scale(0.8);
-    transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1);
-    display: flex; align-items: center; justify-content: center;
+
+.other-cases-title {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+    margin: 0;
 }
-.project-nav-card.prev .nav-arrow-overlay { left: 40px; transform: translateY(-50%) translateX(-20px); }
-.project-nav-card.prev:hover .nav-arrow-overlay { opacity: 1; transform: translateY(-50%) translateX(0); }
-.project-nav-card.next { text-align: right; align-items: flex-end; }
-.project-nav-card.next .nav-arrow-overlay { right: 40px; transform: translateY(-50%) translateX(20px); }
-.project-nav-card.next:hover .nav-arrow-overlay { opacity: 1; transform: translateY(-50%) translateX(0); }
+
+.header-line {
+    height: 1px;
+    background: var(--border-faint);
+    width: 100%;
+}
+
+.other-cases-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+.case-nav-card {
+    display: block;
+    text-decoration: none;
+    position: relative;
+}
+
+.case-image-wrap {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    aspect-ratio: 16/10;
+    margin-bottom: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-faint);
+}
+
+.case-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity: 0.9;
+}
+
+.case-nav-card:hover .case-image-wrap img {
+    transform: scale(1.05);
+    opacity: 1;
+}
+
+.case-tag {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 8px 16px;
+    border-radius: 99px;
+    font-size: 0.85rem;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    z-index: 2;
+}
+
+.case-arrow-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: black;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 3;
+}
+
+.case-nav-card:hover .case-arrow-overlay {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.case-info h3 {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+    transition: color 0.3s;
+}
+
+.case-nav-card:hover .case-info h3 {
+    color: #fff;
+}
+
+.case-info p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    max-width: 90%;
+}
 
 /* --- RESPONSIVE --- */
 @media (max-width: 800px) {
   .section-header-row { flex-direction: row; flex-wrap: wrap; gap: 20px; }
   .footer-links-row, .about-grid, .contact-split { grid-template-columns: 1fr; }
   .writing-item { grid-template-columns: 1fr; gap: 8px; }
-  .project-nav-container { grid-template-columns: 1fr; }
+  
+  .other-cases-grid { grid-template-columns: 1fr; gap: 60px; }
   .project-grid { gap: 40px; }
+  
   .w-date { font-size: 0.8rem; opacity: 0.7; }
   .hero-portrait-container { height: 350px; }
   .custom-cursor-dot, .custom-cursor-outline { display: none; } /* Disable custom cursor on touch */

@@ -31,29 +31,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 1. SPOTLIGHT GRID CANVAS ---
+    // --- 1. SPOTLIGHT CANVAS ---
     const canvas = document.getElementById('grid-canvas');
     if (canvas && !REDUCED_MOTION) {
         const ctx = canvas.getContext('2d');
-        let w, h;
-        let mouse = { x: -1000, y: -1000 };
+        let w, h, mouse = { x: -1000, y: -1000 };
 
         const resize = () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; };
         window.addEventListener('resize', resize);
         resize();
 
-        window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+        window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
 
         const draw = () => {
             ctx.clearRect(0, 0, w, h);
             const isL = htmlEl.getAttribute('data-theme') === 'light';
-            const size = 60; 
-            const radius = 350;
-            const line = isL ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.05)';
-            const glow = isL ? 'rgba(59,130,246,0.1)' : 'rgba(59,130,246,0.15)';
+            const size = 64; 
+            const radius = 380;
+            const line = isL ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)';
+            const glow = isL ? 'rgba(59,130,246,0.12)' : 'rgba(59,130,246,0.18)';
 
-            ctx.strokeStyle = line;
-            ctx.lineWidth = 1;
+            ctx.strokeStyle = line; ctx.lineWidth = 1;
             ctx.beginPath();
             for(let x=0; x<=w; x+=size) { ctx.moveTo(x,0); ctx.lineTo(x,h); }
             for(let y=0; y<=h; y+=size) { ctx.moveTo(0,y); ctx.lineTo(w,y); }
@@ -63,39 +61,63 @@ document.addEventListener('DOMContentLoaded', () => {
             grad.addColorStop(0, glow); grad.addColorStop(1, 'transparent');
             ctx.strokeStyle = grad; ctx.lineWidth = 2;
             ctx.beginPath();
-            for(let x=Math.floor((mouse.x-radius)/size)*size; x<=mouse.x+radius; x+=size) { if(x<0||x>w)continue; ctx.moveTo(x, mouse.y-radius); ctx.lineTo(x, mouse.y+radius); }
-            for(let y=Math.floor((mouse.y-radius)/size)*size; y<=mouse.y+radius; y+=size) { if(y<0||y>h)continue; ctx.moveTo(mouse.x-radius, y); ctx.lineTo(mouse.x+radius, y); }
+            const startX = Math.floor((mouse.x-radius)/size)*size;
+            const startY = Math.floor((mouse.y-radius)/size)*size;
+            for(let x=startX; x<=mouse.x+radius; x+=size) { if(x<0||x>w)continue; ctx.moveTo(x, mouse.y-radius); ctx.lineTo(x, mouse.y+radius); }
+            for(let y=startY; y<=mouse.y+radius; y+=size) { if(y<0||y>h)continue; ctx.moveTo(mouse.x-radius, y); ctx.lineTo(mouse.x+radius, y); }
             ctx.stroke();
             requestAnimationFrame(draw);
         };
         draw();
     }
 
-    // --- 2. CUSTOM CURSOR ---
+    // --- 2. NAVIGATION GLIDER ---
+    const navLinks = document.querySelectorAll('.nav-link');
+    const glider = document.querySelector('.nav-glider');
+    if (glider && navLinks.length) {
+        const moveGlider = (el) => {
+            gsap.to(glider, { 
+                x: el.offsetLeft, 
+                width: el.offsetWidth, 
+                opacity: 1, 
+                duration: 0.45, 
+                ease: "power4.out" 
+            });
+        };
+        const activeLink = document.querySelector('.nav-link.active');
+        if(activeLink) setTimeout(() => moveGlider(activeLink), 200);
+        
+        navLinks.forEach(link => {
+            link.addEventListener('mouseenter', () => moveGlider(link));
+            link.addEventListener('mouseleave', () => activeLink ? moveGlider(activeLink) : gsap.to(glider, { opacity: 0 }));
+        });
+    }
+
+    // --- 3. CUSTOM CURSOR ---
     const cursorDot = document.querySelector('.custom-cursor-dot');
     const cursorOutline = document.querySelector('.custom-cursor-outline');
     if (cursorDot && !REDUCED_MOTION && window.matchMedia('(pointer: fine)').matches) {
         document.body.classList.add('custom-cursor-active');
         let mx=0, my=0, ox=0, oy=0;
-        window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; gsap.set(cursorDot, {x:mx, y:my}); });
-        const loop = () => { ox += (mx-ox)*0.15; oy += (my-oy)*0.15; gsap.set(cursorOutline, {x:ox, y:oy}); requestAnimationFrame(loop); };
+        window.addEventListener('mousemove', e => { 
+            mx = e.clientX; my = e.clientY; 
+            gsap.set(cursorDot, {x:mx, y:my}); 
+        });
+        const loop = () => { 
+            ox += (mx-ox)*0.12; oy += (my-oy)*0.12; 
+            gsap.set(cursorOutline, {x:ox, y:oy}); 
+            requestAnimationFrame(loop); 
+        };
         loop();
         document.querySelectorAll('a, button, input, .achieve-item, .project-card, .writing-item').forEach(el => {
-            el.addEventListener('mouseenter', () => { gsap.to(cursorOutline, {width:60, height:60, backgroundColor:'rgba(128,128,128,0.1)', borderColor:'transparent'}); gsap.to(cursorDot, {scale:0.5}); });
-            el.addEventListener('mouseleave', () => { gsap.to(cursorOutline, {width:40, height:40, backgroundColor:'transparent', borderColor:'var(--cursor-border)'}); gsap.to(cursorDot, {scale:1}); });
-        });
-    }
-
-    // --- 3. NAVIGATION GLIDER ---
-    const navLinks = document.querySelectorAll('.nav-link');
-    const glider = document.querySelector('.nav-glider');
-    if (glider) {
-        const move = (el) => gsap.to(glider, { x: el.offsetLeft, width: el.offsetWidth, opacity: 1, duration: 0.4, ease: "power4.out" });
-        const active = document.querySelector('.nav-link.active');
-        if(active) setTimeout(() => move(active), 150);
-        navLinks.forEach(link => {
-            link.addEventListener('mouseenter', () => move(link));
-            link.addEventListener('mouseleave', () => active ? move(active) : gsap.to(glider, {opacity:0}));
+            el.addEventListener('mouseenter', () => { 
+                gsap.to(cursorOutline, {width:64, height:64, backgroundColor:'rgba(128,128,128,0.1)', borderColor:'transparent'}); 
+                gsap.to(cursorDot, {scale:0.4}); 
+            });
+            el.addEventListener('mouseleave', () => { 
+                gsap.to(cursorOutline, {width:34, height:34, backgroundColor:'transparent', borderColor:'var(--cursor-border)'}); 
+                gsap.to(cursorDot, {scale:1}); 
+            });
         });
     }
 
@@ -113,8 +135,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const text = item.textContent.toLowerCase();
                 const tags = (item.getAttribute(categoryAttr) || "").toLowerCase();
                 const isMatch = text.includes(query) || tags.includes(query);
-                item.style.display = isMatch ? (itemsClass.includes('writing') ? 'grid' : 'flex') : 'none';
-                if(isMatch) gsap.fromTo(item, {opacity:0, y:10}, {opacity:1, y:0, duration:0.3});
+                
+                if(isMatch) {
+                    item.style.display = itemsClass.includes('writing') ? 'grid' : 'flex';
+                    gsap.to(item, { opacity: 1, y: 0, duration: 0.4 });
+                } else {
+                    item.style.display = 'none';
+                    gsap.set(item, { opacity: 0, y: 15 });
+                }
             });
         };
         input.addEventListener('input', filter);
@@ -128,9 +156,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const slides = document.querySelectorAll('.t-slide');
     if(track && slides.length) {
         let idx = 0;
-        const upd = () => { track.style.transform = `translateX(-${idx * 100}%)`; slides.forEach((s, i) => s.classList.toggle('active', i === idx)); };
-        document.getElementById('t-next')?.addEventListener('click', () => { idx = (idx + 1) % slides.length; upd(); });
-        document.getElementById('t-prev')?.addEventListener('click', () => { idx = (idx - 1 + slides.length) % slides.length; upd(); });
+        const update = () => { 
+            track.style.transform = `translateX(-${idx * 100}%)`; 
+            slides.forEach((s, i) => s.classList.toggle('active', i === idx)); 
+        };
+        document.getElementById('t-next')?.addEventListener('click', () => { idx = (idx + 1) % slides.length; update(); });
+        document.getElementById('t-prev')?.addEventListener('click', () => { idx = (idx - 1 + slides.length) % slides.length; update(); });
     }
 
     // --- 6. GSAP REVEALS ---
@@ -138,10 +169,26 @@ document.addEventListener('DOMContentLoaded', () => {
         gsap.registerPlugin(ScrollTrigger);
         document.querySelectorAll('.text-reveal-wrap').forEach(w => {
             const f = w.querySelector('.text-fill');
-            if(f) gsap.to(f, { clipPath: 'inset(0 0% 0 0)', scrollTrigger: { trigger: w, start: 'top 85%', scrub: 1 } });
+            if(f) gsap.to(f, { 
+                clipPath: 'inset(0 0% 0 0)', 
+                ease: "none",
+                scrollTrigger: { trigger: w, start: 'top 90%', end: 'top 40%', scrub: 1 } 
+            });
         });
         document.querySelectorAll(".reveal-on-scroll").forEach(el => {
-            gsap.fromTo(el, {y:20, opacity:0}, { y:0, opacity:1, duration:0.6, scrollTrigger: { trigger: el, start: "top 90%" } });
+            gsap.fromTo(el, {y:30, opacity:0}, { 
+                y:0, opacity:1, duration:0.8, ease: "power2.out",
+                scrollTrigger: { trigger: el, start: "top 92%" } 
+            });
+        });
+    }
+
+    // Mobile Menu
+    const mBtn = document.querySelector('.mobile-nav-toggle');
+    if(mBtn) {
+        mBtn.addEventListener('click', () => document.body.classList.toggle('menu-open'));
+        document.querySelectorAll('.mobile-nav-links a').forEach(a => {
+            a.addEventListener('click', () => document.body.classList.remove('menu-open'));
         });
     }
 });

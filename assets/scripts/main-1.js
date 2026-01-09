@@ -1,1 +1,0 @@
-// Logic moved to script.js in root for local compatibility.

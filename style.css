@@ -1,7 +1,7 @@
 /* 
   STYLE.CSS
   Refined Premium Dark Theme
-  v5.7 - Restored Visual Effects & Sizing
+  v5.8 - SEO & Layout Precision
 */
 
 /* --- 1. DESIGN TOKENS --- */
@@ -255,9 +255,18 @@ h1, h2, h3, h4, h5 {
 
 /* --- 8. HERO & PORTRAIT --- */
 .hero-section {
-  position: relative; min-height: 100vh;
-  display: flex; flex-direction: column; justify-content: center; align-items: center;
-  text-align: center; padding-top: 100px; overflow: hidden;
+  position: relative; 
+  /* Removing min-height: 100vh to rely on explicit padding for exact spacing */
+  display: flex; 
+  flex-direction: column; 
+  /* Use flex-start instead of center to start content from strict top padding */
+  justify-content: flex-start; 
+  align-items: center;
+  text-align: center; 
+  /* 200px Top Padding = 80px (Nav Area) + 120px (Visual Gap) */
+  padding-top: 200px; 
+  padding-bottom: 0;
+  overflow: hidden;
 }
 .hero-actions { display: flex; gap: 16px; margin-top: 40px; }
 
@@ -285,7 +294,7 @@ h1, h2, h3, h4, h5 {
 .filter-row { display: flex; gap: 12px; margin-bottom: 60px; flex-wrap: wrap; }
 .filter-btn {
   background: transparent; border: 1px solid var(--border-faint);
-  color: var(--text-secondary); padding: 8px 24px; border-radius: 999px;
+  color: var(--text-secondary); padding: 8px 24px; border-radius: 9999px;
   cursor: pointer; transition: all 0.3s; font-size: 0.9rem;
 }
 .filter-btn:hover, .filter-btn.active {

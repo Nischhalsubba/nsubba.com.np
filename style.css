@@ -1,7 +1,7 @@
 /* 
   STYLE.CSS
   Refined Premium Theme (Dark/Light)
-  v7.1 - Visual Consistency & Socials
+  v7.2 - Achievements, Buttons, Mobile Logo
 */
 
 /* --- 1. DESIGN TOKENS --- */
@@ -21,8 +21,8 @@
   --text-tertiary: #525252;
   
   /* Accent */
-  --accent-blue: #3B82F6;
-  --accent-glow: rgba(59, 130, 246, 0.15);
+  --accent-blue: #0C8CE9;
+  --accent-glow: rgba(12, 140, 233, 0.15);
   
   /* Borders & Outlines */
   --border-faint: rgba(255, 255, 255, 0.08);
@@ -53,13 +53,14 @@
   --z-toggle: 2000;
   --z-menu-btn: 2001;
   --z-menu-overlay: 1999;
+  --z-mobile-logo: 2000;
   --z-cursor: 9999;
 }
 
 /* --- LIGHT THEME OVERRIDES --- */
 [data-theme="light"] {
   --bg-root: #FFFFFF;
-  --bg-surface: #F3F4F6;
+  --bg-surface: #F9FAFB;
   --bg-card: #FFFFFF;
   --bg-nav: rgba(255, 255, 255, 0.90);
   
@@ -271,7 +272,7 @@ h1, h2, h3, h4, h5 {
   transition: background-color 0.3s;
 }
 
-/* --- 5B. MOBILE HAMBURGER NAVIGATION --- */
+/* --- 5B. MOBILE NAVIGATION & LOGO --- */
 .mobile-nav-toggle {
     display: none; /* Hidden on desktop */
     position: fixed; top: 24px; left: 24px;
@@ -299,6 +300,25 @@ body.menu-open .mobile-nav-toggle span:nth-child(2) {
     transform: rotate(-45deg) translate(0px, 0px);
 }
 
+/* Mobile Logo (Centered) */
+.mobile-logo {
+    display: none; /* Hidden on desktop */
+    position: fixed; top: 24px; left: 50%;
+    transform: translateX(-50%);
+    z-index: var(--z-mobile-logo);
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: var(--bg-nav);
+    padding: 8px 16px;
+    border-radius: 99px;
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border-faint);
+    text-decoration: none;
+    pointer-events: auto;
+}
+
 .mobile-nav-overlay {
     position: fixed; inset: 0;
     background: var(--bg-root);
@@ -312,7 +332,7 @@ body.menu-open .mobile-nav-toggle span:nth-child(2) {
 }
 .mobile-nav-overlay::before {
     content: ""; position: absolute; inset: 0;
-    background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1), transparent 70%);
+    background: radial-gradient(circle at 50% 50%, rgba(12, 140, 233, 0.1), transparent 70%);
     pointer-events: none;
 }
 body.menu-open .mobile-nav-overlay {
@@ -412,14 +432,15 @@ body.custom-cursor-active .custom-cursor-outline {
     display: block;
 }
 
-/* --- 7. BUTTONS & UI --- */
+/* --- 7. BUTTONS & UI (CORRECTED CONTRAST) --- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
   padding: 16px 32px; border-radius: 9999px;
   font-weight: 500; font-size: 1rem;
   transition: all 0.3s ease; border: 1px solid transparent; cursor: pointer;
 }
-/* Updated to High Contrast (White/Black) to match premium feel */
+
+/* Primary: Always High Contrast against Root BG */
 .btn-primary { 
     background: var(--text-primary); 
     color: var(--bg-root); 
@@ -427,11 +448,20 @@ body.custom-cursor-active .custom-cursor-outline {
 }
 .btn-primary:hover { 
     transform: translateY(-2px); 
-    box-shadow: 0 0 20px rgba(255,255,255,0.2); 
+    opacity: 0.9;
+    box-shadow: 0 0 20px rgba(125,125,125,0.2); 
 }
 
-.btn-secondary { background: #1A1A1A; border: 1px solid var(--border-light); color: var(--text-primary); }
-.btn-secondary:hover { border-color: var(--text-primary); background: var(--bg-card); }
+/* Secondary: Outline style, adapts to text color */
+.btn-secondary { 
+    background: transparent; 
+    border: 1px solid var(--border-light); 
+    color: var(--text-primary); 
+}
+.btn-secondary:hover { 
+    border-color: var(--text-primary); 
+    background: var(--hover-bg); 
+}
 
 .floating-resume-btn {
   position: fixed; bottom: 32px; right: 32px; z-index: 1001;
@@ -480,7 +510,58 @@ body.custom-cursor-active .custom-cursor-outline {
     filter: none;
 }
 
-/* --- 9. PROJECT WORK LAYOUT --- */
+/* --- 9. STATS & ACHIEVEMENTS (NEW DESIGN) --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    width: 100%;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-faint);
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+    position: relative;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-light);
+}
+
+.stat-number {
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    line-height: 1;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+/* Use Brand Accent for #1 */
+.stat-card.highlight .stat-number {
+    color: var(--accent-blue);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.stat-icon {
+    margin-bottom: 16px;
+    color: var(--text-tertiary);
+    width: 32px; height: 32px;
+}
+.stat-card:hover .stat-icon { color: var(--text-primary); }
+
+
+/* --- 10. PROJECT WORK LAYOUT --- */
 .section-header-row {
   display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 32px;
 }
@@ -508,7 +589,7 @@ body.custom-cursor-active .custom-cursor-outline {
 .card-meta-line { display: flex; gap: 8px; color: var(--text-secondary); font-size: 1rem; align-items: center; }
 .card-meta-line span:not(:last-child)::after { content: "•"; margin-left: 8px; color: var(--text-tertiary); }
 
-/* --- 10. WRITING LIST --- */
+/* --- 11. WRITING LIST --- */
 .writing-list { 
     display: flex; flex-direction: column; 
     border-top: 1px solid var(--border-faint); 
@@ -542,7 +623,7 @@ body.custom-cursor-active .custom-cursor-outline {
 .writing-item:hover .w-arrow { opacity: 1; transform: translateX(0); }
 .writing-item.hidden { display: none; }
 
-/* --- 11. FOOTER --- */
+/* --- 12. FOOTER --- */
 .site-footer {
   border-top: 1px solid var(--border-faint);
   background: var(--bg-surface);
@@ -590,7 +671,7 @@ body.custom-cursor-active .custom-cursor-outline {
 }
 .social-icon-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
-/* --- 12. ABOUT PAGE STYLES --- */
+/* --- 13. ABOUT PAGE STYLES --- */
 .about-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 80px; align-items: start; }
 .about-bio h3 { font-size: 2rem; margin-bottom: 24px; border-bottom: 1px solid var(--border-faint); padding-bottom: 16px; display: inline-block; }
 .about-bio p { color: var(--text-secondary); margin-bottom: 16px; font-size: 1.1rem; }
@@ -637,7 +718,7 @@ body.custom-cursor-active .custom-cursor-outline {
 .edu-school { font-size: 1rem; color: var(--text-secondary); }
 .edu-year { font-size: 0.9rem; color: var(--text-tertiary); }
 
-/* --- 13. CONTACT PAGE STYLES --- */
+/* --- 14. CONTACT PAGE STYLES --- */
 .contact-split { display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; }
 .contact-detail-group { margin-bottom: 40px; }
 .contact-detail-label { display: block; font-size: 0.8rem; text-transform: uppercase; color: var(--text-tertiary); letter-spacing: 0.05em; margin-bottom: 8px; }
@@ -658,7 +739,7 @@ body.custom-cursor-active .custom-cursor-outline {
 .select-arrow { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-secondary); }
 .form-select { appearance: none; cursor: pointer; }
 
-/* --- 14. TESTIMONIALS --- */
+/* --- 15. TESTIMONIALS --- */
 .testimonial-section { position: relative; overflow: hidden; padding: 0 0 100px; }
 .t-track { display: flex; transition: transform 0.5s ease; width: 100%; }
 .t-slide { min-width: 100%; padding: 0 10%; text-align: center; opacity: 0.4; transform: scale(0.95); transition: all 0.5s; }
@@ -681,7 +762,7 @@ body.custom-cursor-active .custom-cursor-outline {
 }
 .t-btn:hover { background: var(--text-primary); color: var(--bg-root); border-color: var(--text-primary); transform: scale(1.1); }
 
-/* --- 15. HOME CTA SECTION --- */
+/* --- 16. HOME CTA SECTION --- */
 .home-cta-section {
     padding: var(--section-gap) 0;
     text-align: center;
@@ -701,7 +782,7 @@ body.custom-cursor-active .custom-cursor-outline {
     margin-bottom: 8px;
 }
 
-/* --- 16. CASE NAVIGATION (PREV/NEXT) --- */
+/* --- 17. CASE NAVIGATION (PREV/NEXT) --- */
 .other-cases-section {
     padding: var(--section-gap) 0;
     border-top: 1px solid var(--border-faint);
@@ -802,8 +883,9 @@ body.custom-cursor-active .custom-cursor-outline {
   /* Navigation: Hide Desktop Pill */
   .nav-wrapper { display: none; }
   
-  /* Show Hamburger */
+  /* Show Hamburger & Logo */
   .mobile-nav-toggle { display: flex; }
+  .mobile-logo { display: block; }
   
   /* Theme Toggle: Position Safe */
   .theme-toggle-btn {
@@ -827,13 +909,14 @@ body.custom-cursor-active .custom-cursor-outline {
   .about-grid, 
   .footer-links-row,
   .other-cases-grid,
-  .blog-layout { 
+  .blog-layout,
+  .stats-grid, .metrics-grid { 
       flex-direction: column; 
       grid-template-columns: 1fr; 
       gap: 40px; 
   }
   
-  .project-grid, .metrics-grid {
+  .project-grid {
       grid-template-columns: 1fr;
       gap: 60px;
   }

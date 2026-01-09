@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Halo - Case Study | Nischhal Raj Subba</title>
-    <link rel="stylesheet" href="style.css?v=4.1">
+    <title>MAS DataHub - Case Study | Nischhal Raj Subba</title>
+    <link rel="stylesheet" href="style.css?v=5.0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   </head>
@@ -28,72 +28,206 @@
     <main class="container">
       
       <!-- 1. HERO -->
-      <div class="hero-section" style="padding-bottom: 40px; min-height: auto; padding-top: 120px;">
-         <a href="projects.html" style="margin-bottom: 24px; color: var(--text-secondary);">← Back to Work</a>
+      <div class="hero-section" style="padding-bottom: 40px; min-height: auto; padding-top: 120px; align-items: flex-start; text-align: left;">
+         <a href="projects.html" style="margin-bottom: 32px; color: var(--text-secondary); display: inline-block;">← Back to Work</a>
+         
+         <div class="case-meta-chips" style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+             <span class="badge-pill">Fintech / Enterprise</span>
+             <span class="badge-pill">Web Platform</span>
+             <span class="badge-pill">2025</span>
+         </div>
+
+         <h1 class="hero-title" style="margin-bottom: 16px;">MAS DataHub</h1>
+         <p class="body-large" style="color: var(--text-secondary); max-width: 800px;">
+             Enterprise platform UX for data integration and Maximo automation workflows. Streamlined complex data operations into a unified dashboard experience.
+         </p>
+         
+         <div class="hero-actions" style="margin-top: 32px;">
+             <a href="https://masdatahub.com/" target="_blank" class="btn btn-primary">View Live Site</a>
+         </div>
       </div>
 
-      <div class="case-hero reveal-on-scroll">
-          <img src="https://images.unsplash.com/photo-1614850523060-8da1d56ae167?q=80&w=2000" class="case-hero-img" alt="Halo Branding">
-          <div class="case-hero-overlay">
-              <h1 class="case-title">Halo</h1>
-              <p class="case-subtitle">Reworking a brand and building a website that grows with it.</p>
-          </div>
+      <div class="case-hero-img-container reveal-on-scroll" style="margin-bottom: 100px;">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2400" class="case-hero-img" alt="MAS DataHub Dashboard High Fidelity" style="width: 100%; border-radius: 16px; border: 1px solid var(--border-faint);">
       </div>
 
-      <!-- 2. CHALLENGE -->
-      <div class="case-split-section reveal-on-scroll" style="margin-top: 80px;">
-          <div class="case-label" style="font-size:0.9rem; color:var(--text-tertiary); margin-bottom:16px;">CHALLENGE</div>
-          <div class="case-body">
-              <h3 style="font-size:2rem; margin-bottom:24px;">Give the brand a clear style and make sure the website supports it.</h3>
-              <p style="color:var(--text-secondary);">The visuals were outdated and scattered. Every page looked different, which made the brand feel smaller than it actually was. The team needed something simple they could keep using as they expanded.</p>
+      <!-- 2. SNAPSHOT -->
+      <section class="section-container" style="border-bottom: 1px solid var(--border-faint);">
+          <div class="snapshot-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;">
+              <div>
+                  <h5 style="color: var(--text-tertiary); margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase;">Role</h5>
+                  <p style="color: var(--text-primary);">Lead Product Designer<br><span style="font-size: 0.9rem; color: var(--text-secondary);">Research, IA, UI, Prototyping</span></p>
+              </div>
+              <div>
+                  <h5 style="color: var(--text-tertiary); margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase;">Team</h5>
+                  <p style="color: var(--text-primary);">3 Engineers, 1 PM, 1 Designer</p>
+              </div>
+              <div>
+                  <h5 style="color: var(--text-tertiary); margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase;">Timeline</h5>
+                  <p style="color: var(--text-primary);">Oct 2025 - Dec 2025 (3 Months)</p>
+              </div>
+              <div>
+                  <h5 style="color: var(--text-tertiary); margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase;">Outcome</h5>
+                  <p style="color: var(--text-primary);">Unified automation workflow</p>
+              </div>
           </div>
-      </div>
+      </section>
 
-      <!-- 3. PROCESS -->
-      <div class="case-split-section reveal-on-scroll" style="margin-top: 80px;">
-          <div class="case-label" style="font-size:0.9rem; color:var(--text-tertiary); margin-bottom:16px;">PROCESS</div>
-          <div class="case-body">
-              <h3 style="font-size:2rem; margin-bottom:24px;">Create a straightforward identity and a website that’s easy to build on.</h3>
-              <p style="color:var(--text-secondary);">We refined their visuals, wrote easy instructions for using them, and built a site that can grow over time — without constant redesigns or complicated updates.</p>
+      <!-- 3. THE PROBLEM -->
+      <section class="section-container reveal-on-scroll">
+          <div class="case-split-section">
+              <div class="case-label" style="font-size:0.9rem; color:var(--text-tertiary); margin-bottom:16px;">THE PROBLEM</div>
+              <div class="case-body">
+                  <h3 style="font-size:2rem; margin-bottom:24px;">Disjointed data workflows creating operational bottlenecks.</h3>
+                  <p style="color:var(--text-secondary); margin-bottom: 24px;">
+                      Enterprise users were struggling to manage data integration and Maximo automation workflows. The existing process involved fragmented tools, leading to high cognitive load, manual errors, and a steep learning curve for new operators.
+                  </p>
+                  <p style="color:var(--text-primary); border-left: 2px solid var(--accent-blue); padding-left: 16px; font-style: italic;">
+                      "We need a way to visualize complex data flows without overwhelming the user." — Stakeholder feedback
+                  </p>
+              </div>
           </div>
-      </div>
+      </section>
 
-      <!-- 4. METRICS -->
-      <div class="metrics-grid reveal-on-scroll" style="margin-top: 80px; display:grid; grid-template-columns:repeat(3,1fr); gap:24px;">
-          <div class="metric-card" style="background:var(--bg-surface); padding:32px; border-radius:16px; border:1px solid var(--border-faint);">
-              <div class="metric-val" style="font-size:2.5rem; font-family:var(--font-serif);">+65%</div>
-              <div class="metric-label" style="color:var(--text-secondary);">Engagement</div>
+      <!-- 4. GOALS & METRICS -->
+      <section class="section-container reveal-on-scroll">
+          <h3 style="font-size: 1.5rem; margin-bottom: 40px;">Goals & Success Metrics</h3>
+          <div class="metrics-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:24px;">
+              <div class="metric-card" style="background:var(--bg-surface); padding:32px; border-radius:16px; border:1px solid var(--border-faint);">
+                  <div class="metric-label" style="color:var(--text-secondary); margin-bottom: 8px;">Goal</div>
+                  <div class="metric-val" style="font-size:1.2rem; color: var(--text-primary);">Reduce Task Time</div>
+                  <p style="font-size: 0.9rem; color: var(--text-tertiary); margin-top: 8px;">Streamline navigation to access key data reports faster.</p>
+              </div>
+              <div class="metric-card" style="background:var(--bg-surface); padding:32px; border-radius:16px; border:1px solid var(--border-faint);">
+                  <div class="metric-label" style="color:var(--text-secondary); margin-bottom: 8px;">Goal</div>
+                  <div class="metric-val" style="font-size:1.2rem; color: var(--text-primary);">System Consistency</div>
+                  <p style="font-size: 0.9rem; color: var(--text-tertiary); margin-top: 8px;">Establish a reusable design system for future modules.</p>
+              </div>
+              <div class="metric-card" style="background:var(--bg-surface); padding:32px; border-radius:16px; border:1px solid var(--border-faint);">
+                  <div class="metric-label" style="color:var(--text-secondary); margin-bottom: 8px;">Goal</div>
+                  <div class="metric-val" style="font-size:1.2rem; color: var(--text-primary);">Reduce Errors</div>
+                  <p style="font-size: 0.9rem; color: var(--text-tertiary); margin-top: 8px;">Clearer feedback loops for data automation failures.</p>
+              </div>
           </div>
-          <div class="metric-card" style="background:var(--bg-surface); padding:32px; border-radius:16px; border:1px solid var(--border-faint);">
-              <div class="metric-val" style="font-size:2.5rem; font-family:var(--font-serif);">+45%</div>
-              <div class="metric-label" style="color:var(--text-secondary);">Sign-ups</div>
-          </div>
-          <div class="metric-card" style="background:var(--bg-surface); padding:32px; border-radius:16px; border:1px solid var(--border-faint);">
-              <div class="metric-val" style="font-size:2.5rem; font-family:var(--font-serif);">+31%</div>
-              <div class="metric-label" style="color:var(--text-secondary);">Campaign saves</div>
-          </div>
-      </div>
+      </section>
 
-      <!-- 5. PROJECT NAVIGATION -->
+      <!-- 5. CONSTRAINTS -->
+      <section class="section-container reveal-on-scroll" style="background: rgba(255,255,255,0.02); border-radius: 16px; padding: 40px;">
+          <h4 style="margin-bottom: 16px;">Constraints & Reality Check</h4>
+          <ul style="list-style: disc; padding-left: 20px; color: var(--text-secondary);">
+              <li style="margin-bottom: 8px;"><strong>Complex Legacy Data:</strong> Must support existing Maximo data structures without breaking changes.</li>
+              <li style="margin-bottom: 8px;"><strong>Technical Feasibility:</strong> Design had to be implemented within a tight 3-month window by a small engineering team.</li>
+              <li style="margin-bottom: 8px;"><strong>Data Density:</strong> Users need to see large datasets at a glance; whitespace had to be balanced with density.</li>
+          </ul>
+      </section>
+
+      <!-- 8. JOURNEY / FLOW -->
+      <section class="section-container reveal-on-scroll">
+          <div class="case-label" style="font-size:0.9rem; color:var(--text-tertiary); margin-bottom:16px;">INFORMATION ARCHITECTURE</div>
+          <h3 style="font-size:2rem; margin-bottom:40px;">Simplifying the Automation Flow</h3>
+          <p style="color:var(--text-secondary); margin-bottom: 40px; max-width: 700px;">
+              I mapped out the user journey to identify redundant steps. The new flow consolidated setup and monitoring into a single dashboard view, reducing clicks to action by 40%.
+          </p>
+          <div class="flow-chart-placeholder" style="width: 100%; height: 300px; background: var(--bg-surface); border: 1px dashed var(--border-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--text-tertiary);">
+              [Flow Diagram: Login -> Dashboard Overview -> Data Source Selection -> Automation Config -> Success]
+          </div>
+      </section>
+
+      <!-- 10. UI SYSTEM -->
+      <section class="section-container reveal-on-scroll">
+          <div class="case-label" style="font-size:0.9rem; color:var(--text-tertiary); margin-bottom:16px;">DESIGN SYSTEM</div>
+          <h3 style="font-size:2rem; margin-bottom:40px;">Built for Scalability</h3>
+          <div class="ui-system-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+              <div>
+                  <h4 style="margin-bottom: 16px;">Component Library</h4>
+                  <p style="color: var(--text-secondary); margin-bottom: 24px;">
+                      I established a modular component library focusing on data tables, status indicators, and navigation panels. This ensured consistency across the platform.
+                  </p>
+                  <ul style="color: var(--text-secondary); list-style: circle; padding-left: 20px;">
+                      <li>Standardized Data Tables with filtering/sorting</li>
+                      <li>Status Pills (Success, Pending, Error)</li>
+                      <li>Collapsible Sidebar Navigation</li>
+                  </ul>
+              </div>
+              <div class="ui-visual" style="background: var(--bg-surface); border: 1px solid var(--border-faint); border-radius: 12px; padding: 24px;">
+                  <!-- Placeholder for UI Kit preview -->
+                  <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+                      <button class="btn btn-primary" style="padding: 8px 16px; font-size: 0.8rem;">Primary Action</button>
+                      <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.8rem;">Secondary</button>
+                  </div>
+                  <div style="background: #1a1a1a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-faint); color: var(--text-secondary); font-family: monospace; font-size: 0.8rem;">
+                      Input Field: [ Enter Data source... ]
+                  </div>
+              </div>
+          </div>
+      </section>
+
+      <!-- 11. KEY DECISIONS -->
+      <section class="section-container reveal-on-scroll">
+          <h3 style="font-size: 1.5rem; margin-bottom: 40px;">Key Design Decisions</h3>
+          
+          <div class="decision-card" style="margin-bottom: 24px; padding: 32px; background: var(--bg-surface); border-radius: 12px; border-left: 4px solid var(--accent-blue);">
+              <h4 style="margin-bottom: 12px;">Decision: Side Navigation vs. Top Navigation</h4>
+              <p style="color: var(--text-secondary); margin-bottom: 12px;"><strong>Why:</strong> Enterprise screens are data-heavy and wide. Vertical space is precious.</p>
+              <p style="color: var(--text-secondary);"><strong>Outcome:</strong> Chose a collapsible side navigation to maximize horizontal real estate for data tables while keeping navigation accessible.</p>
+          </div>
+
+          <div class="decision-card" style="margin-bottom: 24px; padding: 32px; background: var(--bg-surface); border-radius: 12px; border-left: 4px solid var(--accent-blue);">
+              <h4 style="margin-bottom: 12px;">Decision: Inline Editing for Tables</h4>
+              <p style="color: var(--text-secondary); margin-bottom: 12px;"><strong>Why:</strong> Users frequently need to make small updates to data records.</p>
+              <p style="color: var(--text-secondary);"><strong>Outcome:</strong> Implemented inline editing to prevent context switching (modals), speeding up data entry workflows.</p>
+          </div>
+      </section>
+
+      <!-- 13. FINAL UI & HANDOFF -->
+      <section class="section-container reveal-on-scroll">
+          <h3 style="font-size: 2rem; margin-bottom: 40px;">Final Implementation</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 40px;">
+              The final delivery included high-fidelity screens, interactive prototypes for complex flows, and a redlined spec document for engineers.
+          </p>
+          <div class="gallery-grid" style="display: grid; grid-template-columns: 1fr; gap: 40px;">
+              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2400" style="width: 100%; border-radius: 12px; border: 1px solid var(--border-faint);" alt="Dashboard Overview">
+              <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2400" style="width: 100%; border-radius: 12px; border: 1px solid var(--border-faint);" alt="Data Integration Flow">
+          </div>
+      </section>
+
+      <!-- 14. RESULTS & IMPACT -->
+      <section class="section-container reveal-on-scroll">
+          <h3 style="font-size: 1.5rem; margin-bottom: 40px;">Results & Impact</h3>
+          <div class="metrics-grid" style="display:grid; grid-template-columns:repeat(2,1fr); gap:24px;">
+              <div class="metric-card" style="padding: 24px;">
+                  <div class="metric-val" style="font-size:2.5rem; font-family:var(--font-serif); color: var(--accent-blue);">Consistent</div>
+                  <p style="color:var(--text-secondary);">Implementation of UI specifications led to a unified look across the platform.</p>
+              </div>
+              <div class="metric-card" style="padding: 24px;">
+                  <div class="metric-val" style="font-size:2.5rem; font-family:var(--font-serif); color: var(--accent-blue);">Scalable</div>
+                  <p style="color:var(--text-secondary);">Design system components allowed the team to build new modules 2x faster.</p>
+              </div>
+          </div>
+      </section>
+
+      <!-- 16. CTA / NAV -->
       <div class="project-nav-container reveal-on-scroll">
           
           <!-- Previous Project -->
-          <a href="project-detail.html" class="project-nav-card prev">
+          <a href="projects.html" class="project-nav-card prev">
               <div class="nav-arrow-overlay">←</div>
-              <span class="nav-label">Previous Case</span>
-              <h3 class="nav-project-title">Meridian</h3>
+              <span class="nav-label">Back to Work</span>
+              <h3 class="nav-project-title">All Projects</h3>
           </a>
 
           <!-- Next Project -->
           <a href="project-detail.html" class="project-nav-card next">
               <div class="nav-arrow-overlay">→</div>
               <span class="nav-label">Next Case</span>
-              <h3 class="nav-project-title">Atlas</h3>
+              <h3 class="nav-project-title">Yarsha</h3>
           </a>
 
       </div>
       
     </main>
+
+    <a href="#" class="floating-resume-btn" download>Download Resume</a>
 
     <footer class="site-footer">
       <div class="footer-content">
@@ -121,7 +255,7 @@
               </div>
               <div class="fl-col">
                   <h5>Contact</h5>
-                  <a href="mailto:hello@example.com">hello@example.com</a>
+                  <a href="mailto:hinischalsubba@gmail.com">hinischalsubba@gmail.com</a>
               </div>
           </div>
       </div>

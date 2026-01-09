@@ -1,7 +1,7 @@
 /* 
   STYLE.CSS
   Refined Premium Theme (Dark/Light)
-  v6.4 - Case Navigation Interactions
+  v6.5 - High Contrast Nav Interactions
 */
 
 /* --- 1. DESIGN TOKENS --- */
@@ -640,7 +640,6 @@ body.custom-cursor-active .custom-cursor-outline {
     gap: 24px;
     text-decoration: none;
     cursor: pointer;
-    group: true;
 }
 
 .case-nav-media {
@@ -674,27 +673,42 @@ body.custom-cursor-active .custom-cursor-outline {
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    background: var(--bg-surface);
-    color: var(--text-primary);
+    background: var(--text-primary); /* High contrast */
+    color: var(--bg-root);
     display: flex;
     align-items: center;
     justify-content: center;
     transform: scale(0.5);
     opacity: 0;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     border: 1px solid var(--border-faint);
 }
 
-/* Hover Interaction */
+/* Hover Interaction - General */
 .case-nav-card:hover .case-nav-img {
     transform: scale(1.05);
 }
 .case-nav-card:hover .case-nav-overlay {
     opacity: 1;
 }
-.case-nav-card:hover .case-nav-icon {
-    transform: scale(1);
+
+/* Directional Slide Animation */
+/* Prev (Left) */
+.case-nav-card.prev .case-nav-icon {
+    transform: translateX(40px) scale(0.8);
+}
+.case-nav-card.prev:hover .case-nav-icon {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+}
+
+/* Next (Right) */
+.case-nav-card.next .case-nav-icon {
+    transform: translateX(-40px) scale(0.8);
+}
+.case-nav-card.next:hover .case-nav-icon {
+    transform: translateX(0) scale(1);
     opacity: 1;
 }
 

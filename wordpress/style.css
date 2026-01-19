@@ -1,13 +1,14 @@
+
 /*
 Theme Name: Nischhal Portfolio
 Theme URI: https://nischhal.com
 Author: Nischhal Raj Subba
-Version: 7.0
-Description: Ultimate customizable portfolio theme with comprehensive design tokens.
+Version: 7.1
+Description: Premium portfolio theme with 20+ custom block patterns and advanced cursor engine.
 */
 
 /* =========================================
-   1. DESIGN TOKENS (Base defaults, overridden by PHP)
+   1. DESIGN TOKENS
    ========================================= */
 :root {
     --max-width: 1200px;
@@ -25,26 +26,21 @@ Description: Ultimate customizable portfolio theme with comprehensive design tok
     --cursor-color: #FFFFFF;
     
     --anim-speed: 1;
-    
-    /* Layering */
     --z-canvas: 0; --z-base: 1; --z-card: 10; --z-nav: 900; --z-overlay: 950; --z-cursor: 9999;
+}
+
+[data-theme="light"] {
+    --bg-root: #FFFFFF; --bg-surface: #F8FAFC; 
+    --text-primary: #0F172A; --text-secondary: #475569; 
+    --border-faint: rgba(0,0,0,0.1); --accent-color: #2563EB; --cursor-color: #000000;
 }
 
 /* =========================================
    2. RESET & BASE
    ========================================= */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
-html { font-size: 16px; scroll-behavior: smooth; width: 100%; overflow-x: hidden; }
-body { 
-    background-color: var(--bg-root); 
-    color: var(--text-primary); 
-    font-family: var(--font-sans, sans-serif); 
-    line-height: 1.6; 
-    overflow-x: hidden; 
-    min-height: 100vh; 
-    transition: background-color 0.4s ease, color 0.4s ease; 
-}
-body.menu-open { overflow: hidden; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; overflow-x: hidden; }
+body { background-color: var(--bg-root); color: var(--text-primary); font-family: var(--font-sans, sans-serif); line-height: 1.6; min-height: 100vh; transition: background-color 0.4s ease, color 0.4s ease; }
 a { text-decoration: none; color: inherit; transition: opacity 0.3s; cursor: pointer; }
 img { display: block; max-width: 100%; height: auto; }
 #grid-canvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: var(--z-canvas); pointer-events: none; }
@@ -75,55 +71,75 @@ h3 { font-size: clamp(2rem, 4vw, 3rem); }
 @media (max-width: 768px) { .nav-wrapper { display: none; } .mobile-nav-toggle { display: flex; } }
 
 /* =========================================
-   5. LAYOUT COMPONENTS
+   5. COMPONENT & BLOCKS
    ========================================= */
 .container { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--container-padding); width: 100%; position: relative; z-index: var(--z-base); }
 .section-container { padding: var(--section-gap) 0; }
 
-.hero-section { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; padding-top: 140px; position: relative; width: 100%; }
-.hero-v1 { text-align: center; align-items: center; }
-.hero-v1 .hero-content-wrapper { max-width: 800px; }
-.hero-v2 { flex-direction: row; align-items: center; gap: 60px; }
-.hero-portrait-img { width: 100%; border-radius: 20px; opacity: 0.9; }
-
-.ticker-wrap { width: 100%; overflow: hidden; margin-bottom: 40px; mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent); }
-.ticker { display: flex; gap: 32px; width: max-content; animation: scroll 40s linear infinite; }
-.ticker-pill { padding: 8px 16px; border: 1px solid var(--border-faint); border-radius: 99px; font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary); white-space: nowrap; }
-@keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-/* Buttons */
-.btn { display: inline-flex; align-items: center; justify-content: center; padding: 16px 36px; border-radius: 99px; font-weight: 500; font-size: 1rem; transition: 0.3s; cursor: pointer; }
+.btn { display: inline-flex; align-items: center; justify-content: center; padding: 16px 36px; border-radius: 99px; font-weight: 500; font-size: 1rem; transition: 0.3s; cursor: pointer; text-decoration: none; }
 .btn-primary { background: var(--text-primary); color: var(--bg-root); border: 1px solid var(--text-primary); }
 .btn-secondary { background: transparent; border: 1px solid var(--border-faint); color: var(--text-primary); }
 .btn-secondary:hover { border-color: var(--text-primary); background: var(--border-faint); }
 
-/* Projects */
-.project-grid { display: grid; grid-template-columns: 1fr; gap: 80px; }
-.project-card { display: flex; flex-direction: column; gap: 24px; transition: transform 0.3s; }
-.card-media-wrap { width: 100%; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; background: var(--bg-surface); border: 1px solid var(--border-faint); position: relative; }
-.card-media-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
-.project-card:hover .card-media-wrap img { transform: scale(1.05); }
-.project-card:hover { transform: translateY(-5px); }
+/* --- BLOCK PATTERNS STYLES --- */
+/* Hero */
+.wp-block-group.hero-block { display: flex; flex-direction: column; justify-content: center; min-height: 80vh; padding-top: 140px; }
+.hero-block h1 { font-size: clamp(3.5rem, 8vw, 6rem); line-height: 1.1; margin-bottom: 24px; }
+.hero-block p { font-size: clamp(1.1rem, 2vw, 1.4rem); color: var(--text-secondary); max-width: 600px; margin-bottom: 32px; font-weight: 300; }
+
+/* Metrics */
+.metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; border-top: 1px solid var(--border-faint); padding-top: 60px; }
+.metric-item h3 { font-size: 4rem; margin-bottom: 8px; font-family: var(--font-serif); }
+.metric-item p { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-secondary); }
+
+/* Projects Grid (Block) */
+.wp-block-post-template { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 60px; list-style: none; padding: 0; }
+.wp-block-post { display: flex; flex-direction: column; gap: 24px; }
+.wp-block-post-featured-image { margin-bottom: 0; }
+.wp-block-post-featured-image img { border-radius: 16px; width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; border: 1px solid var(--border-faint); transition: transform 0.5s; }
+.wp-block-post:hover .wp-block-post-featured-image img { transform: scale(1.03); }
+.wp-block-post-title { font-size: 2rem; margin-bottom: 8px; }
+.wp-block-post-title a { text-decoration: none; }
+
+/* Testimonials */
+.testimonial-block { text-align: center; max-width: 900px; margin: 0 auto; }
+.testimonial-quote { font-family: var(--font-serif); font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.3; margin-bottom: 32px; }
+.testimonial-meta { font-size: 1.1rem; color: var(--text-secondary); }
+
+/* Block Styles */
+.is-style-outline-reveal { position: relative; color: transparent; -webkit-text-stroke: 1px var(--text-primary); }
+.is-style-glass-card { background: var(--bg-surface); border: 1px solid var(--border-faint); padding: 40px; border-radius: 24px; }
 
 /* =========================================
-   6. INTERACTION ELEMENTS
+   6. CURSOR STYLES (Supports all 10)
    ========================================= */
 .custom-cursor-dot {
     position: fixed; width: var(--cursor-size); height: var(--cursor-size); background: var(--cursor-color); border-radius: 50%; 
     pointer-events: none; z-index: var(--z-cursor); transform: translate(-50%, -50%); display: none;
-    mix-blend-mode: var(--cursor-mix-mode, normal);
+    mix-blend-mode: normal;
 }
 .custom-cursor-outline {
     position: fixed; width: calc(var(--cursor-size) * 2.5); height: calc(var(--cursor-size) * 2.5); 
     border: 1px solid var(--cursor-color); border-radius: 50%; 
     pointer-events: none; z-index: var(--z-cursor); transform: translate(-50%, -50%); display: none;
-    transition: width 0.35s ease-out, height 0.35s ease-out;
-    mix-blend-mode: var(--cursor-mix-mode, normal);
+    transition: width 0.3s, height 0.3s;
+    mix-blend-mode: normal;
 }
 body.custom-cursor-active { cursor: none !important; }
 body.custom-cursor-active a, body.custom-cursor-active button { cursor: none !important; }
 body.custom-cursor-active .custom-cursor-dot, 
 body.custom-cursor-active .custom-cursor-outline { display: block; }
+
+/* Special Modes */
+body.cursor-blend .custom-cursor-dot, body.cursor-blend .custom-cursor-outline { mix-blend-mode: difference; background: #fff; border-color: #fff; }
+body.cursor-focus .custom-cursor-outline { border-style: dashed; animation: spin 4s linear infinite; }
+@keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+
+/* Spotlight Cursor */
+.custom-cursor-outline.spotlight-mode {
+    width: 300px; height: 300px; border: none;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+}
 
 /* Page Transition */
 .page-transition-curtain { position: fixed; top: 0; left: 0; width: 100%; height: 0; background: var(--text-primary); z-index: 9998; pointer-events: none; }
@@ -131,4 +147,3 @@ body.custom-cursor-active .custom-cursor-outline { display: block; }
 /* Footer */
 .site-footer { padding: 100px 0 40px; background: var(--bg-surface); border-top: 1px solid var(--border-faint); margin-top: 100px; }
 .footer-top-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 80px; margin-bottom: 80px; }
-.floating-resume-btn { position: fixed; bottom: 32px; right: 32px; z-index: var(--z-cursor); background: var(--text-primary); color: var(--bg-root); padding: 14px 28px; border-radius: 99px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }

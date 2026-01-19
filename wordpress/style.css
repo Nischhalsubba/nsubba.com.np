@@ -1,7 +1,7 @@
 
 /* 
   STYLE.CSS
-  Premium Design Engine v15.3
+  Premium Design Engine v15.5
   Nischhal Raj Subba Portfolio
   -----------------------------------------
   Typography: Playfair Display (Serif) & Inter (Sans)
@@ -45,7 +45,7 @@
     --font-serif: "Playfair Display", serif;
     --font-sans: "Inter", sans-serif;
     
-    /* Layering */
+    /* Layering - Fix Z-Indices */
     --z-canvas: 0;
     --z-content: 10;
     --z-nav: 1000;
@@ -54,7 +54,7 @@
     --z-menu-overlay: 1999;
     --z-mobile-logo: 2000;
     --z-floating-btn: 900;
-    --z-cursor: 9999;
+    --z-cursor: 2147483647; /* Maximum Safe Integer */
     
     /* Transitions */
     --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
@@ -812,7 +812,7 @@ body.menu-open .mobile-nav-overlay { opacity: 1; pointer-events: auto; }
     pointer-events: none;
     z-index: var(--z-cursor);
     transform: translate(-50%, -50%);
-    display: none;
+    display: none; /* Default hidden */
 }
 .custom-cursor-outline {
     position: fixed;
@@ -823,13 +823,20 @@ body.menu-open .mobile-nav-overlay { opacity: 1; pointer-events: auto; }
     pointer-events: none;
     z-index: var(--z-cursor);
     transform: translate(-50%, -50%);
-    display: none;
+    display: none; /* Default hidden */
     transition: width 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), height 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s;
 }
-body.custom-cursor-active { cursor: none !important; }
-body.custom-cursor-active a, body.custom-cursor-active button { cursor: none !important; }
-body.custom-cursor-active .custom-cursor-dot, 
-body.custom-cursor-active .custom-cursor-outline { display: block; }
+
+/* Visibility Control: Show cursor ONLY on devices with a mouse (pointer: fine) */
+@media (pointer: fine) {
+    body { cursor: none !important; }
+    body a, body button, body input { cursor: none !important; }
+    
+    .custom-cursor-dot, 
+    .custom-cursor-outline { 
+        display: block; /* Visible by default on desktop */
+    }
+}
 
 /* Utilities */
 .btn {

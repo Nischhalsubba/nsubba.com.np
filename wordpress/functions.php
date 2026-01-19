@@ -1,7 +1,7 @@
 <?php
 /**
  * Nischhal Portfolio - Core Functions
- * Version: 7.2 (Restored Customizer + Block Patterns)
+ * Version: 8.1 (Admin Dashboard + Customizer)
  */
 
 // --- 1. SETUP & SUPPORT ---
@@ -18,7 +18,155 @@ function nischhal_theme_setup() {
 }
 add_action( 'after_setup_theme', 'nischhal_theme_setup' );
 
-// --- 2. ENQUEUE ---
+// --- 2. CUSTOM POST TYPES (ADMIN MENUS) ---
+function nischhal_register_post_types() {
+    
+    // PROJECTS (WORK)
+    register_post_type('project', array(
+        'labels' => array(
+            'name' => 'Projects',
+            'singular_name' => 'Project',
+            'add_new' => 'Add New Case Study',
+            'add_new_item' => 'Add New Project',
+            'edit_item' => 'Edit Project',
+            'new_item' => 'New Project',
+            'view_item' => 'View Project',
+            'search_items' => 'Search Projects',
+            'not_found' => 'No projects found',
+            'menu_name' => '💼 Projects'
+        ),
+        'public' => true,
+        'has_archive' => true,
+        'menu_icon' => 'dashicons-portfolio',
+        'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'revisions'),
+        'show_in_rest' => true, // Enables Gutenberg Editor
+        'rewrite' => array('slug' => 'work'),
+    ));
+
+    // PROJECT CATEGORIES (Taxonomy)
+    register_taxonomy('project_category', 'project', array(
+        'labels' => array(
+            'name' => 'Project Categories',
+            'singular_name' => 'Category',
+            'menu_name' => 'Categories'
+        ),
+        'hierarchical' => true,
+        'show_in_rest' => true,
+        'public' => true
+    ));
+
+    // TESTIMONIALS
+    register_post_type('testimonial', array(
+        'labels' => array(
+            'name' => 'Testimonials',
+            'singular_name' => 'Testimonial',
+            'add_new' => 'Add Testimonial',
+            'add_new_item' => 'Add New Testimonial',
+            'menu_name' => '💬 Testimonials'
+        ),
+        'public' => true,
+        'publicly_queryable' => false, // No single page for testimonials usually
+        'show_ui' => true,
+        'menu_icon' => 'dashicons-format-quote',
+        'supports' => array('title', 'editor'), // Title = Person Name, Editor = Quote
+        'show_in_rest' => true,
+    ));
+}
+add_action('init', 'nischhal_register_post_types');
+
+// --- 3. CUSTOM FIELDS (META BOXES) ---
+function nischhal_add_meta_boxes() {
+    // Project Details
+    add_meta_box('project_meta', '🚀 Project Scope & Details', 'nischhal_render_project_meta', 'project', 'side', 'high');
+    
+    // Testimonial Details
+    add_meta_box('testimonial_meta', '👤 Author Details', 'nischhal_render_testimonial_meta', 'testimonial', 'normal', 'high');
+}
+add_action('add_meta_boxes', 'nischhal_add_meta_boxes');
+
+// Render Project Meta
+function nischhal_render_project_meta($post) {
+    wp_nonce_field('nischhal_save_project_meta', 'nischhal_project_nonce');
+    
+    $year = get_post_meta($post->ID, 'project_year', true);
+    $role = get_post_meta($post->ID, 'project_role', true);
+    $industry = get_post_meta($post->ID, 'project_industry', true);
+    $team = get_post_meta($post->ID, 'project_team', true);
+    $timeline = get_post_meta($post->ID, 'project_timeline', true);
+    $outcome = get_post_meta($post->ID, 'project_outcome', true);
+    $live_url = get_post_meta($post->ID, 'project_live_url', true);
+    
+    ?>
+    <style>
+        .n-meta-row { margin-bottom: 15px; }
+        .n-meta-row label { display: block; font-weight: 600; margin-bottom: 5px; color: #444; }
+        .n-meta-row input { width: 100%; padding: 5px; border: 1px solid #ddd; border-radius: 4px; }
+        .n-meta-row input:focus { border-color: #2271b1; box-shadow: 0 0 0 1px #2271b1; }
+    </style>
+    <div class="n-meta-row">
+        <label>Year</label>
+        <input type="text" name="project_year" value="<?php echo esc_attr($year); ?>" placeholder="e.g. 2025">
+    </div>
+    <div class="n-meta-row">
+        <label>Industry</label>
+        <input type="text" name="project_industry" value="<?php echo esc_attr($industry); ?>" placeholder="e.g. Fintech">
+    </div>
+    <div class="n-meta-row">
+        <label>My Role</label>
+        <input type="text" name="project_role" value="<?php echo esc_attr($role); ?>" placeholder="e.g. Lead Designer">
+    </div>
+    <div class="n-meta-row">
+        <label>Team Size</label>
+        <input type="text" name="project_team" value="<?php echo esc_attr($team); ?>" placeholder="e.g. 2 Devs, 1 PM">
+    </div>
+    <div class="n-meta-row">
+        <label>Timeline</label>
+        <input type="text" name="project_timeline" value="<?php echo esc_attr($timeline); ?>" placeholder="e.g. 3 Months">
+    </div>
+    <div class="n-meta-row">
+        <label>Outcome / Metric</label>
+        <input type="text" name="project_outcome" value="<?php echo esc_attr($outcome); ?>" placeholder="e.g. +20% Conversion">
+    </div>
+    <div class="n-meta-row">
+        <label>Live URL (Optional)</label>
+        <input type="url" name="project_live_url" value="<?php echo esc_attr($live_url); ?>" placeholder="https://...">
+    </div>
+    <?php
+}
+
+// Render Testimonial Meta
+function nischhal_render_testimonial_meta($post) {
+    wp_nonce_field('nischhal_save_testimonial_meta', 'nischhal_testimonial_nonce');
+    $role = get_post_meta($post->ID, 'testimonial_role', true);
+    ?>
+    <div style="margin-top: 10px;">
+        <label style="font-weight:600; display:block; margin-bottom:5px;">Role / Company</label>
+        <input type="text" name="testimonial_role" value="<?php echo esc_attr($role); ?>" style="width:100%; padding:8px;" placeholder="e.g. CTO at FinTech Co.">
+    </div>
+    <?php
+}
+
+// Save Meta Data
+function nischhal_save_meta_data($post_id) {
+    // Check autosave
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    
+    // Check permissions & Nonces
+    if (isset($_POST['nischhal_project_nonce']) && wp_verify_nonce($_POST['nischhal_project_nonce'], 'nischhal_save_project_meta')) {
+        $fields = ['project_year', 'project_role', 'project_industry', 'project_team', 'project_timeline', 'project_outcome', 'project_live_url'];
+        foreach ($fields as $field) {
+            if (isset($_POST[$field])) update_post_meta($post_id, $field, sanitize_text_field($_POST[$field]));
+        }
+    }
+    
+    if (isset($_POST['nischhal_testimonial_nonce']) && wp_verify_nonce($_POST['nischhal_testimonial_nonce'], 'nischhal_save_testimonial_meta')) {
+        if (isset($_POST['testimonial_role'])) update_post_meta($post_id, 'testimonial_role', sanitize_text_field($_POST['testimonial_role']));
+    }
+}
+add_action('save_post', 'nischhal_save_meta_data');
+
+
+// --- 4. ENQUEUE ---
 function nischhal_enqueue_scripts() {
     // Fonts
     $h_font = get_theme_mod('typo_heading_family', 'Playfair Display');
@@ -28,10 +176,10 @@ function nischhal_enqueue_scripts() {
     wp_enqueue_style( 'nischhal-google-fonts', $fonts_url, array(), null );
 
     // Core
-    wp_enqueue_style( 'main-style', get_stylesheet_uri(), array(), '7.2' );
+    wp_enqueue_style( 'main-style', get_stylesheet_uri(), array(), '8.1' );
     wp_enqueue_script( 'gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js', array(), null, true );
     wp_enqueue_script( 'gsap-st', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js', array('gsap'), null, true );
-    wp_enqueue_script( 'theme-js', get_template_directory_uri() . '/js/main.js', array('gsap'), '7.2', true );
+    wp_enqueue_script( 'theme-js', get_template_directory_uri() . '/js/main.js', array('gsap'), '8.1', true );
 
     // Pass Config to JS (Restored full config)
     wp_localize_script( 'theme-js', 'themeConfig', array(
@@ -47,7 +195,7 @@ function nischhal_enqueue_scripts() {
 }
 add_action( 'wp_enqueue_scripts', 'nischhal_enqueue_scripts' );
 
-// --- 3. CUSTOM BLOCK CATEGORY ---
+// --- 5. CUSTOM BLOCK CATEGORY ---
 function nischhal_block_categories( $categories, $post ) {
     return array_merge(
         array(
@@ -61,7 +209,7 @@ function nischhal_block_categories( $categories, $post ) {
 }
 add_filter( 'block_categories_all', 'nischhal_block_categories', 10, 2 );
 
-// --- 4. REGISTER BLOCK STYLES ---
+// --- 6. REGISTER BLOCK STYLES ---
 function nischhal_register_block_styles() {
     register_block_style( 'core/heading', array(
         'name'  => 'outline-reveal',
@@ -74,7 +222,7 @@ function nischhal_register_block_styles() {
 }
 add_action( 'init', 'nischhal_register_block_styles' );
 
-// --- 5. EXTENSIVE BLOCK PATTERNS (The "UI Kit") ---
+// --- 7. EXTENSIVE BLOCK PATTERNS (The "UI Kit") ---
 function nischhal_register_patterns() {
     
     // HERO: Center with Ticker
@@ -128,7 +276,7 @@ function nischhal_register_patterns() {
 }
 add_action( 'init', 'nischhal_register_patterns' );
 
-// --- 6. THEME CUSTOMIZER (RESTORED v7.0) ---
+// --- 8. THEME CUSTOMIZER (RESTORED v7.0) ---
 function nischhal_customize_register( $wp_customize ) {
     
     // --- PANEL: INTERACTION & CURSORS ---
@@ -242,7 +390,7 @@ function nischhal_customize_register( $wp_customize ) {
 }
 add_action( 'customize_register', 'nischhal_customize_register' );
 
-// --- 7. CSS VARIABLES INJECTION (RESTORED) ---
+// --- 9. CSS VARIABLES INJECTION (RESTORED) ---
 function nischhal_customizer_css() {
     ?>
     <style>

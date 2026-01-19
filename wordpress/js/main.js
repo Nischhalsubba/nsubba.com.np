@@ -1,9 +1,20 @@
 
-
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- CONFIG LOAD ---
+    // Fallback if themeConfig isn't loaded for some reason
+    const config = (typeof themeConfig !== 'undefined') ? themeConfig : { 
+        imgDark: '', 
+        imgLight: '', 
+        animSpeed: 1.0, 
+        cursorEnable: true 
+    };
+    
+    // Convert PHP string boolean to JS boolean if necessary
+    const ENABLE_CURSOR = (config.cursorEnable == true || config.cursorEnable === "1");
+    const ANIM_SPEED = parseFloat(config.animSpeed) || 1.0;
+
     const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // Check for touch device to optimize performance
     const IS_TOUCH = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
     // --- 0. THEME HANDLING ---
@@ -11,23 +22,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const htmlEl = document.documentElement;
 
     // Images
-    const DARK_IMG = "https://i.imgur.com/ixsEpYM.png";
-    const LIGHT_IMG = "https://i.imgur.com/oFHdPUS.png";
+    const DARK_IMG = config.imgDark; 
+    const LIGHT_IMG = config.imgLight; 
 
     const sunIcon = `<svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.29 1.29c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.29 1.29c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41l-1.29-1.29zm1.41-13.78c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41l1.29 1.29c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41l-1.29-1.29zM7.28 17.28c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41l1.29 1.29c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41l-1.29-1.29z"/></svg>`;
     const moonIcon = `<svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>`;
 
     function updateImages(theme) {
         const targetSrc = theme === 'light' ? LIGHT_IMG : DARK_IMG;
-
-        const heroImg = document.querySelector('.hero-portrait-img');
-        if (heroImg) heroImg.src = targetSrc;
-
-        const footerImg = document.querySelector('.footer-portrait-img');
-        if (footerImg) footerImg.src = targetSrc;
-
-        const aboutImg = document.querySelector('.profile-img');
-        if (aboutImg) aboutImg.src = targetSrc;
+        const els = document.querySelectorAll('.hero-portrait-img, .footer-portrait-img, .profile-img');
+        els.forEach(img => { if(img) img.src = targetSrc; });
     }
 
     function setTheme(theme) {
@@ -57,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- MOBILE MENU TOGGLE ---
+    // --- MOBILE MENU ---
     const mobileBtn = document.querySelector('.mobile-nav-toggle');
     const body = document.body;
     const mobileLinks = document.querySelectorAll('.mobile-nav-links a');
@@ -65,17 +69,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mobileBtn) {
         mobileBtn.addEventListener('click', () => {
             const isOpen = body.classList.toggle('menu-open');
-            
             if (isOpen && window.gsap) {
-                // Staggered animation for links opening
                 gsap.fromTo(mobileLinks, 
                     { y: 30, opacity: 0 },
-                    { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out", delay: 0.1 }
+                    { y: 0, opacity: 1, duration: 0.5 * ANIM_SPEED, stagger: 0.1, ease: "power2.out", delay: 0.1 }
                 );
             }
         });
-
-        // Close menu when a link is clicked
         mobileLinks.forEach(link => {
             link.addEventListener('click', () => {
                 body.classList.remove('menu-open');
@@ -83,8 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 1. SPOTLIGHT GRID CANVAS ---
-    // DISABLED ON MOBILE/TOUCH FOR PERFORMANCE OPTIMIZATION
+    // --- 1. SPOTLIGHT GRID ---
     const canvas = document.getElementById('grid-canvas');
     if (canvas && !REDUCED_MOTION && !IS_TOUCH) {
         const ctx = canvas.getContext('2d');
@@ -98,18 +97,13 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('resize', resize);
         resize();
 
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-        });
+        window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
 
         function drawGrid() {
             ctx.clearRect(0, 0, width, height);
-
             const isLight = htmlEl.getAttribute('data-theme') === 'light';
             const gridSize = 60;
             const spotlightRadius = 400;
-
             const gridColor = isLight ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)';
             const spotlightColorStart = isLight ? 'rgba(37, 99, 235, 0.15)' : 'rgba(59, 130, 246, 0.15)';
             const spotlightColorEnd = isLight ? 'rgba(37, 99, 235, 0)' : 'rgba(59, 130, 246, 0)';
@@ -124,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const grad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, spotlightRadius);
             grad.addColorStop(0, spotlightColorStart);
             grad.addColorStop(1, spotlightColorEnd);
-
             ctx.strokeStyle = grad;
             ctx.beginPath();
 
@@ -144,132 +137,74 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.lineTo(Math.min(width, mouse.x + spotlightRadius), y);
             }
             ctx.stroke();
-
             requestAnimationFrame(drawGrid);
         }
         drawGrid();
     }
 
-    // --- 2. CUSTOM CURSOR (Fixed & Safe) ---
+    // --- 2. CUSTOM CURSOR ---
     const cursorDot = document.querySelector('.custom-cursor-dot');
     const cursorOutline = document.querySelector('.custom-cursor-outline');
-
-    // Only enable if pointer is fine (mouse) and elements exist
-    // DISABLED ON TOUCH DEVICES
-    if (!REDUCED_MOTION && window.matchMedia('(pointer: fine)').matches && !IS_TOUCH && cursorDot) {
-
-        // Add class to body to hide default cursor ONLY when this logic is active
+    
+    if (ENABLE_CURSOR && !REDUCED_MOTION && window.matchMedia('(pointer: fine)').matches && !IS_TOUCH && cursorDot) {
         document.body.classList.add('custom-cursor-active');
-
-        let mouseX = window.innerWidth / 2;
-        let mouseY = window.innerHeight / 2;
-        let outlineX = mouseX;
-        let outlineY = mouseY;
-
-        // Initial setup
+        let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+        let outlineX = mouseX, outlineY = mouseY;
         gsap.set([cursorDot, cursorOutline], { xPercent: -50, yPercent: -50, opacity: 1 });
 
-        window.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
+        window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; gsap.to(cursorDot, { x: mouseX, y: mouseY, duration: 0 }); });
 
-            // Dot follows instantly
-            gsap.to(cursorDot, { x: mouseX, y: mouseY, duration: 0 });
-        });
-
-        // Smooth outline loop
         const animateCursor = () => {
             outlineX += (mouseX - outlineX) * 0.15;
             outlineY += (mouseY - outlineY) * 0.15;
-
             gsap.set(cursorOutline, { x: outlineX, y: outlineY });
             requestAnimationFrame(animateCursor);
         };
         animateCursor();
 
-        // Hover Effect Logic
         const interactiveSelectors = 'a, button, input, textarea, .project-card, .nav-pill, .writing-item, .project-nav-card, .social-icon-btn, .award-item, .t-btn, .theme-toggle-btn, .mobile-nav-toggle';
-
         document.querySelectorAll(interactiveSelectors).forEach(el => {
             el.addEventListener('mouseenter', () => {
-                gsap.to(cursorOutline, {
-                    width: 60,
-                    height: 60,
-                    backgroundColor: 'rgba(128, 128, 128, 0.1)',
-                    borderColor: 'transparent',
-                    duration: 0.3
-                });
+                gsap.to(cursorOutline, { width: 60, height: 60, backgroundColor: 'rgba(128, 128, 128, 0.1)', borderColor: 'transparent', duration: 0.3 });
                 gsap.to(cursorDot, { scale: 0.5, duration: 0.3 });
             });
             el.addEventListener('mouseleave', () => {
-                gsap.to(cursorOutline, {
-                    width: 40,
-                    height: 40,
-                    backgroundColor: 'transparent',
-                    borderColor: 'var(--cursor-border)',
-                    duration: 0.3
-                });
+                gsap.to(cursorOutline, { width: 40, height: 40, backgroundColor: 'transparent', borderColor: 'var(--cursor-border)', duration: 0.3 });
                 gsap.to(cursorDot, { scale: 1, duration: 0.3 });
             });
         });
     }
 
-    // --- 3. TITLE SCROLL REVEAL (Outline to Fill) ---
+    // --- 3. REVEAL ANIMATIONS ---
     if (window.gsap && window.ScrollTrigger && !REDUCED_MOTION) {
         gsap.registerPlugin(ScrollTrigger);
-
         document.querySelectorAll('.text-reveal-wrap').forEach(title => {
             const fillText = title.querySelector('.text-fill');
             if (fillText) {
                 gsap.to(fillText, {
-                    clipPath: 'inset(0 0% 0 0)',
-                    ease: 'none',
-                    scrollTrigger: {
-                        trigger: title,
-                        start: 'top 90%', // Earlier start for mobile
-                        end: 'bottom 20%', // Earlier end for mobile
-                        scrub: 0.5 // Smoother scrubbing
-                    }
+                    clipPath: 'inset(0 0% 0 0)', ease: 'none',
+                    scrollTrigger: { trigger: title, start: 'top 90%', end: 'bottom 20%', scrub: 0.5 }
                 });
             }
         });
-
         document.querySelectorAll(".reveal-on-scroll").forEach(el => {
             gsap.fromTo(el, { y: 40, opacity: 0 }, {
-                y: 0, opacity: 1, duration: 0.8,
+                y: 0, opacity: 1, duration: 0.8 * ANIM_SPEED,
                 scrollTrigger: { trigger: el, start: "top 85%" }
             });
         });
     }
 
-    // --- 4. NAV GLIDER & ACTIVE STATE LOGIC (Refined) ---
+    // --- 4. NAV GLIDER ---
     const navLinks = document.querySelectorAll('.nav-link');
     const glider = document.querySelector('.nav-glider');
-    
-    // Get the current page filename from the URL, defaulting to 'index.html' for root
     const currentPath = window.location.pathname;
     const pageName = currentPath.split('/').pop() || 'index.html';
-
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        const href = link.getAttribute('href');
-        
-        // Exact match or root/index aliases
-        if (href === pageName || (pageName === 'index.html' && (href === './' || href === '/'))) {
-            link.classList.add('active');
-        }
-    });
-
+    
     if (glider && !IS_TOUCH) { 
         const moveGlider = (el) => {
             if (!el) return;
-            gsap.to(glider, {
-                x: el.offsetLeft, 
-                width: el.offsetWidth, 
-                opacity: 1,
-                duration: 0.3,
-                ease: "power2.out"
-            });
+            gsap.to(glider, { x: el.offsetLeft, width: el.offsetWidth, opacity: 1, duration: 0.3 * ANIM_SPEED, ease: "power2.out" });
         };
         const activeLink = document.querySelector('.nav-link.active');
         if (activeLink) setTimeout(() => moveGlider(activeLink), 100);
@@ -283,62 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 5. FILTER & SEARCH LOGIC ---
-    const setupFilters = (btnClass, itemClass, attrName, searchId) => {
-        const filterBtns = document.querySelectorAll(btnClass);
-        const items = document.querySelectorAll(itemClass);
-        const searchInput = document.getElementById(searchId);
-
-        if (filterBtns.length === 0 && !searchInput) return;
-
-        let currentCategory = 'all';
-        let currentSearch = '';
-
-        const filterItems = () => {
-            items.forEach(el => {
-                const tags = el.getAttribute(attrName);
-                // For text search, we look at the entire text content of the card/item
-                const textContent = el.innerText.toLowerCase();
-
-                const matchesCategory = currentCategory === 'all' || (tags && tags.includes(currentCategory));
-                const matchesSearch = currentSearch === '' || textContent.includes(currentSearch);
-
-                if (matchesCategory && matchesSearch) {
-                    el.classList.remove('hidden');
-                    // Reset animation trigger if hidden
-                    gsap.to(el, { opacity: 1, y: 0, duration: 0.4, display: 'flex' }); // Flex or Grid depending on CSS
-                } else {
-                    el.classList.add('hidden');
-                    gsap.to(el, { opacity: 0, display: 'none', duration: 0 });
-                }
-            });
-        };
-
-        // Button Clicks
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentCategory = btn.getAttribute('data-filter');
-                filterItems();
-            });
-        });
-
-        // Search Input
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                currentSearch = e.target.value.toLowerCase();
-                filterItems();
-            });
-        }
-    };
-
-    // Apply to Work and Writing pages if present
-    setupFilters('.filter-btn', '.project-card', 'data-category', 'search-work');
-    setupFilters('.blog-filter-btn', '.writing-item', 'data-category', 'search-blog');
-
-
-    // --- 6. TESTIMONIAL CAROUSEL ---
+    // --- 5. TESTIMONIALS ---
     const tTrack = document.querySelector('.t-track');
     const tPrev = document.getElementById('t-prev');
     const tNext = document.getElementById('t-next');
@@ -348,49 +228,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let tIndex = 0;
         const updateT = () => {
             tTrack.style.transform = `translateX(-${tIndex * 100}%)`;
-            tSlides.forEach((s, i) => {
-                s.classList.toggle('active', i === tIndex);
-            });
+            tSlides.forEach((s, i) => { s.classList.toggle('active', i === tIndex); });
         };
-
-        if (tPrev) tPrev.addEventListener('click', () => {
-            tIndex = (tIndex > 0) ? tIndex - 1 : tSlides.length - 1;
-            updateT();
-        });
-
-        if (tNext) tNext.addEventListener('click', () => {
-            tIndex = (tIndex < tSlides.length - 1) ? tIndex + 1 : 0;
-            updateT();
-        });
+        if (tPrev) tPrev.addEventListener('click', () => { tIndex = (tIndex > 0) ? tIndex - 1 : tSlides.length - 1; updateT(); });
+        if (tNext) tNext.addEventListener('click', () => { tIndex = (tIndex < tSlides.length - 1) ? tIndex + 1 : 0; updateT(); });
         updateT();
-    }
-
-    // --- 7. CONTACT FORM HANDLER ---
-    const contactForm = document.getElementById('contact-form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const btn = contactForm.querySelector('button');
-            const originalText = btn.innerText;
-
-            btn.innerText = 'Sending...';
-            btn.style.opacity = '0.7';
-
-            // Simulate sending
-            setTimeout(() => {
-                btn.innerText = 'Message Sent!';
-                btn.style.background = '#4CAF50';
-                btn.style.color = '#fff';
-                btn.style.opacity = '1';
-                contactForm.reset();
-
-                // Reset button after 3 seconds
-                setTimeout(() => {
-                    btn.innerText = originalText;
-                    btn.style.background = ''; // Revert to CSS default
-                    btn.style.color = '';
-                }, 3000);
-            }, 1500);
-        });
     }
 });

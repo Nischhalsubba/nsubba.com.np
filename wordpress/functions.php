@@ -2,7 +2,7 @@
 <?php
 /**
  * Nischhal Portfolio - Core Functions
- * Version: 16.2 (Bugfixes & Optimization)
+ * Version: 16.6 (The "Everything" Merge)
  */
 
 // --- 1. SETUP & SUPPORT ---
@@ -16,9 +16,9 @@ function nischhal_theme_setup() {
     add_theme_support( 'responsive-embeds' );
     add_editor_style( 'style.css' );
     
-    // 1.1 Image Sizes (Upscaling Targets)
-    add_image_size( 'hero-ultra', 1920, 1080, false ); // Full HD
-    add_image_size( 'project-card', 800, 600, true );  // Hard Crop for Grid
+    // 1.1 Image Sizes
+    add_image_size( 'hero-ultra', 1920, 1080, false ); 
+    add_image_size( 'project-card', 800, 600, true ); 
     
     // Register Menus
     register_nav_menus( array( 
@@ -28,221 +28,100 @@ function nischhal_theme_setup() {
 }
 add_action( 'after_setup_theme', 'nischhal_theme_setup' );
 
-// --- 1.2 IMAGE COMPRESSION & OPTIMIZATION ---
-// Set JPEG Quality to 80 (Good balance of quality vs size)
-add_filter( 'jpeg_quality', function($arg){ return 80; } );
-add_filter( 'wp_editor_set_quality', function($arg){ return 80; } );
-
-// Resize massive images upon upload (threshold 2560px)
+// --- 1.2 OPTIMIZATION ---
+add_filter( 'jpeg_quality', function($arg){ return 85; } );
 add_filter( 'big_image_size_threshold', function() { return 2560; } );
 
-// --- 1.3 SEO AUTOMATION (FIXED) ---
+// --- 1.3 SEO METADATA ---
 function nischhal_seo_meta_tags() {
     global $post;
+    if ( !isset($post) || !is_object($post) ) return; 
     
-    // CRITICAL FIX: Ensure $post exists before accessing ID (Fixes 404/Archive errors)
-    if ( !isset($post) || !is_object($post) ) {
-        return;
-    }
-    
-    // Default Description
-    $excerpt = "Portfolio of Nischhal Raj Subba, a #1 Ranked Product Designer specializing in Design Systems, Enterprise UX, and Web3 Product Design.";
-    
-    // Safety check for ID property
-    $post_id = isset($post->ID) ? $post->ID : 0;
-
-    if ( (is_single() || is_page()) && $post_id ) {
-        if ( has_excerpt( $post_id ) ) {
-            $excerpt = strip_tags( get_the_excerpt( $post_id ) );
+    $excerpt = get_bloginfo('description');
+    if ( is_single() || is_page() ) {
+        if ( has_excerpt( $post->ID ) ) {
+            $excerpt = strip_tags( get_the_excerpt( $post->ID ) );
         } elseif ( !empty($post->post_content) ) {
             $excerpt = wp_trim_words( strip_tags( $post->post_content ), 25 );
         }
     }
     
-    // Default Image
     $img_url = get_theme_mod('hero_img', 'https://i.imgur.com/ixsEpYM.png');
-    if ( $post_id && has_post_thumbnail( $post_id ) ) {
-        $img_url = get_the_post_thumbnail_url( $post_id, 'large' );
+    if ( has_post_thumbnail( $post->ID ) ) {
+        $img_url = get_the_post_thumbnail_url( $post->ID, 'large' );
     }
     
     ?>
-    <!-- SEO & Open Graph -->
     <meta name="description" content="<?php echo esc_attr($excerpt); ?>">
-    <meta property="og:locale" content="en_US" />
-    <meta property="og:type" content="<?php echo (is_single() ? 'article' : 'website'); ?>" />
     <meta property="og:title" content="<?php wp_title('|', true, 'right'); ?><?php bloginfo('name'); ?>" />
     <meta property="og:description" content="<?php echo esc_attr($excerpt); ?>" />
-    <meta property="og:url" content="<?php echo esc_url( get_permalink() ); ?>" />
-    <meta property="og:site_name" content="<?php bloginfo('name'); ?>" />
     <meta property="og:image" content="<?php echo esc_url($img_url); ?>" />
     <meta name="twitter:card" content="summary_large_image" />
-    
-    <!-- Schema.org (Person/Portfolio) -->
-    <script type="application/ld+json">
-    {
-      "@context": "http://schema.org",
-      "@type": "Person",
-      "name": "Nischhal Raj Subba",
-      "url": "<?php echo home_url(); ?>",
-      "jobTitle": "Product Designer",
-      "sameAs": [
-        "https://linkedin.com/in/nischhal/",
-        "https://behance.net/nischhal",
-        "https://dribbble.com/Nischhal"
-      ]
-    }
-    </script>
     <?php
 }
 add_action('wp_head', 'nischhal_seo_meta_tags', 5);
 
-
-// --- 2. CUSTOM POST TYPES (ADMIN MENUS) ---
+// --- 2. CUSTOM POST TYPES ---
 function nischhal_register_post_types() {
-    
-    // PROJECTS (WORK)
     register_post_type('project', array(
-        'labels' => array(
-            'name' => 'Projects',
-            'singular_name' => 'Project',
-            'add_new' => 'Add New Case Study',
-            'add_new_item' => 'Add New Project',
-            'edit_item' => 'Edit Project',
-            'new_item' => 'New Project',
-            'view_item' => 'View Project',
-            'search_items' => 'Search Projects',
-            'not_found' => 'No projects found',
-            'menu_name' => '💼 Projects'
-        ),
+        'labels' => array('name' => 'Projects', 'singular_name' => 'Project', 'menu_name' => '💼 Projects'),
         'public' => true,
         'has_archive' => true,
         'menu_icon' => 'dashicons-portfolio',
-        'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'revisions'),
-        'show_in_rest' => true, // Enables Gutenberg Editor
+        'supports' => array('title', 'editor', 'thumbnail', 'excerpt'),
+        'show_in_rest' => true, 
         'rewrite' => array('slug' => 'work'),
     ));
 
-    // PROJECT CATEGORIES (Taxonomy)
     register_taxonomy('project_category', 'project', array(
-        'labels' => array(
-            'name' => 'Project Categories',
-            'singular_name' => 'Category',
-            'menu_name' => 'Categories'
-        ),
+        'labels' => array('name' => 'Project Categories', 'singular_name' => 'Category'),
         'hierarchical' => true,
         'show_in_rest' => true,
         'public' => true
     ));
 
-    // TESTIMONIALS (Updated support)
     register_post_type('testimonial', array(
-        'labels' => array(
-            'name' => 'Testimonials',
-            'singular_name' => 'Testimonial',
-            'add_new' => 'Add Testimonial',
-            'add_new_item' => 'Add New Testimonial',
-            'menu_name' => '💬 Testimonials'
-        ),
+        'labels' => array('name' => 'Testimonials', 'singular_name' => 'Testimonial', 'menu_name' => '💬 Testimonials'),
         'public' => true,
         'publicly_queryable' => false, 
         'show_ui' => true,
         'menu_icon' => 'dashicons-format-quote',
-        'supports' => array('title', 'editor', 'thumbnail'), // Added Thumbnail support for Author Image
+        'supports' => array('title', 'editor', 'thumbnail'),
         'show_in_rest' => true,
     ));
 }
 add_action('init', 'nischhal_register_post_types');
 
-// --- 3. CUSTOM FIELDS (META BOXES) ---
+// --- 3. CUSTOM FIELDS ---
 function nischhal_add_meta_boxes() {
-    // Project Details
-    add_meta_box('project_meta', '🚀 Project Scope & Details', 'nischhal_render_project_meta', 'project', 'side', 'high');
-    
-    // Testimonial Details
+    add_meta_box('project_meta', '🚀 Project Details', 'nischhal_render_project_meta', 'project', 'side', 'high');
     add_meta_box('testimonial_meta', '👤 Author Details', 'nischhal_render_testimonial_meta', 'testimonial', 'normal', 'high');
 }
 add_action('add_meta_boxes', 'nischhal_add_meta_boxes');
 
-// Render Project Meta
 function nischhal_render_project_meta($post) {
     wp_nonce_field('nischhal_save_project_meta', 'nischhal_project_nonce');
-    
-    $year = get_post_meta($post->ID, 'project_year', true);
-    $role = get_post_meta($post->ID, 'project_role', true);
-    $industry = get_post_meta($post->ID, 'project_industry', true);
-    $team = get_post_meta($post->ID, 'project_team', true);
-    $timeline = get_post_meta($post->ID, 'project_timeline', true);
-    $outcome = get_post_meta($post->ID, 'project_outcome', true);
-    $live_url = get_post_meta($post->ID, 'project_live_url', true);
-    
-    ?>
-    <style>
-        .n-meta-row { margin-bottom: 15px; }
-        .n-meta-row label { display: block; font-weight: 600; margin-bottom: 5px; color: #444; }
-        .n-meta-row input { width: 100%; padding: 5px; border: 1px solid #ddd; border-radius: 4px; }
-        .n-meta-row input:focus { border-color: #2271b1; box-shadow: 0 0 0 1px #2271b1; }
-    </style>
-    <div class="n-meta-row">
-        <label>Year</label>
-        <input type="text" name="project_year" value="<?php echo esc_attr($year); ?>" placeholder="e.g. 2025">
-    </div>
-    <div class="n-meta-row">
-        <label>Industry</label>
-        <input type="text" name="project_industry" value="<?php echo esc_attr($industry); ?>" placeholder="e.g. Fintech">
-    </div>
-    <div class="n-meta-row">
-        <label>My Role</label>
-        <input type="text" name="project_role" value="<?php echo esc_attr($role); ?>" placeholder="e.g. Lead Designer">
-    </div>
-    <div class="n-meta-row">
-        <label>Team Size</label>
-        <input type="text" name="project_team" value="<?php echo esc_attr($team); ?>" placeholder="e.g. 2 Devs, 1 PM">
-    </div>
-    <div class="n-meta-row">
-        <label>Timeline</label>
-        <input type="text" name="project_timeline" value="<?php echo esc_attr($timeline); ?>" placeholder="e.g. 3 Months">
-    </div>
-    <div class="n-meta-row">
-        <label>Outcome / Metric</label>
-        <input type="text" name="project_outcome" value="<?php echo esc_attr($outcome); ?>" placeholder="e.g. +20% Conversion">
-    </div>
-    <div class="n-meta-row">
-        <label>Live URL (Optional)</label>
-        <input type="url" name="project_live_url" value="<?php echo esc_attr($live_url); ?>" placeholder="https://...">
-    </div>
-    <?php
+    $fields = ['project_year'=>'Year', 'project_industry'=>'Industry', 'project_role'=>'Role', 'project_team'=>'Team', 'project_timeline'=>'Timeline', 'project_outcome'=>'Outcome', 'project_live_url'=>'Live URL'];
+    foreach($fields as $key => $label) {
+        $val = get_post_meta($post->ID, $key, true);
+        echo '<div style="margin-bottom:10px;"><label style="display:block;font-weight:600;">'.$label.'</label><input type="text" name="'.$key.'" value="'.esc_attr($val).'" style="width:100%;"></div>';
+    }
 }
 
-// Render Testimonial Meta (Enhanced)
 function nischhal_render_testimonial_meta($post) {
     wp_nonce_field('nischhal_save_testimonial_meta', 'nischhal_testimonial_nonce');
     $role = get_post_meta($post->ID, 'testimonial_role', true);
     $link = get_post_meta($post->ID, 'testimonial_link', true);
-    ?>
-    <div style="margin-top: 10px; margin-bottom: 15px;">
-        <label style="font-weight:600; display:block; margin-bottom:5px;">Role / Designation</label>
-        <input type="text" name="testimonial_role" value="<?php echo esc_attr($role); ?>" style="width:100%; padding:8px;" placeholder="e.g. CTO at FinTech Co.">
-    </div>
-    <div style="margin-top: 10px;">
-        <label style="font-weight:600; display:block; margin-bottom:5px;">Link (LinkedIn/Company)</label>
-        <input type="url" name="testimonial_link" value="<?php echo esc_attr($link); ?>" style="width:100%; padding:8px;" placeholder="https://linkedin.com/in/...">
-    </div>
-    <?php
+    echo '<div style="margin-bottom:10px;"><label>Role</label><input type="text" name="testimonial_role" value="'.esc_attr($role).'" style="width:100%;"></div>';
+    echo '<div><label>Link</label><input type="url" name="testimonial_link" value="'.esc_attr($link).'" style="width:100%;"></div>';
 }
 
-// Save Meta Data
 function nischhal_save_meta_data($post_id) {
-    // Check autosave
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-    
-    // Check permissions & Nonces
     if (isset($_POST['nischhal_project_nonce']) && wp_verify_nonce($_POST['nischhal_project_nonce'], 'nischhal_save_project_meta')) {
         $fields = ['project_year', 'project_role', 'project_industry', 'project_team', 'project_timeline', 'project_outcome', 'project_live_url'];
-        foreach ($fields as $field) {
-            if (isset($_POST[$field])) update_post_meta($post_id, $field, sanitize_text_field($_POST[$field]));
-        }
+        foreach ($fields as $field) if (isset($_POST[$field])) update_post_meta($post_id, $field, sanitize_text_field($_POST[$field]));
     }
-    
     if (isset($_POST['nischhal_testimonial_nonce']) && wp_verify_nonce($_POST['nischhal_testimonial_nonce'], 'nischhal_save_testimonial_meta')) {
         if (isset($_POST['testimonial_role'])) update_post_meta($post_id, 'testimonial_role', sanitize_text_field($_POST['testimonial_role']));
         if (isset($_POST['testimonial_link'])) update_post_meta($post_id, 'testimonial_link', esc_url_raw($_POST['testimonial_link']));
@@ -250,118 +129,29 @@ function nischhal_save_meta_data($post_id) {
 }
 add_action('save_post', 'nischhal_save_meta_data');
 
-
-// --- 4. ENQUEUE ---
+// --- 4. ENQUEUE & JS CONFIG ---
 function nischhal_enqueue_scripts() {
-    // Fonts
     $h_font = get_theme_mod('typo_heading_family', 'Playfair Display');
     $b_font = get_theme_mod('typo_body_family', 'Inter');
-    $weights = '300;400;500;600;700'; 
-    $fonts_url = "https://fonts.googleapis.com/css2?family=" . urlencode($h_font) . ":wght@" . $weights . "&family=" . urlencode($b_font) . ":wght@" . $weights . "&display=swap";
-    wp_enqueue_style( 'nischhal-google-fonts', $fonts_url, array(), null );
-
-    // Core
-    wp_enqueue_style( 'main-style', get_stylesheet_uri(), array(), '16.2' );
+    wp_enqueue_style( 'nischhal-fonts', "https://fonts.googleapis.com/css2?family=" . urlencode($h_font) . ":wght@400;500;600&family=" . urlencode($b_font) . ":wght@300;400;500;600&display=swap" );
+    wp_enqueue_style( 'main-style', get_stylesheet_uri(), array(), '16.6' );
+    
     wp_enqueue_script( 'gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js', array(), null, true );
     wp_enqueue_script( 'gsap-st', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js', array('gsap'), null, true );
-    wp_enqueue_script( 'theme-js', get_template_directory_uri() . '/js/main.js', array('gsap'), '16.2', true );
+    wp_enqueue_script( 'theme-js', get_template_directory_uri() . '/js/main.js', array('gsap'), '16.6', true );
 
-    // Pass Config to JS
-    wp_localize_script( 'theme-js', 'themeConfig', array(
-        'animSpeed' => get_theme_mod('anim_speed_multiplier', 1.0),
-        'animEasing' => get_theme_mod('anim_easing', 'power2.out'),
+    // Dynamic Variables for JS
+    wp_localize_script('theme-js', 'themeConfig', array(
+        'imgDark' => get_theme_mod('hero_img', 'https://i.imgur.com/ixsEpYM.png'),
+        'imgLight' => get_theme_mod('hero_img_light', 'https://i.imgur.com/oFHdPUS.png'), 
+        'animSpeed' => get_theme_mod('anim_speed', 1.0),
         'cursorEnable' => get_theme_mod('cursor_enable', true),
-        'cursorStyle' => get_theme_mod('cursor_style', 'classic'),
-        'gridEnable' => get_theme_mod('grid_enable', true),
-        'gridOpacity' => get_theme_mod('grid_opacity_dark', 0.05),
-        'gridSpotlight' => get_theme_mod('bg_spotlight', true),
-        'transStyle' => get_theme_mod('trans_style', 'fade'),
+        'siteUrl' => home_url()
     ));
 }
 add_action( 'wp_enqueue_scripts', 'nischhal_enqueue_scripts' );
 
-// --- 5. CUSTOM BLOCK CATEGORY ---
-function nischhal_block_categories( $categories, $post ) {
-    return array_merge(
-        array(
-            array(
-                'slug' => 'nischhal-blocks',
-                'title' => __( '⚡ Nischhal Raj Subba', 'nischhal' ),
-            ),
-        ),
-        $categories
-    );
-}
-add_filter( 'block_categories_all', 'nischhal_block_categories', 10, 2 );
-
-// --- 6. REGISTER BLOCK STYLES ---
-function nischhal_register_block_styles() {
-    register_block_style( 'core/heading', array(
-        'name'  => 'outline-reveal',
-        'label' => __( 'Outline Reveal', 'nischhal' ),
-    ));
-    register_block_style( 'core/group', array(
-        'name'  => 'glass-card',
-        'label' => __( 'Glass Card', 'nischhal' ),
-    ));
-}
-add_action( 'init', 'nischhal_register_block_styles' );
-
-// --- 7. EXTENSIVE BLOCK PATTERNS (The "UI Kit") ---
-function nischhal_register_patterns() {
-    
-    // HERO: Center with Ticker
-    register_block_pattern('nischhal/hero-center', array(
-        'title' => 'NRS: Hero (Center + Ticker)',
-        'categories' => array('nischhal-blocks'),
-        'content' => '<!-- wp:group {"align":"full","className":"hero-block","style":{"spacing":{"padding":{"top":"150px","bottom":"100px"}}}} --><div class="wp-block-group alignfull hero-block" style="padding-top:150px;padding-bottom:100px"><!-- wp:paragraph {"align":"center","style":{"typography":{"textTransform":"uppercase","letterSpacing":"2px","fontSize":"0.8rem"}}} --><p class="has-text-align-center" style="font-size:0.8rem;letter-spacing:2px;text-transform:uppercase">Design Systems • Enterprise UX • Web3</p><!-- /wp:paragraph --><!-- wp:heading {"textAlign":"center","level":1,"style":{"typography":{"fontSize":"clamp(3.5rem, 8vw, 6rem)"}}} --><h1 class="wp-block-heading has-text-align-center" style="font-size:clamp(3.5rem, 8vw, 6rem)">Crafting Scalable<br>Digital Products.</h1><!-- /wp:heading --><!-- wp:paragraph {"align":"center","className":"body-large","style":{"spacing":{"margin":{"left":"auto","right":"auto"}}}} --><p class="has-text-align-center body-large" style="margin-left:auto;margin-right:auto">I bridge the gap between complex requirements and elegant, scalable interfaces.</p><!-- /wp:paragraph --><!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} --><div class="wp-block-buttons"><!-- wp:button {"className":"btn-primary"} --><div class="wp-block-button btn-primary"><a class="wp-block-button__link wp-element-button">View Work</a></div><!-- /wp:button --><!-- wp:button {"className":"btn-secondary"} --><div class="wp-block-button btn-secondary"><a class="wp-block-button__link wp-element-button">About Me</a></div><!-- /wp:button --></div><!-- /wp:buttons --></div><!-- /wp:group -->'
-    ));
-
-    // HERO: Split with Image
-    register_block_pattern('nischhal/hero-split', array(
-        'title' => 'NRS: Hero (Split Layout)',
-        'categories' => array('nischhal-blocks'),
-        'content' => '<!-- wp:columns {"align":"wide","style":{"spacing":{"blockGap":"80px","margin":{"top":"100px"}}}} --><div class="wp-block-columns alignwide" style="margin-top:100px"><!-- wp:column {"verticalAlignment":"center"} --><div class="wp-block-column is-vertically-aligned-center"><!-- wp:heading {"level":1,"style":{"typography":{"fontSize":"4.5rem"}}} --><h1 class="wp-block-heading" style="font-size:4.5rem">Hello, I build<br>living systems.</h1><!-- /wp:heading --><!-- wp:paragraph {"className":"body-large"} --><p class="body-large">Specialized in Figma-to-Code workflows for enterprise teams.</p><!-- /wp:paragraph --><!-- wp:buttons --><div class="wp-block-buttons"><!-- wp:button {"className":"btn-primary"} --><div class="wp-block-button btn-primary"><a class="wp-block-button__link wp-element-button">Case Studies</a></div><!-- /wp:button --></div><!-- /wp:buttons --></div><!-- /wp:column --><!-- wp:column {"verticalAlignment":"center"} --><div class="wp-block-column is-vertically-aligned-center"><!-- wp:image {"sizeSlug":"large","linkDestination":"none","className":"img-blend-gradient"} --><figure class="wp-block-image size-large img-blend-gradient"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt=""/></figure><!-- /wp:image --></div><!-- /wp:column --></div><!-- /wp:columns -->'
-    ));
-
-    // PROJECTS: Dynamic Grid
-    register_block_pattern('nischhal/projects-grid', array(
-        'title' => 'NRS: Projects Grid (Dynamic)',
-        'categories' => array('nischhal-blocks'),
-        'content' => '<!-- wp:group {"align":"wide","className":"section-container"} --><div class="wp-block-group alignwide section-container"><!-- wp:heading {"style":{"typography":{"fontSize":"3rem"}}} --><h2 class="wp-block-heading" style="font-size:3rem">Selected Work</h2><!-- /wp:heading --><!-- wp:query {"query":{"perPage":4,"pages":0,"offset":0,"postType":"project","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false}} --><div class="wp-block-query"><!-- wp:post-template {"layout":{"type":"grid","columnCount":2}} --><!-- wp:post-featured-image {"isLink":true,"style":{"border":{"radius":"16px"}}} /--><!-- wp:group {"style":{"spacing":{"margin":{"top":"24px"}}}} --><div class="wp-block-group" style="margin-top:24px"><!-- wp:post-title {"isLink":true,"style":{"typography":{"fontSize":"2rem"}}} /--><!-- wp:post-excerpt /--></div><!-- /wp:group --><!-- /wp:post-template --></div><!-- /wp:query --></div><!-- /wp:group -->'
-    ));
-
-    // TESTIMONIALS: Slider
-    register_block_pattern('nischhal/testimonials', array(
-        'title' => 'NRS: Testimonials Slider',
-        'categories' => array('nischhal-blocks'),
-        'content' => '<!-- wp:group {"align":"wide","className":"testimonial-section"} --><div class="wp-block-group alignwide testimonial-section"><!-- wp:heading {"textAlign":"center"} --><h2 class="wp-block-heading has-text-align-center">Kind Words</h2><!-- /wp:heading --><!-- wp:html --><div class="t-track"><div class="t-slide active"><p class="t-quote">"Nischhal transformed our messy MVP into a scalable enterprise product. His systems thinking is unmatched."</p><div class="t-author"><h5>Sarah Jenkins</h5><span>CTO, FinTech Co.</span></div></div><div class="t-slide"><p class="t-quote">"The best design partner we have ever worked with. Delivered pixel-perfect specs that were easy to code."</p><div class="t-author"><h5>David Lee</h5><span>Founder, Web3 DAO</span></div></div></div><div class="t-controls"><button id="t-prev" class="t-btn">←</button><button id="t-next" class="t-btn">→</button></div><!-- /wp:html --></div><!-- /wp:group -->'
-    ));
-
-    // STATS: Metrics Strip
-    register_block_pattern('nischhal/metrics-strip', array(
-        'title' => 'NRS: Metrics Strip',
-        'categories' => array('nischhal-blocks'),
-        'content' => '<!-- wp:group {"align":"full","style":{"border":{"top":{"color":"var(--border-faint)","width":"1px"},"bottom":{"color":"var(--border-faint)","width":"1px"}},"spacing":{"padding":{"top":"60px","bottom":"60px"}}}} --><div class="wp-block-group alignfull" style="border-top-color:var(--border-faint);border-top-width:1px;border-bottom-color:var(--border-faint);border-bottom-width:1px;padding-top:60px;padding-bottom:60px"><!-- wp:columns {"align":"wide"} --><div class="wp-block-columns alignwide"><!-- wp:column {"className":"metric-item"} --><div class="wp-block-column metric-item"><!-- wp:heading {"level":3} --><h3 class="wp-block-heading">#1</h3><!-- /wp:heading --><!-- wp:paragraph --><p>Ranked Designer</p><!-- /wp:paragraph --></div><!-- /wp:column --><!-- wp:column {"className":"metric-item"} --><div class="wp-block-column metric-item"><!-- wp:heading {"level":3} --><h3 class="wp-block-heading">50+</h3><!-- /wp:heading --><!-- wp:paragraph --><p>Projects Delivered</p><!-- /wp:paragraph --></div><!-- /wp:column --><!-- wp:column {"className":"metric-item"} --><div class="wp-block-column metric-item"><!-- wp:heading {"level":3} --><h3 class="wp-block-heading">6yr</h3><!-- /wp:heading --><!-- wp:paragraph --><p>Specialized Experience</p><!-- /wp:paragraph --></div><!-- /wp:column --></div><!-- /wp:columns --></div><!-- /wp:group -->'
-    ));
-
-    // CTA: Centered
-    register_block_pattern('nischhal/cta-center', array(
-        'title' => 'NRS: CTA (Ready to build?)',
-        'categories' => array('nischhal-blocks'),
-        'content' => '<!-- wp:group {"className":"section-container","layout":{"type":"constrained","contentSize":"800px"}} --><div class="wp-block-group section-container"><!-- wp:heading {"textAlign":"center","style":{"typography":{"fontSize":"4rem"}}} --><h2 class="wp-block-heading has-text-align-center" style="font-size:4rem">Ready to build?</h2><!-- /wp:heading --><!-- wp:paragraph {"align":"center","className":"body-large"} --><p class="has-text-align-center body-large">I am currently available for select freelance projects. Let\'s discuss your vision.</p><!-- /wp:paragraph --><!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} --><div class="wp-block-buttons"><!-- wp:button {"className":"btn-primary"} --><div class="wp-block-button btn-primary"><a class="wp-block-button__link wp-element-button">Start Project</a></div><!-- /wp:button --></div><!-- /wp:buttons --></div><!-- /wp:group -->'
-    ));
-    
-    // SERVICES: 3 Column
-    register_block_pattern('nischhal/services-3col', array(
-        'title' => 'NRS: Services (3 Columns)',
-        'categories' => array('nischhal-blocks'),
-        'content' => '<!-- wp:group {"align":"wide","className":"section-container"} --><div class="wp-block-group alignwide section-container"><!-- wp:heading {"style":{"spacing":{"margin":{"bottom":"60px"}}}} --><h2 class="wp-block-heading" style="margin-bottom:60px">Expertise</h2><!-- /wp:heading --><!-- wp:columns {"style":{"spacing":{"blockGap":"40px"}}} --><div class="wp-block-columns"><!-- wp:column {"className":"is-style-glass-card"} --><div class="wp-block-column is-style-glass-card"><!-- wp:heading {"level":4} --><h4 class="wp-block-heading">Strategy</h4><!-- /wp:heading --><!-- wp:paragraph --><p>Discovery, Research, Roadmap, MVP Definition.</p><!-- /wp:paragraph --></div><!-- /wp:column --><!-- wp:column {"className":"is-style-glass-card"} --><div class="wp-block-column is-style-glass-card"><!-- wp:heading {"level":4} --><h4 class="wp-block-heading">Design</h4><!-- /wp:heading --><!-- wp:paragraph --><p>UI/UX, Prototyping, Design Systems, Motion.</p><!-- /wp:paragraph --></div><!-- /wp:column --><!-- wp:column {"className":"is-style-glass-card"} --><div class="wp-block-column is-style-glass-card"><!-- wp:heading {"level":4} --><h4 class="wp-block-heading">Development</h4><!-- /wp:heading --><!-- wp:paragraph --><p>Front-end Implementation, React, WordPress.</p><!-- /wp:paragraph --></div><!-- /wp:column --></div><!-- /wp:columns --></div><!-- /wp:group -->'
-    ));
-}
-add_action( 'init', 'nischhal_register_patterns' );
-
-// --- 8. THEME CUSTOMIZER (ENHANCED) ---
+// --- 8. THEME CUSTOMIZER (COMPREHENSIVE) ---
 function nischhal_customize_register( $wp_customize ) {
     
     // --- PANEL: INTERACTION & CURSORS ---
@@ -369,39 +159,42 @@ function nischhal_customize_register( $wp_customize ) {
 
     // Section 1: Animation System
     $wp_customize->add_section( 'sec_anim_system', array( 'title' => 'Animation System', 'panel' => 'panel_interaction' ) );
-    $wp_customize->add_setting('anim_speed_multiplier', array('default'=>1.0));
-    $wp_customize->add_control('anim_speed_multiplier', array('label'=>'Global Speed Multiplier', 'section'=>'sec_anim_system', 'type'=>'number', 'input_attrs'=>array('min'=>0.5, 'max'=>2.0, 'step'=>0.1)));
-    $wp_customize->add_setting('anim_easing', array('default'=>'power2.out'));
-    $wp_customize->add_control('anim_easing', array('label'=>'Global Easing', 'section'=>'sec_anim_system', 'type'=>'select', 'choices'=>array('power2.out'=>'Power2', 'power3.out'=>'Power3', 'expo.out'=>'Expo', 'circ.out'=>'Circular')));
-
-    // Section 2: Page Transitions
-    $wp_customize->add_section( 'sec_page_trans', array( 'title' => 'Page Transitions', 'panel' => 'panel_interaction' ) );
-    $wp_customize->add_setting('trans_style', array('default'=>'fade'));
-    $wp_customize->add_control('trans_style', array('label'=>'Transition Style', 'section'=>'sec_page_trans', 'type'=>'select', 'choices'=>array('fade'=>'Fade', 'curtain'=>'Curtain', 'swipe'=>'Swipe')));
-
-    // Section 3: Cursor
+    $wp_customize->add_setting('anim_speed', array('default'=>1.0));
+    $wp_customize->add_control('anim_speed', array('label'=>'Global Speed Multiplier', 'section'=>'sec_anim_system', 'type'=>'number', 'input_attrs'=>array('min'=>0.5, 'max'=>2.0, 'step'=>0.1)));
+    
+    // Section 2: Cursor
     $wp_customize->add_section( 'sec_cursor', array( 'title' => 'Cursor', 'panel' => 'panel_interaction' ) );
     $wp_customize->add_setting('cursor_enable', array('default'=>true));
     $wp_customize->add_control('cursor_enable', array('label'=>'Enable Custom Cursor', 'section'=>'sec_cursor', 'type'=>'checkbox'));
     
-    $wp_customize->add_setting('cursor_style', array('default'=>'classic'));
-    $wp_customize->add_control('cursor_style', array('label'=>'Cursor Style', 'section'=>'sec_cursor', 'type'=>'select', 'choices'=>array(
-        'classic'=>'Classic (Ring+Dot)', 'dot'=>'Dot Only', 'outline'=>'Outline Only', 'blend'=>'Blend Mode', 'trail'=>'Trail', 'magnetic'=>'Magnetic', 'fluid'=>'Fluid', 'glitch'=>'Glitch', 'focus'=>'Focus Ring', 'spotlight'=>'Spotlight'
-    )));
-    
     $wp_customize->add_setting('cursor_size', array('default'=>20));
     $wp_customize->add_control('cursor_size', array('label'=>'Cursor Size (px)', 'section'=>'sec_cursor', 'type'=>'number'));
 
-    // --- PANEL: DESIGN COLORS ---
+    // --- PANEL: DESIGN LAYOUT ---
+    $wp_customize->add_panel( 'panel_layout', array( 'title' => '📐 Design: Layout', 'priority' => 22 ) );
+    $wp_customize->add_section( 'sec_layout_dims', array( 'title' => 'Dimensions', 'panel' => 'panel_layout' ) );
+    
+    $wp_customize->add_setting('container_width', array('default'=>'1200px'));
+    $wp_customize->add_control('container_width', array('label'=>'Max Width', 'section'=>'sec_layout_dims', 'type'=>'text'));
+    
+    $wp_customize->add_setting('section_gap', array('default'=>'160px'));
+    $wp_customize->add_control('section_gap', array('label'=>'Section Gap (Desktop)', 'section'=>'sec_layout_dims', 'type'=>'text'));
+
+    // --- PANEL: TYPOGRAPHY ---
+    $wp_customize->add_panel( 'panel_typography', array( 'title' => 'Aa Design: Typography', 'priority' => 23 ) );
+    $wp_customize->add_section( 'sec_fonts', array( 'title' => 'Font Families', 'panel' => 'panel_typography' ) );
+    
+    $wp_customize->add_setting('typo_heading_family', array('default'=>'Playfair Display'));
+    $wp_customize->add_control('typo_heading_family', array('label'=>'Heading Font', 'section'=>'sec_fonts', 'type'=>'text'));
+    
+    $wp_customize->add_setting('typo_body_family', array('default'=>'Inter'));
+    $wp_customize->add_control('typo_body_family', array('label'=>'Body Font', 'section'=>'sec_fonts', 'type'=>'text'));
+
+    // --- PANEL: COLORS (ADVANCED) ---
     $wp_customize->add_panel( 'panel_colors', array( 'title' => '🎨 Design: Colors', 'priority' => 21 ) );
 
-    // Theme Mode
-    $wp_customize->add_section('sec_theme_mode', array('title'=>'Theme Mode', 'panel'=>'panel_colors'));
-    $wp_customize->add_setting('theme_mode_default', array('default'=>'dark'));
-    $wp_customize->add_control('theme_mode_default', array('label'=>'Default Mode', 'section'=>'sec_theme_mode', 'type'=>'select', 'choices'=>array('light'=>'Light', 'dark'=>'Dark', 'system'=>'System')));
-
     // Light Tokens
-    $wp_customize->add_section('sec_tokens_light', array('title'=>'Light Theme Tokens', 'panel'=>'panel_colors'));
+    $wp_customize->add_section('sec_tokens_light', array('title'=>'Light Mode', 'panel'=>'panel_colors'));
     $light_colors = [
         'l_bg'=>'#FFFFFF', 'l_surface'=>'#F8FAFC', 'l_text'=>'#0F172A', 'l_text_muted'=>'#475569', 'l_border'=>'rgba(0,0,0,0.1)', 'l_accent'=>'#2563EB'
     ];
@@ -411,7 +204,7 @@ function nischhal_customize_register( $wp_customize ) {
     }
 
     // Dark Tokens
-    $wp_customize->add_section('sec_tokens_dark', array('title'=>'Dark Theme Tokens', 'panel'=>'panel_colors'));
+    $wp_customize->add_section('sec_tokens_dark', array('title'=>'Dark Mode', 'panel'=>'panel_colors'));
     $dark_colors = [
         'd_bg'=>'#050505', 'd_surface'=>'#0a0a0a', 'd_text'=>'#FFFFFF', 'd_text_muted'=>'#A1A1AA', 'd_border'=>'rgba(255,255,255,0.1)', 'd_accent'=>'#3B82F6'
     ];
@@ -419,145 +212,113 @@ function nischhal_customize_register( $wp_customize ) {
         $wp_customize->add_setting($id, array('default'=>$default));
         $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, $id, array('label'=>ucfirst(str_replace('_',' ',$id)), 'section'=>'sec_tokens_dark')));
     }
-
-    // Grid Overlay
+    
     $wp_customize->add_section('sec_grid_overlay', array('title'=>'Grid Overlay', 'panel'=>'panel_colors'));
-    $wp_customize->add_setting('grid_enable', array('default'=>true));
-    $wp_customize->add_control('grid_enable', array('label'=>'Enable Grid', 'section'=>'sec_grid_overlay', 'type'=>'checkbox'));
-    
-    $wp_customize->add_setting('grid_opacity_dark', array('default'=>0.05));
-    $wp_customize->add_control('grid_opacity_dark', array('label'=>'Grid Opacity (Dark)', 'section'=>'sec_grid_overlay', 'type'=>'number', 'input_attrs'=>array('step'=>0.01,'min'=>0,'max'=>1)));
-    
-    $wp_customize->add_setting('bg_spotlight', array('default'=>true));
-    $wp_customize->add_control('bg_spotlight', array('label'=>'Enable Spotlight', 'section'=>'sec_grid_overlay', 'type'=>'checkbox'));
+    $wp_customize->add_setting('grid_opacity', array('default'=>0.05));
+    $wp_customize->add_control('grid_opacity', array('label'=>'Grid Opacity', 'section'=>'sec_grid_overlay', 'type'=>'number', 'input_attrs'=>array('step'=>0.01,'min'=>0,'max'=>1)));
 
-    // --- PANEL: TYPOGRAPHY ---
-    $wp_customize->add_panel( 'panel_typography', array( 'title' => 'Aa Design: Typography', 'priority' => 22 ) );
-    $wp_customize->add_section( 'sec_fonts', array( 'title' => 'Font Families', 'panel' => 'panel_typography' ) );
-    
-    $wp_customize->add_setting('typo_heading_family', array('default'=>'Playfair Display'));
-    $wp_customize->add_control('typo_heading_family', array('label'=>'Heading Font', 'section'=>'sec_fonts', 'type'=>'text'));
-    
-    $wp_customize->add_setting('typo_body_family', array('default'=>'Inter'));
-    $wp_customize->add_control('typo_body_family', array('label'=>'Body Font', 'section'=>'sec_fonts', 'type'=>'text'));
-
-    // --- PANEL: LAYOUT ---
-    $wp_customize->add_panel( 'panel_layout', array( 'title' => 'Design: Layout', 'priority' => 23 ) );
-    $wp_customize->add_section( 'sec_layout_dims', array( 'title' => 'Dimensions', 'panel' => 'panel_layout' ) );
-    
-    $wp_customize->add_setting('container_width', array('default'=>'1200px'));
-    $wp_customize->add_control('container_width', array('label'=>'Max Width', 'section'=>'sec_layout_dims', 'type'=>'text'));
-    
-    $wp_customize->add_setting('section_gap', array('default'=>'120px'));
-    $wp_customize->add_control('section_gap', array('label'=>'Section Gap', 'section'=>'sec_layout_dims', 'type'=>'text'));
-
-    // --- HOMEPAGE SETTINGS (ENHANCED) ---
+    // --- HOME HERO (DYNAMIC CONTENT) ---
     $wp_customize->add_section('sec_hero', array('title'=>'🏠 Home: Hero', 'priority'=>30));
     $wp_customize->add_setting('hero_layout_style', array('default'=>'hero-v1'));
     $wp_customize->add_control('hero_layout_style', array('label'=>'Layout', 'section'=>'sec_hero', 'type'=>'select', 'choices'=>array('hero-v1'=>'Center', 'hero-v2'=>'Split')));
     
     $wp_customize->add_setting('hero_h1_line1', array('default'=>'Crafting scalable'));
     $wp_customize->add_control('hero_h1_line1', array('label'=>'H1 Line 1', 'section'=>'sec_hero', 'type'=>'text'));
-    
     $wp_customize->add_setting('hero_h1_line2', array('default'=>'digital products.'));
     $wp_customize->add_control('hero_h1_line2', array('label'=>'H1 Line 2', 'section'=>'sec_hero', 'type'=>'text'));
     
-    // New Comprehensive Description Field
-    $wp_customize->add_setting('hero_desc', array('default'=>"I’m Nischhal Raj Subba, a Product Designer focusing on complex enterprise software and living design systems. Bridging design vision with engineering reality."));
-    $wp_customize->add_control('hero_desc', array('label'=>'Hero Bio / Description', 'section'=>'sec_hero', 'type'=>'textarea'));
+    $wp_customize->add_setting('hero_desc', array('default'=>"I’m Nischhal Raj Subba..."));
+    $wp_customize->add_control('hero_desc', array('label'=>'Description', 'section'=>'sec_hero', 'type'=>'textarea'));
 
-    // Buttons
-    $wp_customize->add_setting('hero_btn_1_text', array('default'=>'View Projects'));
-    $wp_customize->add_control('hero_btn_1_text', array('label'=>'Primary Button Text', 'section'=>'sec_hero', 'type'=>'text'));
-    $wp_customize->add_setting('hero_btn_1_link', array('default'=>'/work'));
-    $wp_customize->add_control('hero_btn_1_link', array('label'=>'Primary Button Link', 'section'=>'sec_hero', 'type'=>'text'));
-
-    $wp_customize->add_setting('hero_btn_2_text', array('default'=>'Read Bio'));
-    $wp_customize->add_control('hero_btn_2_text', array('label'=>'Secondary Button Text', 'section'=>'sec_hero', 'type'=>'text'));
-    $wp_customize->add_setting('hero_btn_2_link', array('default'=>'/about'));
-    $wp_customize->add_control('hero_btn_2_link', array('label'=>'Secondary Button Link', 'section'=>'sec_hero', 'type'=>'text'));
-
-    // Updated Image Control: Cropped Image for Crop/Adjustment support
+    // IMAGES (BOTH FIELDS)
     $wp_customize->add_setting('hero_img', array('default'=>'https://i.imgur.com/ixsEpYM.png'));
-    $wp_customize->add_control(new WP_Customize_Cropped_Image_Control($wp_customize, 'hero_img', array(
-        'label'=>'Portrait (Crop/Adjust)', 
-        'section'=>'sec_hero',
-        'height'=>800,
-        'width'=>800,
-        'flex_width'=>true,
-        'flex_height'=>true,
-    )));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'hero_img', array('label'=>'Portrait (Dark Mode)', 'section'=>'sec_hero')));
     
+    $wp_customize->add_setting('hero_img_light', array('default'=>'https://i.imgur.com/oFHdPUS.png'));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'hero_img_light', array('label'=>'Portrait (Light Mode)', 'section'=>'sec_hero')));
+
     $wp_customize->add_setting('hero_ticker_items', array('default'=>'Design Systems, Enterprise UX, Web3 Specialist'));
     $wp_customize->add_control('hero_ticker_items', array('label'=>'Ticker Items', 'section'=>'sec_hero', 'type'=>'text'));
+
+    $wp_customize->add_setting('hero_btn_1_text', array('default'=>'View Projects'));
+    $wp_customize->add_control('hero_btn_1_text', array('label'=>'Button 1 Text', 'section'=>'sec_hero', 'type'=>'text'));
+    $wp_customize->add_setting('hero_btn_1_link', array('default'=>'/work'));
+    $wp_customize->add_control('hero_btn_1_link', array('label'=>'Button 1 Link', 'section'=>'sec_hero', 'type'=>'text'));
+    $wp_customize->add_setting('hero_btn_2_text', array('default'=>'Read Bio'));
+    $wp_customize->add_control('hero_btn_2_text', array('label'=>'Button 2 Text', 'section'=>'sec_hero', 'type'=>'text'));
+    $wp_customize->add_setting('hero_btn_2_link', array('default'=>'/about'));
+    $wp_customize->add_control('hero_btn_2_link', array('label'=>'Button 2 Link', 'section'=>'sec_hero', 'type'=>'text'));
+
+    // STATS
+    $wp_customize->add_section('sec_stats', array('title'=>'🏠 Home: Stats', 'priority'=>32));
+    $wp_customize->add_setting('stat_1_num', array('default'=>'#1'));
+    $wp_customize->add_control('stat_1_num', array('label'=>'Stat 1 #', 'section'=>'sec_stats', 'type'=>'text'));
+    $wp_customize->add_setting('stat_1_label', array('default'=>'Ranked Designer'));
+    $wp_customize->add_control('stat_1_label', array('label'=>'Stat 1 Label', 'section'=>'sec_stats', 'type'=>'text'));
     
-    // --- FOOTER SETTINGS (ENHANCED) ---
-    $wp_customize->add_section('sec_footer', array('title'=>'Footer', 'priority'=>31));
+    $wp_customize->add_setting('stat_2_num', array('default'=>'Top 1%'));
+    $wp_customize->add_control('stat_2_num', array('label'=>'Stat 2 #', 'section'=>'sec_stats', 'type'=>'text'));
+    $wp_customize->add_setting('stat_2_label', array('default'=>'Verified Skills'));
+    $wp_customize->add_control('stat_2_label', array('label'=>'Stat 2 Label', 'section'=>'sec_stats', 'type'=>'text'));
+    
+    $wp_customize->add_setting('stat_3_num', array('default'=>'6+'));
+    $wp_customize->add_control('stat_3_num', array('label'=>'Stat 3 #', 'section'=>'sec_stats', 'type'=>'text'));
+    $wp_customize->add_setting('stat_3_label', array('default'=>'Years Experience'));
+    $wp_customize->add_control('stat_3_label', array('label'=>'Stat 3 Label', 'section'=>'sec_stats', 'type'=>'text'));
+
+    // GLOBAL LABELS
+    $wp_customize->add_section('sec_labels', array('title'=>'📝 Global Labels', 'priority'=>33));
+    $wp_customize->add_setting('title_selected_work', array('default'=>'Selected Work'));
+    $wp_customize->add_control('title_selected_work', array('label'=>'Selected Work Title', 'section'=>'sec_labels', 'type'=>'text'));
+    $wp_customize->add_setting('btn_view_all_work', array('default'=>'View All Projects'));
+    $wp_customize->add_control('btn_view_all_work', array('label'=>'View All Button', 'section'=>'sec_labels', 'type'=>'text'));
+    $wp_customize->add_setting('title_testimonials', array('default'=>'Kind Words'));
+    $wp_customize->add_control('title_testimonials', array('label'=>'Testimonials Title', 'section'=>'sec_labels', 'type'=>'text'));
+    $wp_customize->add_setting('title_insights', array('default'=>'Insights'));
+    $wp_customize->add_control('title_insights', array('label'=>'Insights Title', 'section'=>'sec_labels', 'type'=>'text'));
+    $wp_customize->add_setting('btn_view_all_blog', array('default'=>'View all writing'));
+    $wp_customize->add_control('btn_view_all_blog', array('label'=>'View All Blog Button', 'section'=>'sec_labels', 'type'=>'text'));
+    
+    $wp_customize->add_setting('cta_ready_title', array('default'=>'Ready to build?'));
+    $wp_customize->add_control('cta_ready_title', array('label'=>'CTA Title', 'section'=>'sec_labels', 'type'=>'text'));
+    $wp_customize->add_setting('cta_ready_desc', array('default'=>'I am currently available...'));
+    $wp_customize->add_control('cta_ready_desc', array('label'=>'CTA Desc', 'section'=>'sec_labels', 'type'=>'textarea'));
+    $wp_customize->add_setting('cta_ready_btn', array('default'=>'Start a Project'));
+    $wp_customize->add_control('cta_ready_btn', array('label'=>'CTA Button', 'section'=>'sec_labels', 'type'=>'text'));
+
+    // FOOTER
+    $wp_customize->add_section('sec_footer', array('title'=>'Footer', 'priority'=>34));
+    $wp_customize->add_setting('footer_main_heading', array('default'=>"Let's create something awesome."));
+    $wp_customize->add_control('footer_main_heading', array('label'=>'Heading', 'section'=>'sec_footer', 'type'=>'textarea'));
+    $wp_customize->add_setting('footer_sub_heading', array('default'=>"Open for opportunities..."));
+    $wp_customize->add_control('footer_sub_heading', array('label'=>'Sub Heading', 'section'=>'sec_footer', 'type'=>'textarea'));
     $wp_customize->add_setting('footer_email', array('default'=>'hinischalsubba@gmail.com'));
-    $wp_customize->add_control('footer_email', array('label'=>'Email Address', 'section'=>'sec_footer', 'type'=>'text'));
+    $wp_customize->add_control('footer_email', array('label'=>'Email', 'section'=>'sec_footer', 'type'=>'text'));
+    $wp_customize->add_setting('footer_copyright', array('default'=>'© 2026 Nischhal Raj Subba.'));
+    $wp_customize->add_control('footer_copyright', array('label'=>'Copyright', 'section'=>'sec_footer', 'type'=>'text'));
     
-    $wp_customize->add_setting('social_linkedin', array('default'=>'https://linkedin.com/in/nischhal/'));
-    $wp_customize->add_control('social_linkedin', array('label'=>'LinkedIn URL', 'section'=>'sec_footer', 'type'=>'url'));
-    
-    $wp_customize->add_setting('social_behance', array('default'=>'https://behance.net/nischhal'));
-    $wp_customize->add_control('social_behance', array('label'=>'Behance URL', 'section'=>'sec_footer', 'type'=>'url'));
-
+    // Socials
+    $wp_customize->add_setting('social_linkedin', array('default'=>''));
+    $wp_customize->add_control('social_linkedin', array('label'=>'LinkedIn', 'section'=>'sec_footer', 'type'=>'url'));
+    $wp_customize->add_setting('social_behance', array('default'=>''));
+    $wp_customize->add_control('social_behance', array('label'=>'Behance', 'section'=>'sec_footer', 'type'=>'url'));
     $wp_customize->add_setting('social_dribbble', array('default'=>''));
-    $wp_customize->add_control('social_dribbble', array('label'=>'Dribbble URL', 'section'=>'sec_footer', 'type'=>'url'));
-
-    $wp_customize->add_setting('social_uxcel', array('default'=>'https://app.uxcel.com/ux/nischhal'));
-    $wp_customize->add_control('social_uxcel', array('label'=>'Uxcel URL', 'section'=>'sec_footer', 'type'=>'url'));
-    
+    $wp_customize->add_control('social_dribbble', array('label'=>'Dribbble', 'section'=>'sec_footer', 'type'=>'url'));
+    $wp_customize->add_setting('social_uxcel', array('default'=>''));
+    $wp_customize->add_control('social_uxcel', array('label'=>'Uxcel', 'section'=>'sec_footer', 'type'=>'url'));
     $wp_customize->add_setting('social_figma', array('default'=>''));
-    $wp_customize->add_control('social_figma', array('label'=>'Figma URL', 'section'=>'sec_footer', 'type'=>'url'));
-    
+    $wp_customize->add_control('social_figma', array('label'=>'Figma', 'section'=>'sec_footer', 'type'=>'url'));
     $wp_customize->add_setting('social_x', array('default'=>''));
-    $wp_customize->add_control('social_x', array('label'=>'X (Twitter) URL', 'section'=>'sec_footer', 'type'=>'url'));
+    $wp_customize->add_control('social_x', array('label'=>'X (Twitter)', 'section'=>'sec_footer', 'type'=>'url'));
+    
+    $wp_customize->add_setting('footer_col1_title', array('default'=>'Sitemap'));
+    $wp_customize->add_control('footer_col1_title', array('label'=>'Col 1 Title', 'section'=>'sec_footer', 'type'=>'text'));
+    $wp_customize->add_setting('footer_col2_title', array('default'=>'Socials'));
+    $wp_customize->add_control('footer_col2_title', array('label'=>'Col 2 Title', 'section'=>'sec_footer', 'type'=>'text'));
+    $wp_customize->add_setting('footer_col3_title', array('default'=>'Products'));
+    $wp_customize->add_control('footer_col3_title', array('label'=>'Col 3 Title', 'section'=>'sec_footer', 'type'=>'text'));
 }
 add_action( 'customize_register', 'nischhal_customize_register' );
-
-// --- 9. CSS VARIABLES INJECTION ---
-function nischhal_customizer_css() {
-    ?>
-    <style>
-        :root {
-            /* Layout */
-            --max-width: <?php echo get_theme_mod('container_width', '1200px'); ?>;
-            --section-gap: <?php echo get_theme_mod('section_gap', '120px'); ?>;
-            
-            /* Typography */
-            --font-serif: "<?php echo get_theme_mod('typo_heading_family', 'Playfair Display'); ?>", serif;
-            --font-sans: "<?php echo get_theme_mod('typo_body_family', 'Inter'); ?>", sans-serif;
-            
-            /* Animations */
-            --anim-speed: <?php echo get_theme_mod('anim_speed_multiplier', 1.0); ?>;
-            
-            /* Cursor */
-            --cursor-size: <?php echo get_theme_mod('cursor_size', 20); ?>px;
-
-            /* Dark Theme (Default) */
-            --bg-root: <?php echo get_theme_mod('d_bg', '#050505'); ?>;
-            --bg-surface: <?php echo get_theme_mod('d_surface', '#0a0a0a'); ?>;
-            --text-primary: <?php echo get_theme_mod('d_text', '#FFFFFF'); ?>;
-            --text-secondary: <?php echo get_theme_mod('d_text_muted', '#A1A1AA'); ?>;
-            --border-faint: <?php echo get_theme_mod('d_border', 'rgba(255,255,255,0.1)'); ?>;
-            --accent-color: <?php echo get_theme_mod('d_accent', '#3B82F6'); ?>;
-            --cursor-color: #FFFFFF;
-        }
-
-        [data-theme="light"] {
-            --bg-root: <?php echo get_theme_mod('l_bg', '#FFFFFF'); ?>;
-            --bg-surface: <?php echo get_theme_mod('l_surface', '#F8FAFC'); ?>;
-            --text-primary: <?php echo get_theme_mod('l_text', '#0F172A'); ?>;
-            --text-secondary: <?php echo get_theme_mod('l_text_muted', '#475569'); ?>;
-            --border-faint: <?php echo get_theme_mod('l_border', 'rgba(0,0,0,0.1)'); ?>;
-            --accent-color: <?php echo get_theme_mod('l_accent', '#2563EB'); ?>;
-            --cursor-color: #000000;
-        }
-    </style>
-    <?php
-}
-add_action( 'wp_head', 'nischhal_customizer_css' );
 
 // Helper
 function get_project_cat_slugs($post_id) {
@@ -569,4 +330,47 @@ function get_project_cat_slugs($post_id) {
     }
     return '';
 }
+
+// CSS Injection
+function nischhal_customizer_css() {
+    ?>
+    <style>
+        :root {
+            /* Layout */
+            --max-width: <?php echo get_theme_mod('container_width', '1200px'); ?>;
+            --section-gap: <?php echo get_theme_mod('section_gap', '160px'); ?>;
+            
+            /* Typography */
+            --font-serif: "<?php echo get_theme_mod('typo_heading_family', 'Playfair Display'); ?>", serif;
+            --font-sans: "<?php echo get_theme_mod('typo_body_family', 'Inter'); ?>", sans-serif;
+            
+            /* Interaction */
+            --anim-speed: <?php echo get_theme_mod('anim_speed', 1.0); ?>;
+            --cursor-size: <?php echo get_theme_mod('cursor_size', 20); ?>px;
+
+            /* Dark Theme (Default) */
+            --bg-root: <?php echo get_theme_mod('d_bg', '#050505'); ?>;
+            --bg-surface: <?php echo get_theme_mod('d_surface', '#0a0a0a'); ?>;
+            --text-primary: <?php echo get_theme_mod('d_text', '#FFFFFF'); ?>;
+            --text-secondary: <?php echo get_theme_mod('d_text_muted', '#D4D4D8'); ?>;
+            --border-faint: <?php echo get_theme_mod('d_border', 'rgba(255,255,255,0.08)'); ?>;
+            --accent-blue: <?php echo get_theme_mod('d_accent', '#3B82F6'); ?>;
+            --cursor-color: #FFFFFF;
+        }
+
+        [data-theme="light"] {
+            --bg-root: <?php echo get_theme_mod('l_bg', '#FFFFFF'); ?>;
+            --bg-surface: <?php echo get_theme_mod('l_surface', '#F8FAFC'); ?>;
+            --text-primary: <?php echo get_theme_mod('l_text', '#0F172A'); ?>;
+            --text-secondary: <?php echo get_theme_mod('l_text_muted', '#475569'); ?>;
+            --border-faint: <?php echo get_theme_mod('l_border', 'rgba(0,0,0,0.08)'); ?>;
+            --accent-blue: <?php echo get_theme_mod('l_accent', '#2563EB'); ?>;
+            --cursor-color: #000000;
+        }
+        
+        #grid-canvas { opacity: <?php echo get_theme_mod('grid_opacity', 0.05); ?> !important; }
+    </style>
+    <?php
+}
+add_action( 'wp_head', 'nischhal_customizer_css' );
 ?>

@@ -8,12 +8,9 @@
 </head>
 <body <?php body_class(); ?>>
 
-    <!-- Page Transition Curtain -->
     <div class="page-transition-curtain"></div>
-
     <canvas id="grid-canvas"></canvas>
     
-    <!-- Theme Toggle -->
     <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme">
         <svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.29 1.29c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.29 1.29c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41l-1.29-1.29zm1.41-13.78c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41l1.29 1.29c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41l-1.29-1.29zM7.28 17.28c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41l1.29 1.29c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41l-1.29-1.29z"/></svg>
     </button>
@@ -23,7 +20,7 @@
     <a href="<?php echo home_url(); ?>" class="mobile-logo">NRS</a>
 
     <?php 
-    // Fetch menu items for dynamic rendering
+    // Fetch menu items
     $menu_items = [];
     $locations = get_nav_menu_locations();
     if ( isset( $locations['primary'] ) ) {
@@ -33,68 +30,62 @@
         }
     }
     
-    // Fallback if no menu assigned
+    // Fallback menu
     if ( empty( $menu_items ) ) {
-        $fallback_items = [
+        $menu_items = [
             (object)['url' => home_url(), 'title' => 'Home', 'object_id' => get_option('page_on_front'), 'object' => 'page', 'type' => 'post_type_archive'],
             (object)['url' => home_url('/work'), 'title' => 'Work', 'object_id' => 0, 'object' => 'custom', 'type' => 'custom'],
             (object)['url' => home_url('/about'), 'title' => 'About', 'object_id' => 0, 'object' => 'custom', 'type' => 'custom'],
             (object)['url' => home_url('/blog'), 'title' => 'Writing', 'object_id' => 0, 'object' => 'custom', 'type' => 'custom'],
             (object)['url' => home_url('/contact'), 'title' => 'Contact', 'object_id' => 0, 'object' => 'custom', 'type' => 'custom'],
         ];
-        $menu_items = $fallback_items;
     }
 
-    // Get current queried object ID for robust active checking
-    $queried_object_id = get_queried_object_id();
-    $current_url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-    $current_path = trim(parse_url($current_url, PHP_URL_PATH), '/');
+    // Active State Logic
+    $queried_id = get_queried_object_id();
+    global $wp;
+    $current_url = home_url( add_query_arg( array(), $wp->request ) );
+    
+    // Helper to determine active
+    function is_item_active($item, $qid, $curr_url) {
+        // 1. Exact Object ID Match (Pages/Posts)
+        if ( isset($item->object_id) && $item->object_id == $qid && $item->object != 'custom' ) {
+            return true;
+        }
+        // 2. Homepage Check
+        if ( is_front_page() && $item->url == home_url('/') ) {
+            return true;
+        }
+        // 3. URL Match (Custom Links & Archives)
+        // Remove trailing slashes for comparison to avoid mismatch
+        if ( rtrim($item->url, '/') == rtrim($curr_url, '/') ) {
+            return true;
+        }
+        return false;
+    }
     ?>
 
-    <!-- Mobile Menu Overlay -->
+    <!-- Mobile Menu -->
     <div class="mobile-nav-overlay">
         <nav class="mobile-nav-links">
             <?php foreach($menu_items as $item): 
-                $active_class = '';
-                $item_path = trim(parse_url($item->url, PHP_URL_PATH), '/');
-                
-                // Active State Logic:
-                // 1. Check if ID matches current object
-                // 2. Check if it's homepage and we are on front page
-                // 3. Fallback: Check if URL path matches current path
-                if ( isset($item->object_id) && $item->object_id == $queried_object_id && $item->object != 'custom' ) {
-                    $active_class = 'active';
-                } elseif ( is_front_page() && $item->url == home_url('/') ) {
-                    $active_class = 'active';
-                } elseif ( !empty($current_path) && !empty($item_path) && strpos($current_path, $item_path) !== false && $item->url != home_url('/') ) {
-                    $active_class = 'active';
-                }
+                $active = is_item_active($item, $queried_id, $current_url) ? 'active' : '';
             ?>
-                <a href="<?php echo esc_url($item->url); ?>" class="<?php echo esc_attr($active_class); ?>">
+                <a href="<?php echo esc_url($item->url); ?>" class="mobile-link <?php echo $active; ?>">
                     <?php echo esc_html($item->title); ?>
                 </a>
             <?php endforeach; ?>
         </nav>
     </div>
 
-    <!-- Desktop Nav Pill -->
+    <!-- Desktop Nav -->
     <nav class="nav-wrapper">
       <div class="nav-pill">
         <div class="nav-glider"></div>
         <?php foreach($menu_items as $item): 
-            $active_class = '';
-            $item_path = trim(parse_url($item->url, PHP_URL_PATH), '/');
-            
-            // Replicate logic for Desktop
-            if ( isset($item->object_id) && $item->object_id == $queried_object_id && $item->object != 'custom' ) {
-                $active_class = 'active';
-            } elseif ( is_front_page() && $item->url == home_url('/') ) {
-                $active_class = 'active';
-            } elseif ( !empty($current_path) && !empty($item_path) && strpos($current_path, $item_path) !== false && $item->url != home_url('/') ) {
-                $active_class = 'active';
-            }
+            $active = is_item_active($item, $queried_id, $current_url) ? 'active' : '';
         ?>
-            <a href="<?php echo esc_url($item->url); ?>" class="nav-link <?php echo esc_attr($active_class); ?>">
+            <a href="<?php echo esc_url($item->url); ?>" class="nav-link <?php echo $active; ?>">
                 <?php echo esc_html($item->title); ?>
             </a>
         <?php endforeach; ?>

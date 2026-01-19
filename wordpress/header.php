@@ -9,6 +9,9 @@
 </head>
 <body <?php body_class(); ?>>
 
+    <!-- Page Transition Overlay -->
+    <div class="page-transition-curtain"></div>
+
     <canvas id="grid-canvas"></canvas>
     <div class="custom-cursor-dot"></div>
     <div class="custom-cursor-outline"></div>

@@ -6,16 +6,16 @@ get_header(); ?>
       <section class="hero-section" style="min-height: 40vh;">
         <h1 class="hero-title reveal-on-scroll">
             <span class="text-reveal-wrap">
-                <span class="text-outline">Work Archive</span>
-                <span class="text-fill">Work Archive</span>
+                <span class="text-outline">Selected Work</span>
+                <span class="text-fill">Selected Work</span>
             </span>
         </h1>
-        <p class="body-large reveal-on-scroll">A complete history of selected projects and design experiments.</p>
+        <p class="body-large reveal-on-scroll">A curated showcase of design systems, complex products, and interaction design.</p>
       </section>
 
       <!-- FILTER PILLS -->
       <div class="filter-row reveal-on-scroll">
-          <a href="<?php echo home_url('/work'); ?>" class="filter-btn active">All Projects</a>
+          <button class="filter-btn active" data-filter="all">All Projects</button>
           <?php 
             $cats = get_terms( array(
                 'taxonomy' => 'project_category',
@@ -23,7 +23,7 @@ get_header(); ?>
             ) );
             if ( ! empty( $cats ) && ! is_wp_error( $cats ) ) {
                 foreach ( $cats as $cat ) {
-                    echo '<a href="' . get_term_link($cat) . '" class="filter-btn">' . esc_html( $cat->name ) . '</a>';
+                    echo '<button class="filter-btn" data-filter="' . esc_attr( $cat->slug ) . '">' . esc_html( $cat->name ) . '</button>';
                 }
             }
           ?>
@@ -32,12 +32,9 @@ get_header(); ?>
       <section class="section-container" style="padding-top: 0;">
         <div class="project-grid">
            <?php 
-           // Custom Query for 'project' CPT
-           $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
            $args = array(
                'post_type' => 'project',
-               'posts_per_page' => 6, // Increased to 6
-               'paged' => $paged
+               'posts_per_page' => -1,
            );
            $projects = new WP_Query($args);
            
@@ -53,7 +50,7 @@ get_header(); ?>
                    <?php if($thumb_url): ?>
                     <img src="<?php echo esc_url($thumb_url); ?>" alt="<?php the_title(); ?>">
                    <?php else: ?>
-                    <div style="width:100%; height:100%; background: #1a1a1a; display:flex; align-items:center; justify-content:center; color:#333;">No Image</div>
+                    <div style="width:100%; height:100%; background: var(--bg-card); display:flex; align-items:center; justify-content:center; color: var(--text-tertiary);">No Image</div>
                    <?php endif; ?>
                </div>
                <div class="card-content">
@@ -64,18 +61,7 @@ get_header(); ?>
                    </div>
                </div>
            </a>
-           <?php endwhile; 
-                 // Pagination
-                 echo '<div class="pagination" style="grid-column: 1/-1; display:flex; gap:10px; margin-top:40px;">';
-                 echo paginate_links( array(
-                    'total' => $projects->max_num_pages,
-                    'current' => $paged,
-                    'prev_text' => '← Prev',
-                    'next_text' => 'Next →',
-                 ) );
-                 echo '</div>';
-                 wp_reset_postdata(); 
-           else: ?>
+           <?php endwhile; wp_reset_postdata(); else: ?>
                <p style="color: var(--text-secondary);">No projects found.</p>
            <?php endif; ?>
         </div>

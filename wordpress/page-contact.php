@@ -19,20 +19,14 @@ get_header(); ?>
                   
                   <div class="contact-detail-item">
                       <h5>Email</h5>
-                      <a href="mailto:hinischalsubba@gmail.com">hinischalsubba@gmail.com</a>
+                      <a href="mailto:<?php echo get_theme_mod('footer_email', 'hinischalsubba@gmail.com'); ?>"><?php echo get_theme_mod('footer_email', 'hinischalsubba@gmail.com'); ?></a>
                   </div>
                   
                   <div class="contact-detail-item">
-                      <h5>Phone</h5>
-                      <p>+977 9842552348</p>
-                  </div>
-
-                  <div class="contact-detail-item">
                       <h5>Socials</h5>
                       <div style="display: flex; gap: 16px; margin-top: 8px;">
-                          <a href="https://linkedin.com/in/nischhal/" style="border-bottom: 1px solid currentColor;">LinkedIn</a>
-                          <a href="https://behance.net/nischhal" style="border-bottom: 1px solid currentColor;">Behance</a>
-                          <a href="https://app.uxcel.com/ux/nischhal" style="border-bottom: 1px solid currentColor;">Uxcel</a>
+                          <?php if(get_theme_mod('social_linkedin')): ?><a href="<?php echo get_theme_mod('social_linkedin'); ?>" style="border-bottom: 1px solid currentColor;">LinkedIn</a><?php endif; ?>
+                          <?php if(get_theme_mod('social_behance')): ?><a href="<?php echo get_theme_mod('social_behance'); ?>" style="border-bottom: 1px solid currentColor;">Behance</a><?php endif; ?>
                       </div>
                   </div>
               </div>

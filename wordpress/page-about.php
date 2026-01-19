@@ -58,21 +58,6 @@ get_header(); ?>
                           <div class="timeline-company">ESR Tech • Remote</div>
                           <p class="body-large" style="font-size: 1rem; margin-top: 12px; margin-bottom: 0;">Designed dashboard UX for internal tools and contributed to products like Jeweltrek.</p>
                       </div>
-                      <div class="timeline-item">
-                          <span class="timeline-date">Apr 2021 – Sep 2021</span>
-                          <h4 class="timeline-role">Senior UI/UX Designer</h4>
-                          <div class="timeline-company">ThemeGrill • Remote</div>
-                      </div>
-                      <div class="timeline-item">
-                          <span class="timeline-date">Jul 2019 – Jan 2021</span>
-                          <h4 class="timeline-role">UI/UX Designer</h4>
-                          <div class="timeline-company">Gurzu • Onsite</div>
-                      </div>
-                      <div class="timeline-item">
-                          <span class="timeline-date">Apr 2019 – Sep 2020</span>
-                          <h4 class="timeline-role">UX Designer (Part-time)</h4>
-                          <div class="timeline-company">Diagonal Softwares • Germany</div>
-                      </div>
                   </div>
 
                   <h3 class="section-title" style="margin: 80px 0 40px;">Education</h3>
@@ -89,11 +74,6 @@ get_header(); ?>
                       <div class="timeline-item">
                           <span class="timeline-date">Dec 2024</span>
                           <h4 class="timeline-role">Ranked #1 Designer</h4>
-                          <div class="timeline-company">Uxcel Global Rankings 2024</div>
-                      </div>
-                      <div class="timeline-item">
-                          <span class="timeline-date">Dec 2024</span>
-                          <h4 class="timeline-role">#1 Product Designer</h4>
                           <div class="timeline-company">Uxcel Global Rankings 2024</div>
                       </div>
                       <div class="timeline-item">

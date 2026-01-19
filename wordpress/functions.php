@@ -32,12 +32,12 @@ function nischhal_enqueue_scripts() {
     }
 
     // Main Styles
-    wp_enqueue_style( 'main-style', get_stylesheet_uri(), array(), '4.0' );
+    wp_enqueue_style( 'main-style', get_stylesheet_uri(), array(), '4.1' );
     
     // JS Libraries
     wp_enqueue_script( 'gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js', array(), null, true );
     wp_enqueue_script( 'gsap-st', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js', array('gsap'), null, true );
-    wp_enqueue_script( 'theme-js', get_template_directory_uri() . '/js/main.js', array('gsap'), '4.0', true );
+    wp_enqueue_script( 'theme-js', get_template_directory_uri() . '/js/main.js', array('gsap'), '4.1', true );
 
     // Pass Configuration to JS
     wp_localize_script( 'theme-js', 'themeConfig', array(
@@ -46,9 +46,11 @@ function nischhal_enqueue_scripts() {
         'cursorStyle' => get_theme_mod('cursor_style', 'classic'),
         'cursorSize' => get_theme_mod('cursor_size', 20),
         'cursorTrailLen' => get_theme_mod('cursor_trail_len', 5),
-        'cursorText' => get_theme_mod('cursor_hover_text', 'OPEN'),
+        'cursorText' => get_theme_mod('cursor_hover_text', 'VIEW'),
         'gridHighlight' => get_theme_mod('grid_highlight', true),
         'gridRadius' => get_theme_mod('grid_radius', 300),
+        'gridSize' => get_theme_mod('grid_cell_size', 60),
+        'gridOpacity' => get_theme_mod('grid_line_opacity', 0.05),
     ));
 }
 add_action( 'wp_enqueue_scripts', 'nischhal_enqueue_scripts' );
@@ -71,7 +73,7 @@ add_action( 'init', 'nischhal_register_projects' );
 // --- 4. CUSTOMIZER ---
 function nischhal_customize_register( $wp_customize ) {
     
-    // --- PANEL: TYPOGRAPHY (NEW) ---
+    // --- PANEL: TYPOGRAPHY ---
     $wp_customize->add_panel( 'panel_typography', array( 'title' => 'Design: Typography', 'priority' => 15 ) );
     
     // Section: Fonts
@@ -146,8 +148,15 @@ function nischhal_customize_register( $wp_customize ) {
     $wp_customize->add_setting( 'layout_max_width', array( 'default' => '1200px' ) );
     $wp_customize->add_control( 'layout_max_width', array( 'label' => 'Container Width', 'section' => 'sec_grid' ) );
     
+    // Grid Visuals
     $wp_customize->add_setting( 'grid_highlight', array( 'default' => true ) );
     $wp_customize->add_control( 'grid_highlight', array( 'label' => 'Enable Flashlight Grid', 'section' => 'sec_grid', 'type' => 'checkbox' ) );
+
+    $wp_customize->add_setting( 'grid_cell_size', array( 'default' => 60 ) );
+    $wp_customize->add_control( 'grid_cell_size', array( 'label' => 'Grid Cell Size (px)', 'section' => 'sec_grid', 'type' => 'number', 'input_attrs' => array('min' => 20, 'max' => 200) ) );
+
+    $wp_customize->add_setting( 'grid_line_opacity', array( 'default' => 0.05 ) );
+    $wp_customize->add_control( 'grid_line_opacity', array( 'label' => 'Grid Line Opacity', 'section' => 'sec_grid', 'type' => 'range', 'input_attrs' => array('min' => 0, 'max' => 0.5, 'step' => 0.01) ) );
 }
 add_action( 'customize_register', 'nischhal_customize_register' );
 

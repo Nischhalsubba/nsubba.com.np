@@ -18,7 +18,10 @@
                 <div class="footer-nav-grid">
                     <div class="footer-col">
                         <h5>Sitemap</h5>
-                        <?php wp_nav_menu( array( 'theme_location' => 'primary', 'container' => false ) ); ?>
+                        <a href="<?php echo home_url(); ?>">Home</a>
+                        <a href="<?php echo home_url('/work'); ?>">Work</a>
+                        <a href="<?php echo home_url('/about'); ?>">About</a>
+                        <a href="<?php echo home_url('/blog'); ?>">Writing</a>
                     </div>
                     <div class="footer-col">
                         <h5>Socials</h5>
@@ -28,6 +31,7 @@
                         <?php if(get_theme_mod('social_behance')): ?>
                             <a href="<?php echo get_theme_mod('social_behance'); ?>" target="_blank">Behance</a>
                         <?php endif; ?>
+                        <a href="mailto:<?php echo get_theme_mod('footer_email', 'hinischalsubba@gmail.com'); ?>">Email</a>
                     </div>
                 </div>
             </div>

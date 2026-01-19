@@ -75,7 +75,13 @@
 
       <!-- PROJECTS -->
       <section class="section-container">
-        <h2 class="section-title reveal-on-scroll">Selected Work</h2>
+        <!-- Text Reveal Applied to Selected Work -->
+        <h2 class="section-title reveal-on-scroll">
+            <span class="text-reveal-wrap">
+                <span class="text-outline">Selected Work</span>
+                <span class="text-fill">Selected Work</span>
+            </span>
+        </h2>
         <div class="project-grid">
            <?php 
            $projects = new WP_Query(array('post_type' => 'project', 'posts_per_page' => 4));
@@ -142,7 +148,12 @@
       <section class="section-container">
           <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px;" class="reveal-on-scroll">
               <h2 class="section-title" style="margin-bottom: 0;">Insights</h2>
-              <a href="<?php echo home_url('/blog'); ?>" class="btn btn-secondary" style="padding: 12px 24px; font-size: 0.9rem;">View all writing</a>
+              <?php 
+                // Determine blog link: Archive URL or fallback to /blog
+                $blog_url = get_post_type_archive_link('post');
+                if(!$blog_url) $blog_url = home_url('/blog');
+              ?>
+              <a href="<?php echo esc_url($blog_url); ?>" class="btn btn-secondary" style="padding: 12px 24px; font-size: 0.9rem;">View all writing</a>
           </div>
           
           <div class="blog-grid reveal-on-scroll">
@@ -152,7 +163,7 @@
               <a href="<?php the_permalink(); ?>" class="blog-card-modern">
                   <div class="blog-card-meta">
                       <span><?php echo get_the_date('M d, Y'); ?></span>
-                      <span><?php $cat = get_the_category(); echo $cat[0]->cat_name; ?></span>
+                      <span><?php $cat = get_the_category(); if($cat) echo $cat[0]->cat_name; ?></span>
                   </div>
                   <h3 class="blog-card-title"><?php the_title(); ?></h3>
                   <div class="blog-card-excerpt">

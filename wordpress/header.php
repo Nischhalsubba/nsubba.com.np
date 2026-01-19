@@ -47,6 +47,8 @@
 
     // Get current queried object ID for robust active checking
     $queried_object_id = get_queried_object_id();
+    $current_url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    $current_path = trim(parse_url($current_url, PHP_URL_PATH), '/');
     ?>
 
     <!-- Mobile Menu Overlay -->
@@ -54,10 +56,14 @@
         <nav class="mobile-nav-links">
             <?php foreach($menu_items as $item): 
                 $active_class = '';
-                // Robust Active Check: Object ID matching or URL fallback
-                if ( $item->object_id == $queried_object_id || 
-                   (is_front_page() && $item->url == home_url('/')) ||
-                   ($item->url != home_url('/') && strpos("http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]", $item->url) !== false) ) {
+                $item_path = trim(parse_url($item->url, PHP_URL_PATH), '/');
+                
+                // Logic: ID Match OR Front Page Match OR URL Path Match
+                if ( $item->object_id == $queried_object_id && $item->object != 'custom' ) {
+                    $active_class = 'active';
+                } elseif ( is_front_page() && $item->url == home_url('/') ) {
+                    $active_class = 'active';
+                } elseif ( !empty($current_path) && !empty($item_path) && strpos($current_path, $item_path) !== false ) {
                     $active_class = 'active';
                 }
             ?>
@@ -74,10 +80,14 @@
         <div class="nav-glider"></div>
         <?php foreach($menu_items as $item): 
             $active_class = '';
-            // Robust Active Check: Object ID matching or URL fallback
-            if ( $item->object_id == $queried_object_id || 
-               (is_front_page() && $item->url == home_url('/')) ||
-               ($item->url != home_url('/') && strpos("http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]", $item->url) !== false) ) {
+            $item_path = trim(parse_url($item->url, PHP_URL_PATH), '/');
+            
+            // Replicate logic for Desktop
+            if ( $item->object_id == $queried_object_id && $item->object != 'custom' ) {
+                $active_class = 'active';
+            } elseif ( is_front_page() && $item->url == home_url('/') ) {
+                $active_class = 'active';
+            } elseif ( !empty($current_path) && !empty($item_path) && strpos($current_path, $item_path) !== false ) {
                 $active_class = 'active';
             }
         ?>

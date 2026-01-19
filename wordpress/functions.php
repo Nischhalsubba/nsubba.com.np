@@ -2,7 +2,7 @@
 <?php
 /**
  * Nischhal Portfolio - Core Functions
- * Version: 16.1 (SEO + Image Optimization)
+ * Version: 16.2 (Bugfixes & Optimization)
  */
 
 // --- 1. SETUP & SUPPORT ---
@@ -31,16 +31,19 @@ function nischhal_theme_setup() {
 add_action( 'after_setup_theme', 'nischhal_theme_setup' );
 
 // --- 1.2 IMAGE COMPRESSION & OPTIMIZATION ---
-// Set JPEG Quality to 85 (High detail, decent compression)
-add_filter( 'jpeg_quality', function($arg){ return 85; } );
-add_filter( 'wp_editor_set_quality', function($arg){ return 85; } );
+// Set JPEG Quality to 80 (Massive compression without losing too much detail)
+add_filter( 'jpeg_quality', function($arg){ return 80; } );
+add_filter( 'wp_editor_set_quality', function($arg){ return 80; } );
 
-// Enable Big Image Uploads (don't scale down immediately, let us handle it)
-add_filter( 'big_image_size_threshold', '__return_false' );
+// Set a reasonable threshold for big images (2560px) to prevent massive raw uploads
+add_filter( 'big_image_size_threshold', function() { return 2560; } );
 
-// --- 1.3 SEO AUTOMATION (No Visual Changes) ---
+// --- 1.3 SEO AUTOMATION (SAFE) ---
 function nischhal_seo_meta_tags() {
     global $post;
+    
+    // SAFE CHECK: Ensure $post object exists before accessing ID
+    if ( !isset($post) || !is_object($post) ) return;
     
     // Default Description
     $excerpt = "Portfolio of Nischhal Raj Subba, a #1 Ranked Product Designer specializing in Design Systems, Enterprise UX, and Web3 Product Design.";
@@ -255,10 +258,10 @@ function nischhal_enqueue_scripts() {
     wp_enqueue_style( 'nischhal-google-fonts', $fonts_url, array(), null );
 
     // Core
-    wp_enqueue_style( 'main-style', get_stylesheet_uri(), array(), '16.1' );
+    wp_enqueue_style( 'main-style', get_stylesheet_uri(), array(), '16.2' );
     wp_enqueue_script( 'gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js', array(), null, true );
     wp_enqueue_script( 'gsap-st', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js', array('gsap'), null, true );
-    wp_enqueue_script( 'theme-js', get_template_directory_uri() . '/js/main.js', array('gsap'), '16.1', true );
+    wp_enqueue_script( 'theme-js', get_template_directory_uri() . '/js/main.js', array('gsap'), '16.2', true );
 
     // Pass Config to JS
     wp_localize_script( 'theme-js', 'themeConfig', array(

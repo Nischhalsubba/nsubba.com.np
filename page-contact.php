@@ -1,0 +1,1 @@
+<?php // Moved to wordpress/page-contact.php ?>

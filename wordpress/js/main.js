@@ -1,249 +1,396 @@
 
-/**
- * MAIN.JS
- * Core interaction logic for Nischhal Pro Theme.
- * Handles Cursor, GSAP Animations, Canvas Grid, and UI Events.
- */
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- CONSTANTS ---
     const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Check for touch device to optimize performance
     const IS_TOUCH = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    const htmlEl = document.documentElement;
-    const body = document.body;
 
-    // Merge PHP config with defaults
-    const defaultConfig = { 
-        animSpeed: 1.0, 
-        enableCursor: true, 
-        gridEnable: true,
-        gridOpacity: 0.05
-    };
-    const config = typeof themeConfig !== 'undefined' ? { ...defaultConfig, ...themeConfig } : defaultConfig;
-
-
-    /* -------------------------------------------------------------------------- */
-    /*  1. THEME TOGGLE (Light/Dark)
-    /* -------------------------------------------------------------------------- */
+    // --- 0. THEME HANDLING ---
     const themeBtn = document.getElementById('theme-toggle');
-    const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-    
-    // Apply initial theme
-    htmlEl.setAttribute('data-theme', savedTheme);
+    const htmlEl = document.documentElement;
+
+    // Images
+    const DARK_IMG = "https://i.imgur.com/ixsEpYM.png";
+    const LIGHT_IMG = "https://i.imgur.com/oFHdPUS.png";
+
+    const sunIcon = `<svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.29 1.29c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.29 1.29c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41l-1.29-1.29zm1.41-13.78c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41l1.29 1.29c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41l-1.29-1.29zM7.28 17.28c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41l1.29 1.29c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41l-1.29-1.29z"/></svg>`;
+    const moonIcon = `<svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>`;
+
+    function updateImages(theme) {
+        const targetSrc = theme === 'light' ? LIGHT_IMG : DARK_IMG;
+
+        const heroImg = document.querySelector('.hero-portrait-img');
+        if (heroImg) heroImg.src = targetSrc;
+
+        const footerImg = document.querySelector('.footer-portrait-img');
+        if (footerImg) footerImg.src = targetSrc;
+
+        const aboutImg = document.querySelector('.profile-img');
+        if (aboutImg) aboutImg.src = targetSrc;
+    }
+
+    function setTheme(theme) {
+        htmlEl.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        if (themeBtn) themeBtn.innerHTML = theme === 'light' ? moonIcon : sunIcon;
+        updateImages(theme);
+    }
+
+    // Initialize Theme
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+
+    if (savedTheme) {
+        setTheme(savedTheme);
+    } else if (systemPrefersLight) {
+        setTheme('light');
+    } else {
+        setTheme('dark');
+    }
 
     if (themeBtn) {
         themeBtn.addEventListener('click', () => {
-            const current = htmlEl.getAttribute('data-theme');
-            const next = current === 'light' ? 'dark' : 'light';
-            htmlEl.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
+            const currentTheme = htmlEl.getAttribute('data-theme') || 'dark';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
         });
     }
 
-
-    /* -------------------------------------------------------------------------- */
-    /*  2. MOBILE MENU
-    /* -------------------------------------------------------------------------- */
+    // --- MOBILE MENU TOGGLE ---
     const mobileBtn = document.querySelector('.mobile-nav-toggle');
-    const mobileOverlay = document.querySelector('.mobile-nav-overlay');
+    const body = document.body;
+    const mobileLinks = document.querySelectorAll('.mobile-nav-links a');
 
-    if(mobileBtn && mobileOverlay) {
+    if (mobileBtn) {
         mobileBtn.addEventListener('click', () => {
-            mobileOverlay.classList.toggle('active');
-            body.classList.toggle('menu-open');
+            const isOpen = body.classList.toggle('menu-open');
             
-            // Animate links in if opening
-            if(mobileOverlay.classList.contains('active') && window.gsap) {
-                gsap.fromTo('.mobile-nav-links a', 
-                    { y: 40, opacity: 0 },
+            if (isOpen && window.gsap) {
+                // Staggered animation for links opening
+                gsap.fromTo(mobileLinks, 
+                    { y: 30, opacity: 0 },
                     { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out", delay: 0.1 }
                 );
             }
         });
-        
-        // Close menu on link click
-        document.querySelectorAll('.mobile-nav-links a').forEach(link => {
+
+        // Close menu when a link is clicked
+        mobileLinks.forEach(link => {
             link.addEventListener('click', () => {
-                mobileOverlay.classList.remove('active');
                 body.classList.remove('menu-open');
             });
         });
     }
 
+    // --- 1. SPOTLIGHT GRID CANVAS ---
+    // DISABLED ON MOBILE/TOUCH FOR PERFORMANCE OPTIMIZATION
+    const canvas = document.getElementById('grid-canvas');
+    if (canvas && !REDUCED_MOTION && !IS_TOUCH) {
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let mouse = { x: -1000, y: -1000 };
 
-    /* -------------------------------------------------------------------------- */
-    /*  3. CUSTOM CURSOR ENGINE (Bulletproofed)
-    /* -------------------------------------------------------------------------- */
-    // Only run if cursor is enabled, motion is allowed, and NOT on touch device
-    if (!REDUCED_MOTION && !IS_TOUCH && config.enableCursor) {
-        
-        const dot = document.querySelector('.custom-cursor-dot');
-        const ring = document.querySelector('.custom-cursor-outline');
-        
-        // Only proceed if elements exist in DOM
-        if (dot && ring) {
-            
-            let mouse = { x: window.innerWidth/2, y: window.innerHeight/2 };
-            let ringPos = { x: window.innerWidth/2, y: window.innerHeight/2 };
-            let isHover = false;
-
-            // TRACK MOUSE
-            window.addEventListener('mousemove', e => { 
-                mouse.x = e.clientX; 
-                mouse.y = e.clientY; 
-                
-                // IMPORTANT: Activate cursor visibility on first movement
-                if (!body.classList.contains('cursor-visible')) {
-                    body.classList.add('cursor-visible');
-                }
-            });
-
-            // HOVER DETECTION (Links, Buttons, Inputs)
-            const interactiveSelectors = 'a, button, input, .project-card, .nav-pill, .t-btn';
-            document.querySelectorAll(interactiveSelectors).forEach(el => {
-                el.addEventListener('mouseenter', () => isHover = true);
-                el.addEventListener('mouseleave', () => isHover = false);
-            });
-
-            // ANIMATION LOOP (GSAP)
-            const renderCursor = () => {
-                if(window.gsap) {
-                    // Dot follows mouse instantly
-                    gsap.set(dot, { x: mouse.x, y: mouse.y });
-                    
-                    // Ring follows with lerp (smooth delay)
-                    ringPos.x += (mouse.x - ringPos.x) * 0.15;
-                    ringPos.y += (mouse.y - ringPos.y) * 0.15;
-                    gsap.set(ring, { x: ringPos.x, y: ringPos.y });
-                    
-                    // Hover State Transformations
-                    if(isHover) {
-                        gsap.to(ring, { width: 60, height: 60, opacity: 0.5, duration: 0.3, overwrite: true });
-                        gsap.to(dot, { scale: 0.5, duration: 0.3, overwrite: true });
-                    } else {
-                        gsap.to(ring, { width: 44, height: 44, opacity: 1, duration: 0.3, overwrite: true });
-                        gsap.to(dot, { scale: 1, duration: 0.3, overwrite: true });
-                    }
-                }
-                requestAnimationFrame(renderCursor);
-            };
-            
-            renderCursor();
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
         }
+        window.addEventListener('resize', resize);
+        resize();
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        function drawGrid() {
+            ctx.clearRect(0, 0, width, height);
+
+            const isLight = htmlEl.getAttribute('data-theme') === 'light';
+            const gridSize = 60;
+            const spotlightRadius = 400;
+
+            const gridColor = isLight ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)';
+            const spotlightColorStart = isLight ? 'rgba(37, 99, 235, 0.15)' : 'rgba(59, 130, 246, 0.15)';
+            const spotlightColorEnd = isLight ? 'rgba(37, 99, 235, 0)' : 'rgba(59, 130, 246, 0)';
+
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = gridColor;
+            ctx.beginPath();
+            for (let x = 0; x <= width; x += gridSize) { ctx.moveTo(x, 0); ctx.lineTo(x, height); }
+            for (let y = 0; y <= height; y += gridSize) { ctx.moveTo(0, y); ctx.lineTo(width, y); }
+            ctx.stroke();
+
+            const grad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, spotlightRadius);
+            grad.addColorStop(0, spotlightColorStart);
+            grad.addColorStop(1, spotlightColorEnd);
+
+            ctx.strokeStyle = grad;
+            ctx.beginPath();
+
+            const startX = Math.floor((mouse.x - spotlightRadius) / gridSize) * gridSize;
+            const endX = Math.floor((mouse.x + spotlightRadius) / gridSize) * gridSize;
+            const startY = Math.floor((mouse.y - spotlightRadius) / gridSize) * gridSize;
+            const endY = Math.floor((mouse.y + spotlightRadius) / gridSize) * gridSize;
+
+            for (let x = startX; x <= endX; x += gridSize) {
+                if (x < 0 || x > width) continue;
+                ctx.moveTo(x, Math.max(0, mouse.y - spotlightRadius));
+                ctx.lineTo(x, Math.min(height, mouse.y + spotlightRadius));
+            }
+            for (let y = startY; y <= endY; y += gridSize) {
+                if (y < 0 || y > height) continue;
+                ctx.moveTo(Math.max(0, mouse.x - spotlightRadius), y);
+                ctx.lineTo(Math.min(width, mouse.x + spotlightRadius), y);
+            }
+            ctx.stroke();
+
+            requestAnimationFrame(drawGrid);
+        }
+        drawGrid();
     }
 
+    // --- 2. CUSTOM CURSOR (Fixed & Safe) ---
+    const cursorDot = document.querySelector('.custom-cursor-dot');
+    const cursorOutline = document.querySelector('.custom-cursor-outline');
 
-    /* -------------------------------------------------------------------------- */
-    /*  4. SCROLL REVEAL (GSAP ScrollTrigger)
-    /* -------------------------------------------------------------------------- */
-    if(window.gsap && window.ScrollTrigger && !REDUCED_MOTION) {
+    // Only enable if pointer is fine (mouse) and elements exist
+    // DISABLED ON TOUCH DEVICES
+    if (!REDUCED_MOTION && window.matchMedia('(pointer: fine)').matches && !IS_TOUCH && cursorDot) {
+
+        // Add class to body to hide default cursor ONLY when this logic is active
+        document.body.classList.add('custom-cursor-active');
+
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let outlineX = mouseX;
+        let outlineY = mouseY;
+
+        // Initial setup
+        gsap.set([cursorDot, cursorOutline], { xPercent: -50, yPercent: -50, opacity: 1 });
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+
+            // Dot follows instantly
+            gsap.to(cursorDot, { x: mouseX, y: mouseY, duration: 0 });
+        });
+
+        // Smooth outline loop
+        const animateCursor = () => {
+            outlineX += (mouseX - outlineX) * 0.15;
+            outlineY += (mouseY - outlineY) * 0.15;
+
+            gsap.set(cursorOutline, { x: outlineX, y: outlineY });
+            requestAnimationFrame(animateCursor);
+        };
+        animateCursor();
+
+        // Hover Effect Logic
+        const interactiveSelectors = 'a, button, input, textarea, .project-card, .nav-pill, .writing-item, .project-nav-card, .social-icon-btn, .award-item, .t-btn, .theme-toggle-btn, .mobile-nav-toggle';
+
+        document.querySelectorAll(interactiveSelectors).forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                gsap.to(cursorOutline, {
+                    width: 60,
+                    height: 60,
+                    backgroundColor: 'rgba(128, 128, 128, 0.1)',
+                    borderColor: 'transparent',
+                    duration: 0.3
+                });
+                gsap.to(cursorDot, { scale: 0.5, duration: 0.3 });
+            });
+            el.addEventListener('mouseleave', () => {
+                gsap.to(cursorOutline, {
+                    width: 40,
+                    height: 40,
+                    backgroundColor: 'transparent',
+                    borderColor: 'var(--cursor-border)',
+                    duration: 0.3
+                });
+                gsap.to(cursorDot, { scale: 1, duration: 0.3 });
+            });
+        });
+    }
+
+    // --- 3. TITLE SCROLL REVEAL (Outline to Fill) ---
+    if (window.gsap && window.ScrollTrigger && !REDUCED_MOTION) {
         gsap.registerPlugin(ScrollTrigger);
 
-        // A. Heading Reveal (Text Fill)
-        const targets = document.querySelectorAll('.text-reveal-wrap');
-        targets.forEach(wrapper => {
-            const fill = wrapper.querySelector('.text-fill');
-            if(fill) {
-                gsap.to(fill, {
-                    clipPath: "inset(0 0% 0 0)", // Reveal from left to right
-                    ease: "none",
-                    scrollTrigger: { 
-                        trigger: wrapper, 
-                        start: "top 90%", // Start when element enters viewport
-                        end: "bottom 60%", // Complete when closer to center
-                        scrub: 0.5 // Smooth scrub
+        document.querySelectorAll('.text-reveal-wrap').forEach(title => {
+            const fillText = title.querySelector('.text-fill');
+            if (fillText) {
+                gsap.to(fillText, {
+                    clipPath: 'inset(0 0% 0 0)',
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: title,
+                        start: 'top 90%', // Earlier start for mobile
+                        end: 'bottom 20%', // Earlier end for mobile
+                        scrub: 0.5 // Smoother scrubbing
                     }
                 });
             }
         });
 
-        // B. Element Fade Up
-        const revealElements = document.querySelectorAll('.reveal-on-scroll, .project-card, .metric-item, .body-large');
-        revealElements.forEach(el => {
-            // Avoid double animating headings
-            if(el.classList.contains('text-reveal-wrap')) return;
-            
-            gsap.fromTo(el, 
-                { y: 40, opacity: 0 }, 
-                {
-                    y: 0, opacity: 1, duration: 0.8,
-                    ease: "power2.out",
-                    scrollTrigger: { trigger: el, start: "top 90%" }
-                }
-            );
+        document.querySelectorAll(".reveal-on-scroll").forEach(el => {
+            gsap.fromTo(el, { y: 40, opacity: 0 }, {
+                y: 0, opacity: 1, duration: 0.8,
+                scrollTrigger: { trigger: el, start: "top 85%" }
+            });
         });
     }
 
-
-    /* -------------------------------------------------------------------------- */
-    /*  5. CANVAS GRID BACKGROUND
-    /* -------------------------------------------------------------------------- */
-    const gridCanvas = document.getElementById('grid-canvas');
-    if (gridCanvas && !REDUCED_MOTION && config.gridEnable && !IS_TOUCH) {
-        const ctx = gridCanvas.getContext('2d');
-        let w, h, mouse = { x: -1000, y: -1000 };
-        const gridSize = 60;
-
-        const resize = () => { w = gridCanvas.width = window.innerWidth; h = gridCanvas.height = window.innerHeight; };
-        window.addEventListener('resize', resize);
-        resize();
-        
-        window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-
-        const drawGrid = () => {
-            ctx.clearRect(0, 0, w, h);
-            const isLight = htmlEl.getAttribute('data-theme') === 'light';
-            const baseOp = parseFloat(config.gridOpacity) || 0.05;
-            
-            // Draw Lines
-            ctx.strokeStyle = isLight ? `rgba(0,0,0,${baseOp})` : `rgba(255,255,255,${baseOp})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            for(let x=0; x<=w; x+=gridSize) { ctx.moveTo(x,0); ctx.lineTo(x,h); }
-            for(let y=0; y<=h; y+=gridSize) { ctx.moveTo(0,y); ctx.lineTo(w,y); }
-            ctx.stroke();
-            
-            // Draw Spotlight
-            const grad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 300);
-            const accent = getComputedStyle(body).getPropertyValue('--accent-blue').trim() || '#3B82F6';
-            grad.addColorStop(0, accent + '33'); // 20% opacity hex
-            grad.addColorStop(1, 'transparent');
-            ctx.strokeStyle = grad;
-            ctx.beginPath();
-            
-            const region = 300;
-            const startX = Math.floor((mouse.x - region)/gridSize)*gridSize;
-            const endX = Math.ceil((mouse.x + region)/gridSize)*gridSize;
-            const startY = Math.floor((mouse.y - region)/gridSize)*gridSize;
-            const endY = Math.ceil((mouse.y + region)/gridSize)*gridSize;
-            
-            for(let x=startX; x<=endX; x+=gridSize) { ctx.moveTo(x, Math.max(0, mouse.y - region)); ctx.lineTo(x, Math.min(h, mouse.y + region)); }
-            for(let y=startY; y<=endY; y+=gridSize) { ctx.moveTo(Math.max(0, mouse.x - region), y); ctx.lineTo(Math.min(w, mouse.x + region), y); }
-            ctx.stroke();
-            
-            requestAnimationFrame(drawGrid);
-        };
-        drawGrid();
-    }
+    // --- 4. NAV GLIDER & ACTIVE STATE LOGIC (Refined) ---
+    const navLinks = document.querySelectorAll('.nav-link');
+    const glider = document.querySelector('.nav-glider');
     
-    /* -------------------------------------------------------------------------- */
-    /*  6. TESTIMONIAL CAROUSEL LOGIC
-    /* -------------------------------------------------------------------------- */
-    const tTracks = document.querySelectorAll('.t-track');
-    tTracks.forEach(track => {
-        let idx = 0;
-        const slides = track.querySelectorAll('.t-slide');
-        const prev = track.parentElement.querySelector('#t-prev') || track.parentElement.querySelector('.t-prev');
-        const next = track.parentElement.querySelector('#t-next') || track.parentElement.querySelector('.t-next');
+    // Get the current page filename from the URL, defaulting to 'index.html' for root
+    const currentPath = window.location.pathname;
+    const pageName = currentPath.split('/').pop() || 'index.html';
+
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        const href = link.getAttribute('href');
         
-        const update = () => {
-            // Using percentage transform for smooth sliding
-            track.style.transform = `translateX(-${idx * 100}%)`;
-            slides.forEach((s,i) => s.classList.toggle('active', i===idx));
+        // Exact match or root/index aliases
+        if (href === pageName || (pageName === 'index.html' && (href === './' || href === '/'))) {
+            link.classList.add('active');
         }
-        
-        if(next) next.addEventListener('click', () => { idx = (idx < slides.length-1) ? idx+1 : 0; update(); });
-        if(prev) prev.addEventListener('click', () => { idx = (idx > 0) ? idx-1 : slides.length-1; update(); });
     });
+
+    if (glider && !IS_TOUCH) { 
+        const moveGlider = (el) => {
+            if (!el) return;
+            gsap.to(glider, {
+                x: el.offsetLeft, 
+                width: el.offsetWidth, 
+                opacity: 1,
+                duration: 0.3,
+                ease: "power2.out"
+            });
+        };
+        const activeLink = document.querySelector('.nav-link.active');
+        if (activeLink) setTimeout(() => moveGlider(activeLink), 100);
+
+        navLinks.forEach(link => {
+            link.addEventListener('mouseenter', () => moveGlider(link));
+            link.addEventListener('mouseleave', () => {
+                if (activeLink) moveGlider(activeLink);
+                else gsap.to(glider, { opacity: 0 });
+            });
+        });
+    }
+
+    // --- 5. FILTER & SEARCH LOGIC ---
+    const setupFilters = (btnClass, itemClass, attrName, searchId) => {
+        const filterBtns = document.querySelectorAll(btnClass);
+        const items = document.querySelectorAll(itemClass);
+        const searchInput = document.getElementById(searchId);
+
+        if (filterBtns.length === 0 && !searchInput) return;
+
+        let currentCategory = 'all';
+        let currentSearch = '';
+
+        const filterItems = () => {
+            items.forEach(el => {
+                const tags = el.getAttribute(attrName);
+                // For text search, we look at the entire text content of the card/item
+                const textContent = el.innerText.toLowerCase();
+
+                const matchesCategory = currentCategory === 'all' || (tags && tags.includes(currentCategory));
+                const matchesSearch = currentSearch === '' || textContent.includes(currentSearch);
+
+                if (matchesCategory && matchesSearch) {
+                    el.classList.remove('hidden');
+                    // Reset animation trigger if hidden
+                    gsap.to(el, { opacity: 1, y: 0, duration: 0.4, display: 'flex' }); // Flex or Grid depending on CSS
+                } else {
+                    el.classList.add('hidden');
+                    gsap.to(el, { opacity: 0, display: 'none', duration: 0 });
+                }
+            });
+        };
+
+        // Button Clicks
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.getAttribute('data-filter');
+                filterItems();
+            });
+        });
+
+        // Search Input
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                currentSearch = e.target.value.toLowerCase();
+                filterItems();
+            });
+        }
+    };
+
+    // Apply to Work and Writing pages if present
+    setupFilters('.filter-btn', '.project-card', 'data-category', 'search-work');
+    setupFilters('.blog-filter-btn', '.writing-item', 'data-category', 'search-blog');
+
+
+    // --- 6. TESTIMONIAL CAROUSEL ---
+    const tTrack = document.querySelector('.t-track');
+    const tPrev = document.getElementById('t-prev');
+    const tNext = document.getElementById('t-next');
+    const tSlides = document.querySelectorAll('.t-slide');
+
+    if (tTrack && tSlides.length > 0) {
+        let tIndex = 0;
+        const updateT = () => {
+            tTrack.style.transform = `translateX(-${tIndex * 100}%)`;
+            tSlides.forEach((s, i) => {
+                s.classList.toggle('active', i === tIndex);
+            });
+        };
+
+        if (tPrev) tPrev.addEventListener('click', () => {
+            tIndex = (tIndex > 0) ? tIndex - 1 : tSlides.length - 1;
+            updateT();
+        });
+
+        if (tNext) tNext.addEventListener('click', () => {
+            tIndex = (tIndex < tSlides.length - 1) ? tIndex + 1 : 0;
+            updateT();
+        });
+        updateT();
+    }
+
+    // --- 7. CONTACT FORM HANDLER ---
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = contactForm.querySelector('button');
+            const originalText = btn.innerText;
+
+            btn.innerText = 'Sending...';
+            btn.style.opacity = '0.7';
+
+            // Simulate sending
+            setTimeout(() => {
+                btn.innerText = 'Message Sent!';
+                btn.style.background = '#4CAF50';
+                btn.style.color = '#fff';
+                btn.style.opacity = '1';
+                contactForm.reset();
+
+                // Reset button after 3 seconds
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = ''; // Revert to CSS default
+                    btn.style.color = '';
+                }, 3000);
+            }, 1500);
+        });
+    }
 });

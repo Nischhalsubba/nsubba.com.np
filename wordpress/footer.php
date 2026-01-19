@@ -1,3 +1,4 @@
+
     <!-- Floating Resume Button (Outside Footer for correct z-index) -->
     <a href="<?php echo get_template_directory_uri(); ?>/assets/resume.pdf" class="floating-resume-btn" download aria-label="Download Resume">
         <span class="btn-text">Download Resume</span>

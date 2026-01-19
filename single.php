@@ -1,0 +1,1 @@
+<?php // Moved to wordpress/single.php ?>

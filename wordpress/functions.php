@@ -17,9 +17,7 @@ function nischhal_theme_setup() {
     add_editor_style( 'style.css' );
     
     // 1.1 Image Sizes (Upscaling Targets)
-    // Registers a large size. WP will create this if the uploaded image is large enough.
-    // If smaller, CSS will handle the "upscale" to fill container.
-    add_image_size( 'hero-ultra', 1920, 1080, false ); // Full HD, Soft Crop
+    add_image_size( 'hero-ultra', 1920, 1080, false ); // Full HD
     add_image_size( 'project-card', 800, 600, true );  // Hard Crop for Grid
     
     // Register Menus
@@ -31,26 +29,31 @@ function nischhal_theme_setup() {
 add_action( 'after_setup_theme', 'nischhal_theme_setup' );
 
 // --- 1.2 IMAGE COMPRESSION & OPTIMIZATION ---
-// Set JPEG Quality to 80 (Massive compression without losing too much detail)
+// Set JPEG Quality to 80 (Good balance of quality vs size)
 add_filter( 'jpeg_quality', function($arg){ return 80; } );
 add_filter( 'wp_editor_set_quality', function($arg){ return 80; } );
 
-// Set a reasonable threshold for big images (2560px) to prevent massive raw uploads
+// Resize massive images upon upload (threshold 2560px)
 add_filter( 'big_image_size_threshold', function() { return 2560; } );
 
-// --- 1.3 SEO AUTOMATION (SAFE) ---
+// --- 1.3 SEO AUTOMATION (FIXED) ---
 function nischhal_seo_meta_tags() {
     global $post;
     
-    // SAFE CHECK: Ensure $post object exists before accessing ID
-    if ( !isset($post) || !is_object($post) ) return;
+    // CRITICAL FIX: Ensure $post exists before accessing ID (Fixes 404/Archive errors)
+    if ( !isset($post) || !is_object($post) ) {
+        return;
+    }
     
     // Default Description
     $excerpt = "Portfolio of Nischhal Raj Subba, a #1 Ranked Product Designer specializing in Design Systems, Enterprise UX, and Web3 Product Design.";
     
-    if ( is_single() || is_page() ) {
-        if ( has_excerpt( $post->ID ) ) {
-            $excerpt = strip_tags( get_the_excerpt( $post->ID ) );
+    // Safety check for ID property
+    $post_id = isset($post->ID) ? $post->ID : 0;
+
+    if ( (is_single() || is_page()) && $post_id ) {
+        if ( has_excerpt( $post_id ) ) {
+            $excerpt = strip_tags( get_the_excerpt( $post_id ) );
         } elseif ( !empty($post->post_content) ) {
             $excerpt = wp_trim_words( strip_tags( $post->post_content ), 25 );
         }
@@ -58,8 +61,8 @@ function nischhal_seo_meta_tags() {
     
     // Default Image
     $img_url = get_theme_mod('hero_img', 'https://i.imgur.com/ixsEpYM.png');
-    if ( has_post_thumbnail( $post->ID ) ) {
-        $img_url = get_the_post_thumbnail_url( $post->ID, 'large' );
+    if ( $post_id && has_post_thumbnail( $post_id ) ) {
+        $img_url = get_the_post_thumbnail_url( $post_id, 'large' );
     }
     
     ?>

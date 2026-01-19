@@ -58,12 +58,15 @@
                 $active_class = '';
                 $item_path = trim(parse_url($item->url, PHP_URL_PATH), '/');
                 
-                // Logic: ID Match OR Front Page Match OR URL Path Match
-                if ( $item->object_id == $queried_object_id && $item->object != 'custom' ) {
+                // Active State Logic:
+                // 1. Check if ID matches current object
+                // 2. Check if it's homepage and we are on front page
+                // 3. Fallback: Check if URL path matches current path
+                if ( isset($item->object_id) && $item->object_id == $queried_object_id && $item->object != 'custom' ) {
                     $active_class = 'active';
                 } elseif ( is_front_page() && $item->url == home_url('/') ) {
                     $active_class = 'active';
-                } elseif ( !empty($current_path) && !empty($item_path) && strpos($current_path, $item_path) !== false ) {
+                } elseif ( !empty($current_path) && !empty($item_path) && strpos($current_path, $item_path) !== false && $item->url != home_url('/') ) {
                     $active_class = 'active';
                 }
             ?>
@@ -83,11 +86,11 @@
             $item_path = trim(parse_url($item->url, PHP_URL_PATH), '/');
             
             // Replicate logic for Desktop
-            if ( $item->object_id == $queried_object_id && $item->object != 'custom' ) {
+            if ( isset($item->object_id) && $item->object_id == $queried_object_id && $item->object != 'custom' ) {
                 $active_class = 'active';
             } elseif ( is_front_page() && $item->url == home_url('/') ) {
                 $active_class = 'active';
-            } elseif ( !empty($current_path) && !empty($item_path) && strpos($current_path, $item_path) !== false ) {
+            } elseif ( !empty($current_path) && !empty($item_path) && strpos($current_path, $item_path) !== false && $item->url != home_url('/') ) {
                 $active_class = 'active';
             }
         ?>

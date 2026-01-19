@@ -1,0 +1,66 @@
+<?php
+/* Template Name: Work Page */
+get_header(); ?>
+
+    <main class="container">
+      <section class="hero-section" style="min-height: 40vh;">
+        <h1 class="hero-title reveal-on-scroll">
+            <span class="text-reveal-wrap">
+                <span class="text-outline">Selected Work</span>
+                <span class="text-fill">Selected Work</span>
+            </span>
+        </h1>
+        <p class="body-large reveal-on-scroll">A curated showcase of design systems, complex products, and interaction design.</p>
+      </section>
+
+      <div class="search-wrapper reveal-on-scroll">
+          <input type="text" id="search-work" class="search-input" placeholder="Search by title, industry, or year...">
+          <button id="clear-work" class="search-clear" aria-label="Clear">✕</button>
+      </div>
+
+      <!-- FILTER PILLS -->
+      <div class="filter-row reveal-on-scroll">
+          <button class="filter-btn active" data-filter="all">All Projects</button>
+          <button class="filter-btn" data-filter="fintech">Fintech</button>
+          <button class="filter-btn" data-filter="web3">Web3</button>
+          <button class="filter-btn" data-filter="system">Design Systems</button>
+          <button class="filter-btn" data-filter="mobile">Mobile</button>
+      </div>
+
+      <section class="section-container" style="padding-top: 0;">
+        <div class="project-grid">
+           <!-- 1 -->
+           <a href="<?php echo home_url('/project-detail'); ?>" class="project-card reveal-on-scroll" data-category="fintech enterprise">
+               <div class="card-media-wrap"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop" alt="MAS DataHub"></div>
+               <div class="card-content"><h3>MAS DataHub</h3><div class="card-meta-line"><span>Enterprise Automation</span><span>2025</span></div></div>
+           </a>
+           <!-- 2 -->
+           <a href="#" class="project-card reveal-on-scroll" data-category="web3 banking mobile">
+               <div class="card-media-wrap"><img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=1200&auto=format&fit=crop" alt="Yarsha Wallet"></div>
+               <div class="card-content"><h3>Yarsha Wallet</h3><div class="card-meta-line"><span>Web3 Banking</span><span>2024</span></div></div>
+           </a>
+           <!-- 3 -->
+           <a href="#" class="project-card reveal-on-scroll" data-category="fintech platform">
+               <div class="card-media-wrap"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop" alt="Morajaa"></div>
+               <div class="card-content"><h3>Morajaa Consulting</h3><div class="card-meta-line"><span>Platform Design</span><span>2025</span></div></div>
+           </a>
+           <!-- 4 -->
+           <a href="#" class="project-card reveal-on-scroll" data-category="mobile logistics">
+               <div class="card-media-wrap"><img src="https://images.unsplash.com/photo-1569383746724-6f1b882b8f46?q=80&w=1200&auto=format&fit=crop" alt="Zapp"></div>
+               <div class="card-content"><h3>Zapp Today</h3><div class="card-meta-line"><span>Logistics UX</span><span>2021</span></div></div>
+           </a>
+           <!-- 5 -->
+           <a href="#" class="project-card reveal-on-scroll" data-category="system core">
+               <div class="card-media-wrap"><img src="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?q=80&w=1200&auto=format&fit=crop" alt="Orbit"></div>
+               <div class="card-content"><h3>Orbit System</h3><div class="card-meta-line"><span>Design System</span><span>2023</span></div></div>
+           </a>
+           <!-- 6 -->
+           <a href="#" class="project-card reveal-on-scroll" data-category="web3 exchange">
+               <div class="card-media-wrap"><img src="https://images.unsplash.com/photo-1620321023374-d1a68fddadb3?q=80&w=1200&auto=format&fit=crop" alt="Nexus"></div>
+               <div class="card-content"><h3>Nexus DEX</h3><div class="card-meta-line"><span>Web3 Exchange</span><span>2024</span></div></div>
+           </a>
+        </div>
+      </section>
+    </main>
+
+<?php get_footer(); ?>

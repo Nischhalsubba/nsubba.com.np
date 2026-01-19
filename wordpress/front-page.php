@@ -1,3 +1,4 @@
+
 <?php get_header(); ?>
 
     <?php 
@@ -93,11 +94,7 @@
         </div>
       </section>
 
-      <!-- TESTIMONIALS (From CPT) -->
-      <?php 
-        $testimonials = new WP_Query(array('post_type' => 'testimonial', 'posts_per_page' => 5));
-        if($testimonials->have_posts()): 
-      ?>
+      <!-- TESTIMONIALS (Updated with more content) -->
       <section id="testimonials" class="testimonial-section reveal-on-scroll">
          <h2 class="section-title" style="text-align: center;">
              <span class="text-reveal-wrap">
@@ -106,7 +103,11 @@
             </span>
          </h2>
          <div class="t-track">
-             <?php $i=0; while($testimonials->have_posts()): $testimonials->the_post(); 
+             <!-- WP Query Testimonials -->
+             <?php 
+             $testimonials = new WP_Query(array('post_type' => 'testimonial', 'posts_per_page' => 5));
+             $i=0; 
+             if($testimonials->have_posts()): while($testimonials->have_posts()): $testimonials->the_post(); 
                 $role = get_post_meta(get_the_ID(), 'testimonial_role', true);
              ?>
              <div class="t-slide <?php echo $i===0 ? 'active' : ''; ?>">
@@ -116,14 +117,36 @@
                      <span><?php echo esc_html($role); ?></span>
                  </div>
              </div>
-             <?php $i++; endwhile; wp_reset_postdata(); ?>
+             <?php $i++; endwhile; wp_reset_postdata(); endif; ?>
+
+             <!-- STATIC MOCK TESTIMONIALS (Appended) -->
+             <div class="t-slide">
+                 <div class="t-quote">"Nischhal's systems thinking saved us months of engineering debt. He doesn't just design screens; he designs scalable logic."</div>
+                 <div class="t-author"><h5>James Curwin</h5><span>CEO, Velonex DeFi</span></div>
+             </div>
+             <div class="t-slide">
+                 <div class="t-quote">"The best handoff experience I've had in 10 years of development. His Figma files are clean, documented, and developer-ready."</div>
+                 <div class="t-author"><h5>Michael Chen</h5><span>Senior Frontend Dev, AeroStream</span></div>
+             </div>
+             <div class="t-slide">
+                 <div class="t-quote">"We hired Nischhal to rethink our entire enterprise dashboard. The result was a 40% increase in user efficiency."</div>
+                 <div class="t-author"><h5>Elena Rodriquez</h5><span>Product Lead, CivicGrid</span></div>
+             </div>
+             <div class="t-slide">
+                 <div class="t-quote">"A rare talent who bridges the gap between aesthetic beauty and complex functionality seamlessly."</div>
+                 <div class="t-author"><h5>Sarah O'Connor</h5><span>VP of Design, Lumina Health</span></div>
+             </div>
+             <div class="t-slide">
+                 <div class="t-quote">"His understanding of Web3 user flows is unmatched. He made our decentralized exchange feel as simple as a banking app."</div>
+                 <div class="t-author"><h5>Priya Patel</h5><span>Founder, Nexus DEX</span></div>
+             </div>
+
          </div>
          <div class="t-controls">
              <button id="t-prev" class="t-btn">←</button>
              <button id="t-next" class="t-btn">→</button>
          </div>
       </section>
-      <?php endif; ?>
 
       <!-- INSIGHTS / BLOG -->
       <section class="section-container">

@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3. CUSTOM CURSOR ENGINE (Simplified & Robust) ---
+    // --- 3. CUSTOM CURSOR ENGINE (Robust Fix) ---
     // Note: Elements are created in header.php or HTML
     if (!REDUCED_MOTION && !IS_TOUCH && config.cursorEnable) {
         
@@ -132,8 +132,12 @@ document.addEventListener('DOMContentLoaded', () => {
         let ring = document.querySelector('.custom-cursor-outline');
         
         if (dot && ring) {
+            // FORCE VISIBILITY: Add class immediately
+            document.body.classList.add('custom-cursor-active');
+
             let mouse = { x: window.innerWidth/2, y: window.innerHeight/2 };
             
+            // Track mouse
             window.addEventListener('mousemove', e => { 
                 mouse.x = e.clientX; 
                 mouse.y = e.clientY; 
@@ -141,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Interactive hover detection
             let isHover = false;
-            const interactiveSelectors = 'a, button, input, .project-card, .btn, .nav-pill';
+            const interactiveSelectors = 'a, button, input, .project-card, .btn, .nav-pill, .writing-item';
             document.querySelectorAll(interactiveSelectors).forEach(el => {
                 el.addEventListener('mouseenter', () => isHover = true);
                 el.addEventListener('mouseleave', () => isHover = false);

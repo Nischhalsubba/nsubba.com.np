@@ -72,23 +72,20 @@
           </div>
       </section>
 
-      <!-- 3. MAIN CONTENT (Problem, Goals, Flow, UI, etc.) -->
-      <!-- The user constructs this in the block editor or classic editor -->
+      <!-- 3. MAIN CONTENT (Gutenberg Blocks Render Here) -->
       <section class="case-content-body section-container reveal-on-scroll">
-          <div class="body-large" style="max-width: 840px; margin: 0 auto; color: var(--text-secondary);">
+          <div class="block-content body-large" style="max-width: 840px; margin: 0 auto; color: var(--text-secondary);">
               <?php the_content(); ?>
           </div>
       </section>
 
       <?php endwhile; ?>
 
-      <!-- 4. OTHER CASES (Next/Prev) -->
+      <!-- 4. NAVIGATION -->
       <section class="other-cases-section reveal-on-scroll">
           <h2 class="other-cases-title">Other cases</h2>
-
           <div class="other-cases-grid">
               <?php
-                // Get Previous Project
                 $prev_post = get_previous_post();
                 if($prev_post && $prev_post->post_type == 'project'): 
                     $prev_img = get_the_post_thumbnail_url($prev_post->ID, 'large');
@@ -96,15 +93,11 @@
               <a href="<?php echo get_permalink($prev_post->ID); ?>" class="case-nav-card prev">
                   <div class="case-nav-media">
                       <?php if($prev_img): ?>
-                        <img src="<?php echo esc_url($prev_img); ?>" alt="<?php echo get_the_title($prev_post->ID); ?>" class="case-nav-img">
+                        <img src="<?php echo esc_url($prev_img); ?>" class="case-nav-img">
                       <?php else: ?>
                         <div style="width:100%; height:100%; background: #1a1a1a;"></div>
                       <?php endif; ?>
-                      <div class="case-nav-overlay">
-                          <div class="case-nav-icon">
-                              <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                          </div>
-                      </div>
+                      <div class="case-nav-overlay"><div class="case-nav-icon">←</div></div>
                   </div>
                   <div class="case-nav-content">
                       <h4>Previous Case</h4>
@@ -114,7 +107,6 @@
               <?php endif; ?>
 
               <?php
-                // Get Next Project
                 $next_post = get_next_post();
                 if($next_post && $next_post->post_type == 'project'): 
                     $next_img = get_the_post_thumbnail_url($next_post->ID, 'large');
@@ -122,15 +114,11 @@
               <a href="<?php echo get_permalink($next_post->ID); ?>" class="case-nav-card next">
                   <div class="case-nav-media">
                       <?php if($next_img): ?>
-                        <img src="<?php echo esc_url($next_img); ?>" alt="<?php echo get_the_title($next_post->ID); ?>" class="case-nav-img">
+                        <img src="<?php echo esc_url($next_img); ?>" class="case-nav-img">
                       <?php else: ?>
                         <div style="width:100%; height:100%; background: #1a1a1a;"></div>
                       <?php endif; ?>
-                      <div class="case-nav-overlay">
-                          <div class="case-nav-icon">
-                              <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                          </div>
-                      </div>
+                      <div class="case-nav-overlay"><div class="case-nav-icon">→</div></div>
                   </div>
                   <div class="case-nav-content" style="text-align: right;">
                       <h4>Next Case</h4>
@@ -138,7 +126,6 @@
                   </div>
               </a>
               <?php endif; ?>
-
           </div>
       </section>
       

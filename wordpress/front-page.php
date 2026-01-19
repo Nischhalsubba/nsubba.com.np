@@ -10,23 +10,22 @@
                 <span class="ticker-pill">Enterprise UX</span>
                 <span class="ticker-pill">Web3 Specialist</span>
                 <span class="ticker-pill">#1 Ranked Designer</span>
-                <span class="ticker-pill">UX Strategy</span>
             </div>
         </div>
 
         <h1 class="hero-title reveal-on-scroll">
           <span class="text-reveal-wrap">
-            <span class="text-outline">Crafting scalable</span>
-            <span class="text-fill">Crafting scalable</span>
+            <span class="text-outline"><?php echo get_theme_mod('home_hero_title_1', 'Crafting scalable'); ?></span>
+            <span class="text-fill"><?php echo get_theme_mod('home_hero_title_1', 'Crafting scalable'); ?></span>
           </span><br />
           <span class="text-reveal-wrap">
-            <span class="text-outline">digital products.</span>
-            <span class="text-fill">digital products.</span>
+            <span class="text-outline"><?php echo get_theme_mod('home_hero_title_2', 'digital products.'); ?></span>
+            <span class="text-fill"><?php echo get_theme_mod('home_hero_title_2', 'digital products.'); ?></span>
           </span>
         </h1>
 
         <p class="body-large reveal-on-scroll" style="margin-left: auto; margin-right: auto;">
-            I’m Nischhal Raj Subba, a Product Designer focusing on complex enterprise software and living design systems. Bridging design vision with engineering reality.
+            <?php echo get_bloginfo('description'); ?>
         </p>
         
         <div class="hero-actions reveal-on-scroll" style="display: flex; gap: 16px; justify-content: center;">
@@ -35,26 +34,11 @@
         </div>
 
         <div class="hero-portrait-container reveal-on-scroll" style="margin-top: 80px; max-width: 600px; margin-left: auto; margin-right: auto;">
-            <img src="https://i.imgur.com/ixsEpYM.png" alt="Nischhal Portrait" class="hero-portrait-img img-blend-gradient" loading="eager" style="width: 100%; border-radius: 20px; opacity: 0.9;" />
+            <?php 
+                $hero_img = get_theme_mod('home_hero_img', 'https://i.imgur.com/ixsEpYM.png'); 
+            ?>
+            <img src="<?php echo esc_url($hero_img); ?>" alt="Portrait" class="hero-portrait-img img-blend-gradient" loading="eager" style="width: 100%; border-radius: 20px; opacity: 0.9;" />
         </div>
-      </section>
-
-      <!-- ACHIEVEMENTS SECTION -->
-      <section class="section-container reveal-on-scroll">
-          <div class="achievements-strip">
-              <a href="https://uxcel.com/uxcel-rankings" target="_blank" class="achieve-item">
-                  <div class="achieve-number">#1</div>
-                  <div class="achieve-label">Global Designer<br>Uxcel 2024</div>
-              </a>
-              <a href="https://app.uxcel.com/ux/nischhal" target="_blank" class="achieve-item">
-                  <div class="achieve-number">Top 1%</div>
-                  <div class="achieve-label">Verified Product<br>Design Skills</div>
-              </a>
-              <a href="https://uxcel.com/uxcel-rankings" target="_blank" class="achieve-item">
-                  <div class="achieve-number">6+</div>
-                  <div class="achieve-label">Years FOCUS<br>Fintech & Web3</div>
-              </a>
-          </div>
       </section>
 
       <!-- SELECTED WORK SECTION -->
@@ -66,20 +50,11 @@
             </span>
         </h2>
 
-        <!-- Filter Pills (Links to Archive or JS Filter) - Keeping simple links here or static for home -->
-        <div class="filter-row reveal-on-scroll">
-            <a href="<?php echo home_url('/work'); ?>" class="filter-btn active">All Projects</a>
-            <!-- Simple links to work page for filtering context if needed, or static pills -->
-            <span class="filter-btn">Fintech</span>
-            <span class="filter-btn">Web3</span>
-            <span class="filter-btn">System</span>
-        </div>
-
         <div class="project-grid">
            <?php 
            $args = array(
                'post_type' => 'project',
-               'posts_per_page' => 3, // Selected work
+               'posts_per_page' => 3, // Show latest 3 on home
            );
            $projects = new WP_Query($args);
            if($projects->have_posts()):
@@ -93,21 +68,32 @@
                    <?php if($thumb_url): ?>
                     <img src="<?php echo esc_url($thumb_url); ?>" alt="<?php the_title(); ?>">
                    <?php else: ?>
-                    <div style="width:100%; height:100%; background: #1a1a1a;"></div>
+                    <div style="width:100%; height:100%; background: #1a1a1a; display:flex; align-items:center; justify-content:center; color:var(--text-tertiary);">No Preview</div>
                    <?php endif; ?>
                </div>
-               <div class="card-content"><h3><?php the_title(); ?></h3><div class="card-meta-line"><span><?php echo $industry ? esc_html($industry) : 'Design'; ?></span><span><?php echo $year ? esc_html($year) : get_the_date('Y'); ?></span></div></div>
+               <div class="card-content">
+                   <h3><?php the_title(); ?></h3>
+                   <div class="card-meta-line">
+                       <span><?php echo $industry ? esc_html($industry) : 'Design'; ?></span>
+                       <span><?php echo $year ? esc_html($year) : get_the_date('Y'); ?></span>
+                   </div>
+               </div>
            </a>
            <?php endwhile; wp_reset_postdata(); else: ?>
-               <p style="color: var(--text-secondary);">No projects found.</p>
+               <div style="grid-column: 1/-1; text-align:center; padding: 40px; border: 1px dashed var(--border-faint); border-radius: 16px;">
+                   <p style="color: var(--text-secondary);">No projects yet.</p>
+                   <a href="<?php echo admin_url('post-new.php?post_type=project'); ?>" style="color: var(--accent-blue);">Add your first project in Dashboard →</a>
+               </div>
            <?php endif; ?>
         </div>
+        
         <div style="margin-top: 60px; text-align: center;">
             <a href="<?php echo home_url('/work'); ?>" class="btn btn-secondary reveal-on-scroll">View All Projects</a>
         </div>
       </section>
 
-      <!-- KIND WORDS (TESTIMONIALS) -->
+      <!-- TESTIMONIALS SECTION (Dynamic) -->
+      <?php if(get_theme_mod('testimonial_1_quote')): ?>
       <section id="testimonials" class="testimonial-section reveal-on-scroll">
          <h2 class="section-title" style="text-align: center;">
              <span class="text-reveal-wrap">
@@ -116,22 +102,29 @@
             </span>
          </h2>
          <div class="t-track">
-             <div class="t-slide active">
-                 <p class="t-quote">"Nischhal's ability to translate complex fintech requirements into a seamless UI is exceptional. His work on our protocol was transformative."</p>
-                 <div class="t-author"><h5>Founder</h5><span>Mokshya Protocol</span></div>
+             <?php for($i=1; $i<=3; $i++): 
+                $quote = get_theme_mod("testimonial_{$i}_quote");
+                $name = get_theme_mod("testimonial_{$i}_author");
+                $role = get_theme_mod("testimonial_{$i}_role");
+                if($quote):
+             ?>
+             <div class="t-slide <?php echo ($i===1) ? 'active' : ''; ?>">
+                 <p class="t-quote">"<?php echo esc_html($quote); ?>"</p>
+                 <div class="t-author">
+                     <h5><?php echo esc_html($name); ?></h5>
+                     <span><?php echo esc_html($role); ?></span>
+                 </div>
              </div>
-             <div class="t-slide">
-                 <p class="t-quote">"One of the few designers who truly understands design systems. The modularity he provided saved our engineering team months of rework."</p>
-                 <div class="t-author"><h5>Lead Engineer</h5><span>Idealaya</span></div>
-             </div>
+             <?php endif; endfor; ?>
          </div>
          <div class="t-controls">
              <button id="t-prev" class="t-btn">←</button>
              <button id="t-next" class="t-btn">→</button>
          </div>
       </section>
+      <?php endif; ?>
 
-      <!-- INSIGHTS SECTION -->
+      <!-- INSIGHTS SECTION (BLOG) -->
       <section class="section-container">
           <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px;" class="reveal-on-scroll">
               <h2 class="section-title" style="margin-bottom: 0;">
@@ -156,7 +149,9 @@
                   </div>
                   <span class="w-arrow">→</span>
               </a>
-              <?php endwhile; wp_reset_postdata(); endif; ?>
+              <?php endwhile; wp_reset_postdata(); else: ?>
+                  <p style="color: var(--text-secondary);">No articles published yet.</p>
+              <?php endif; ?>
           </div>
       </section>
 
@@ -169,7 +164,7 @@
             </span>
           </h2>
           <p class="body-large" style="margin: 0 auto 48px auto; max-width: 600px;">
-              I’m currently available for select freelance projects and strategic consulting. Let's turn your complex ideas into elegant solutions.
+              Available for select freelance projects and strategic consulting.
           </p>
           <a href="<?php echo home_url('/contact'); ?>" class="btn btn-primary" style="font-size: 1.1rem; padding: 24px 56px;">Start a Project</a>
       </section>

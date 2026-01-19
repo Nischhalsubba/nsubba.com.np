@@ -30,6 +30,10 @@
                   <p><?php esc_html_e( 'No posts found.', 'nischhal' ); ?></p>
               <?php endif; ?>
           </div>
+          
+          <div class="pagination" style="margin-top: 60px;">
+              <?php echo paginate_links(); ?>
+          </div>
       </section>
     </main>
 

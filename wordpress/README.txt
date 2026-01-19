@@ -1,58 +1,39 @@
 
 = Nischhal Portfolio Theme =
 
-== CRITICAL: FIXING "403 FORBIDDEN" ERROR ==
+== HOW TO USE THIS THEME (UPDATED) ==
 
-If you see "403 Forbidden" when opening your local site:
-1. You likely deleted the WordPress Core files (wp-admin, wp-includes, etc.) or pasted the theme files in the wrong place.
-2. DELETE the site in LocalWP and create a brand new one.
-3. Once the new site is running (and the default WordPress theme works), follow the steps below exactly.
+This theme is now a powerful Hybrid Theme. You can edit design in the Customizer, but content has its own dedicated place.
 
-== Installation Instructions ==
+1. **Adding Work (Case Studies):**
+   - Go to your WordPress Dashboard.
+   - Look at the sidebar on the left. Click on "Work (Projects)".
+   - Click "Add New".
+   - Enter the Title.
+   - Use the main editor to write your case study text and upload images.
+   - SCROLL DOWN to the "Custom Fields" section to add details like:
+     - `project_year` (e.g. 2025)
+     - `project_role` (e.g. Lead Designer)
+     - `project_industry` (e.g. Fintech)
+   - Set a "Featured Image" on the right sidebar (this appears on the homepage grid).
 
-1. Locate your LocalWP site folder:
-   - Right-click the site in LocalWP sidebar -> "Go to Site Folder".
-   - Open the folder: `app` -> `public` -> `wp-content` -> `themes`.
+2. **Editing the Homepage:**
+   - Go to Appearance > Customize.
+   - Open "Home Page Builder".
+   - You can change the Hero Title, Subtitle, and Portrait image here.
+   - The "Selected Work" section automatically pulls your 3 most recent Projects.
 
-2. Install the Theme:
-   - Copy the folder named `wordpress` from this project.
-   - Paste it into the `themes` folder you opened in Step 1.
-   - Rename the pasted folder from `wordpress` to `nischhal-portfolio`.
-   - The final path should look like: `.../app/public/wp-content/themes/nischhal-portfolio/`
+3. **Changing Colors & Fonts:**
+   - Go to Appearance > Customize.
+   - Open "Design System".
+   - Change Background Color, Accent Color, and Text Color instantly.
 
-3. Install Assets (IMAGES):
-   - Go to your project root and find the `assets` folder.
-   - Copy the `assets` folder.
-   - Paste it INSIDE the theme folder you just created.
-   - Path: `.../wp-content/themes/nischhal-portfolio/assets/`
-   - Ensure `assets/images/portrait.png` etc. exist.
+4. **Writing Blogs:**
+   - Use the standard "Posts" menu in WordPress.
 
-4. Activate:
-   - Log in to WordPress Admin (`/wp-admin`).
-   - Go to Appearance > Themes.
-   - Activate "Nischhal Portfolio".
-
-== Setup Steps ==
-
-1. Create Pages:
-   - Create pages with these exact titles: "Home", "Work", "About", "Writing", "Contact".
-
-2. Set Homepage:
-   - Go to Settings > Reading.
-   - Select "A static page".
-   - Homepage: "Home".
-   - Posts page: "Writing".
-
-3. Apply Templates:
-   - Go to Pages -> Edit "Work" -> Page Attributes -> Template: "Work Page".
-   - Go to Pages -> Edit "About" -> Page Attributes -> Template: "About Page".
-   - Go to Pages -> Edit "Contact" -> Page Attributes -> Template: "Contact Page".
-   - Go to Pages -> Edit "Products" -> Page Attributes -> Template: "Products Page".
-
-4. Add Projects:
-   - Use the "Projects" menu on the left to add your portfolio items.
-   - Use Custom Fields for details:
-     - Name: `project_year` | Value: `2025`
-     - Name: `project_industry` | Value: `Fintech`
-     - Name: `project_role` | Value: `Lead Designer`
-     - Name: `project_live_url` | Value: `https://...`
+== INSTALLATION ==
+(Same as before)
+1. Copy `wordpress` folder to `wp-content/themes/`.
+2. Rename to `nischhal-portfolio`.
+3. Ensure `assets` folder is inside.
+4. Activate in Appearance > Themes.

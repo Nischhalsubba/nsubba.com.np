@@ -2,19 +2,19 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- CONFIG LOAD ---
-    // Fallback if themeConfig isn't loaded for some reason
     const config = (typeof themeConfig !== 'undefined') ? themeConfig : { 
         imgDark: '', 
         imgLight: '', 
         animSpeed: 1.0, 
-        cursorEnable: true 
+        cursorEnable: true,
+        perfMode: false
     };
     
-    // Convert PHP string boolean to JS boolean if necessary
     const ENABLE_CURSOR = (config.cursorEnable == true || config.cursorEnable === "1");
+    const PERF_MODE = (config.perfMode == true || config.perfMode === "1");
     const ANIM_SPEED = parseFloat(config.animSpeed) || 1.0;
 
-    const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches || PERF_MODE;
     const IS_TOUCH = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
     // --- 0. THEME HANDLING ---
@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateImages(theme);
     }
 
-    // Initialize Theme
     const savedTheme = localStorage.getItem('theme');
     const systemPrefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
 
@@ -69,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mobileBtn) {
         mobileBtn.addEventListener('click', () => {
             const isOpen = body.classList.toggle('menu-open');
-            if (isOpen && window.gsap) {
+            if (isOpen && window.gsap && !REDUCED_MOTION) {
                 gsap.fromTo(mobileLinks, 
                     { y: 30, opacity: 0 },
                     { y: 0, opacity: 1, duration: 0.5 * ANIM_SPEED, stagger: 0.1, ease: "power2.out", delay: 0.1 }
@@ -99,12 +98,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
 
+        // Helper to get CSS variable value
+        const getCssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
         function drawGrid() {
             ctx.clearRect(0, 0, width, height);
             const isLight = htmlEl.getAttribute('data-theme') === 'light';
             const gridSize = 60;
             const spotlightRadius = 400;
-            const gridColor = isLight ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)';
+            
+            // Use CSS vars if available, otherwise defaults
+            const colorDark = getCssVar('--grid-color-dark') || 'rgba(255, 255, 255, 0.05)';
+            const colorLight = getCssVar('--grid-color-light') || 'rgba(0, 0, 0, 0.05)';
+            
+            const gridColor = isLight ? colorLight : colorDark;
             const spotlightColorStart = isLight ? 'rgba(37, 99, 235, 0.15)' : 'rgba(59, 130, 246, 0.15)';
             const spotlightColorEnd = isLight ? 'rgba(37, 99, 235, 0)' : 'rgba(59, 130, 246, 0)';
 
@@ -198,8 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 4. NAV GLIDER ---
     const navLinks = document.querySelectorAll('.nav-link');
     const glider = document.querySelector('.nav-glider');
-    const currentPath = window.location.pathname;
-    const pageName = currentPath.split('/').pop() || 'index.html';
     
     if (glider && !IS_TOUCH) { 
         const moveGlider = (el) => {

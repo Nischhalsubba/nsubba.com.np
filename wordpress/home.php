@@ -18,11 +18,28 @@ $blog_title = get_theme_mod('title_insights', 'Writing');
             <input type="text" id="search-blog" class="search-input" placeholder="Search articles...">
       </div>
 
+      <!-- Category Pills -->
+      <div class="filter-row reveal-on-scroll">
+          <button class="filter-btn active blog-filter-btn" data-filter="all">All Articles</button>
+          <?php 
+            $cats = get_categories();
+            foreach($cats as $cat) {
+                echo '<button class="filter-btn blog-filter-btn" data-filter="' . strtolower($cat->slug) . '">' . esc_html($cat->name) . '</button>';
+            }
+          ?>
+      </div>
+
       <section class="section-container" style="padding-top: 0;">
           <div class="writing-list reveal-on-scroll">
               <?php 
-              if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
-                  <a href="<?php the_permalink(); ?>" class="writing-item" data-category="<?php echo strtolower(strip_tags(get_the_category_list(' '))); ?>">
+              if ( have_posts() ) : while ( have_posts() ) : the_post(); 
+                  $cats = get_the_category();
+                  $cat_slugs = '';
+                  if($cats) {
+                      foreach($cats as $c) $cat_slugs .= strtolower($c->slug) . ' ';
+                  }
+              ?>
+                  <a href="<?php the_permalink(); ?>" class="writing-item" data-category="<?php echo esc_attr($cat_slugs); ?>">
                       <span class="w-date"><?php echo get_the_date('M d, Y'); ?></span>
                       <div class="w-info">
                           <span class="w-title"><?php the_title(); ?></span>

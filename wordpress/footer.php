@@ -19,21 +19,34 @@
                 <div class="footer-nav-grid">
                     <div class="footer-col">
                         <h5><?php echo get_theme_mod('footer_col1_title', 'Sitemap'); ?></h5>
-                        <?php wp_nav_menu( array( 'theme_location' => 'primary', 'container' => false, 'fallback_cb' => false, 'items_wrap' => '%3$s' ) ); ?>
+                        <!-- Uses 'footer' menu location, falls back to Pages list -->
+                        <?php 
+                        if ( has_nav_menu( 'footer' ) ) {
+                            wp_nav_menu( array( 'theme_location' => 'footer', 'container' => false, 'items_wrap' => '%3$s', 'depth' => 1 ) );
+                        } else {
+                            wp_list_pages( array( 'title_li' => '', 'depth' => 1 ) );
+                        }
+                        ?>
                     </div>
                     <div class="footer-col">
                         <h5><?php echo get_theme_mod('footer_col2_title', 'Socials'); ?></h5>
-                        <?php if(get_theme_mod('social_linkedin')): ?><a href="<?php echo get_theme_mod('social_linkedin'); ?>" target="_blank">LinkedIn</a><?php endif; ?>
-                        <?php if(get_theme_mod('social_behance')): ?><a href="<?php echo get_theme_mod('social_behance'); ?>" target="_blank">Behance</a><?php endif; ?>
-                        <?php if(get_theme_mod('social_dribbble')): ?><a href="<?php echo get_theme_mod('social_dribbble'); ?>" target="_blank">Dribbble</a><?php endif; ?>
-                        <?php if(get_theme_mod('social_uxcel')): ?><a href="<?php echo get_theme_mod('social_uxcel'); ?>" target="_blank">Uxcel</a><?php endif; ?>
-                        <?php if(get_theme_mod('social_x')): ?><a href="<?php echo get_theme_mod('social_x'); ?>" target="_blank">X (Twitter)</a><?php endif; ?>
+                        <?php if(get_theme_mod('social_linkedin')): ?><a href="<?php echo get_theme_mod('social_linkedin'); ?>" target="_blank" rel="noopener noreferrer">LinkedIn</a><?php endif; ?>
+                        <?php if(get_theme_mod('social_behance')): ?><a href="<?php echo get_theme_mod('social_behance'); ?>" target="_blank" rel="noopener noreferrer">Behance</a><?php endif; ?>
+                        <?php if(get_theme_mod('social_dribbble')): ?><a href="<?php echo get_theme_mod('social_dribbble'); ?>" target="_blank" rel="noopener noreferrer">Dribbble</a><?php endif; ?>
+                        <?php if(get_theme_mod('social_uxcel')): ?><a href="<?php echo get_theme_mod('social_uxcel'); ?>" target="_blank" rel="noopener noreferrer">Uxcel</a><?php endif; ?>
+                        <?php if(get_theme_mod('social_x')): ?><a href="<?php echo get_theme_mod('social_x'); ?>" target="_blank" rel="noopener noreferrer">X (Twitter)</a><?php endif; ?>
                     </div>
                     <div class="footer-col">
                         <h5><?php echo get_theme_mod('footer_col3_title', 'Products'); ?></h5>
-                        <!-- Custom links can be managed via a separate WP Menu if preferred, keeping simple here -->
-                        <a href="#">UI Kit</a>
-                        <a href="#">System 2.0</a>
+                        <?php 
+                        // Automatically list Products if any exist
+                        $products = new WP_Query(array('post_type'=>'product', 'posts_per_page'=>4));
+                        if($products->have_posts()): while($products->have_posts()): $products->the_post(); ?>
+                            <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                        <?php endwhile; wp_reset_postdata(); else: ?>
+                            <a href="#">UI Kit</a>
+                            <a href="#">System 2.0</a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

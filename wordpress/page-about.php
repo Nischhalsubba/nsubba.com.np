@@ -18,10 +18,11 @@ get_header(); ?>
 
       <section class="section-container" style="padding-top: 0;">
           <div class="about-grid reveal-on-scroll">
+              <!-- Content Column -->
               <div class="about-bio">
                   
                   <div style="margin-bottom: 60px;">
-                      <h3 class="section-title">The Person Behind the Pixels</h3>
+                      <h3 class="section-title" style="font-size: 2rem; margin-bottom: 30px;">The Person Behind the Pixels</h3>
                       <p class="body-large">
                           Design, for me, is the intersection of logic and empathy. My journey has taken me from crafting intuitive mobile apps to architecting massive enterprise platforms and decentralized applications (Web3). I believe that a robust <strong>Design System</strong> is the foundation of creativity, not a constraint.
                       </p>
@@ -33,7 +34,7 @@ get_header(); ?>
                       </p>
                   </div>
 
-                  <h3 class="section-title" style="margin-bottom: 40px;">Experience</h3>
+                  <h3 class="section-title" style="font-size: 1.8rem; margin-bottom: 40px; margin-top: 80px;">Experience</h3>
                   <div class="timeline-list">
                       <div class="timeline-item">
                           <span class="timeline-date">Aug 2025 – Dec 2025</span>
@@ -59,9 +60,19 @@ get_header(); ?>
                           <div class="timeline-company">ESR Tech • Remote</div>
                           <p class="body-large" style="font-size: 1rem; margin-top: 12px; margin-bottom: 0;">Designed dashboard UX for internal tools and contributed to products like Jeweltrek.</p>
                       </div>
+                      <div class="timeline-item">
+                          <span class="timeline-date">Apr 2021 – Sep 2021</span>
+                          <h4 class="timeline-role">Senior UI/UX Designer</h4>
+                          <div class="timeline-company">ThemeGrill • Remote</div>
+                      </div>
+                      <div class="timeline-item">
+                          <span class="timeline-date">Jul 2019 – Jan 2021</span>
+                          <h4 class="timeline-role">UI/UX Designer</h4>
+                          <div class="timeline-company">Gurzu • Onsite</div>
+                      </div>
                   </div>
 
-                  <h3 class="section-title" style="margin: 80px 0 40px;">Education</h3>
+                  <h3 class="section-title" style="font-size: 1.8rem; margin: 80px 0 40px;">Education</h3>
                   <div class="timeline-list">
                       <div class="timeline-item">
                           <span class="timeline-date">2014 – 2018</span>
@@ -70,11 +81,16 @@ get_header(); ?>
                       </div>
                   </div>
 
-                  <h3 class="section-title" style="margin: 80px 0 40px;">Awards</h3>
+                  <h3 class="section-title" style="font-size: 1.8rem; margin: 80px 0 40px;">Awards</h3>
                   <div class="timeline-list">
                       <div class="timeline-item">
                           <span class="timeline-date">Dec 2024</span>
                           <h4 class="timeline-role">Ranked #1 Designer</h4>
+                          <div class="timeline-company">Uxcel Global Rankings 2024</div>
+                      </div>
+                      <div class="timeline-item">
+                          <span class="timeline-date">Dec 2024</span>
+                          <h4 class="timeline-role">#1 Product Designer</h4>
                           <div class="timeline-company">Uxcel Global Rankings 2024</div>
                       </div>
                       <div class="timeline-item">
@@ -86,8 +102,10 @@ get_header(); ?>
 
               </div>
               
+              <!-- Sidebar Column -->
               <div class="about-sidebar">
                   <div style="position: sticky; top: 120px;">
+                    <!-- Dynamic Image -->
                     <img src="https://i.imgur.com/ixsEpYM.png" class="profile-img" style="width: 100%; border-radius: 20px; margin-bottom: 24px; opacity: 0.9;" alt="Nischhal Portrait">
                     
                     <h5 style="margin-bottom: 16px; font-size: 0.9rem; text-transform: uppercase; color: var(--text-tertiary); letter-spacing: 0.1em;">Skills</h5>

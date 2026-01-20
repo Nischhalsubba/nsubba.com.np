@@ -52,7 +52,8 @@
       </div>
 
       <!-- 2. SNAPSHOT -->
-      <section class="section-container" style="border-bottom: 1px solid var(--border-faint);">
+      <!-- Reduced padding-bottom here to manage gap to content -->
+      <section class="section-container snapshot-section" style="padding-bottom: 60px; border-bottom: 1px solid var(--border-faint);">
           <div class="snapshot-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;">
               <div>
                   <h5 style="color: var(--text-tertiary); margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase;">Role</h5>
@@ -73,7 +74,8 @@
           </div>
       </section>
 
-      <!-- 3. MAIN CONTENT (Gutenberg Blocks Render Here) -->
+      <!-- 3. MAIN CONTENT -->
+      <!-- Use specific class for content body spacing -->
       <section class="case-content-body section-container reveal-on-scroll">
           <div class="block-content body-large" style="max-width: 840px; margin: 0 auto; color: var(--text-secondary);">
               <?php the_content(); ?>

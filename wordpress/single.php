@@ -58,7 +58,7 @@
         </article>
         <?php endwhile; ?>
 
-        <!-- Read Next / Other Blogs (Static for Demo or use WP_Query) -->
+        <!-- Read Next / Other Blogs -->
         <section class="other-cases-section reveal-on-scroll">
             <div class="container">
                 <h2 class="other-cases-title">Read Next</h2>

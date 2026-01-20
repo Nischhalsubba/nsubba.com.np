@@ -4,6 +4,9 @@
 <head>
     <meta charset="<?php bloginfo( 'charset' ); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <?php if ( ! has_site_icon() ) : ?>
+        <link rel="icon" type="image/svg+xml" href="<?php echo get_template_directory_uri(); ?>/assets/images/favicon.svg">
+    <?php endif; ?>
     <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
@@ -17,12 +20,15 @@
 
     <button class="mobile-nav-toggle" aria-label="Menu"><span></span><span></span></button>
     
-    <a href="<?php echo home_url(); ?>" class="mobile-logo">NRS</a>
+    <a href="<?php echo home_url(); ?>" class="mobile-logo">
+        <?php echo get_theme_mod('mobile_logo_text', 'NRS'); ?>
+    </a>
 
     <?php 
-    // Fetch menu items
+    // Fetch menu items dynamically
     $menu_items = [];
     $locations = get_nav_menu_locations();
+    
     if ( isset( $locations['primary'] ) ) {
         $menu_obj = wp_get_nav_menu_object( $locations['primary'] );
         if($menu_obj) {
@@ -30,15 +36,18 @@
         }
     }
     
-    // Fallback menu
+    // Auto-populate if no menu is assigned yet
     if ( empty( $menu_items ) ) {
-        $menu_items = [
-            (object)['url' => home_url(), 'title' => 'Home', 'object_id' => get_option('page_on_front'), 'object' => 'page', 'type' => 'post_type_archive'],
-            (object)['url' => home_url('/work'), 'title' => 'Work', 'object_id' => 0, 'object' => 'custom', 'type' => 'custom'],
-            (object)['url' => home_url('/about'), 'title' => 'About', 'object_id' => 0, 'object' => 'custom', 'type' => 'custom'],
-            (object)['url' => home_url('/blog'), 'title' => 'Writing', 'object_id' => 0, 'object' => 'custom', 'type' => 'custom'],
-            (object)['url' => home_url('/contact'), 'title' => 'Contact', 'object_id' => 0, 'object' => 'custom', 'type' => 'custom'],
-        ];
+        $pages = get_pages(array('sort_column' => 'menu_order'));
+        foreach($pages as $p) {
+            $menu_items[] = (object)[
+                'url' => get_permalink($p->ID),
+                'title' => $p->post_title,
+                'object_id' => $p->ID,
+                'object' => 'page',
+                'type' => 'post_type'
+            ];
+        }
     }
 
     // Active State Logic
@@ -46,21 +55,10 @@
     global $wp;
     $current_url = home_url( add_query_arg( array(), $wp->request ) );
     
-    // Helper to determine active
-    function is_item_active($item, $qid, $curr_url) {
-        // 1. Exact Object ID Match (Pages/Posts)
-        if ( isset($item->object_id) && $item->object_id == $qid && $item->object != 'custom' ) {
-            return true;
-        }
-        // 2. Homepage Check
-        if ( is_front_page() && $item->url == home_url('/') ) {
-            return true;
-        }
-        // 3. URL Match (Custom Links & Archives)
-        // Remove trailing slashes for comparison to avoid mismatch
-        if ( rtrim($item->url, '/') == rtrim($curr_url, '/') ) {
-            return true;
-        }
+    function nischhal_is_active($item, $qid, $curr_url) {
+        if ( isset($item->object_id) && $item->object_id == $qid ) return true;
+        if ( is_front_page() && $item->url == home_url('/') ) return true;
+        if ( rtrim($item->url, '/') == rtrim($curr_url, '/') ) return true;
         return false;
     }
     ?>
@@ -69,7 +67,7 @@
     <div class="mobile-nav-overlay">
         <nav class="mobile-nav-links">
             <?php foreach($menu_items as $item): 
-                $active = is_item_active($item, $queried_id, $current_url) ? 'active' : '';
+                $active = nischhal_is_active($item, $queried_id, $current_url) ? 'active' : '';
             ?>
                 <a href="<?php echo esc_url($item->url); ?>" class="mobile-link <?php echo $active; ?>">
                     <?php echo esc_html($item->title); ?>
@@ -83,7 +81,7 @@
       <div class="nav-pill">
         <div class="nav-glider"></div>
         <?php foreach($menu_items as $item): 
-            $active = is_item_active($item, $queried_id, $current_url) ? 'active' : '';
+            $active = nischhal_is_active($item, $queried_id, $current_url) ? 'active' : '';
         ?>
             <a href="<?php echo esc_url($item->url); ?>" class="nav-link <?php echo $active; ?>">
                 <?php echo esc_html($item->title); ?>

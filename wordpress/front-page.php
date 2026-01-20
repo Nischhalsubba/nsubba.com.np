@@ -8,11 +8,15 @@
     $h1_line2 = get_theme_mod('hero_h1_line2', 'digital products.');
     $hero_desc = get_theme_mod('hero_desc', "I’m Nischhal Raj Subba...");
     
+    // Dynamic Links (Pages)
     $btn1_text = get_theme_mod('hero_btn_1_text', 'View Projects');
-    $btn1_link = get_theme_mod('hero_btn_1_link', '/work');
+    $btn1_page = get_theme_mod('hero_btn_1_page');
+    $btn1_link = $btn1_page ? get_permalink($btn1_page) : home_url('/work'); 
+
     $btn2_text = get_theme_mod('hero_btn_2_text', 'Read Bio');
-    $btn2_link = get_theme_mod('hero_btn_2_link', '/about');
-    
+    $btn2_page = get_theme_mod('hero_btn_2_page');
+    $btn2_link = $btn2_page ? get_permalink($btn2_page) : home_url('/about');
+
     $hero_img = get_theme_mod('hero_img', 'https://i.imgur.com/ixsEpYM.png');
     
     $ticker_raw = get_theme_mod('hero_ticker_items', 'Design Systems, Enterprise UX, Web3 Specialist');
@@ -28,6 +32,13 @@
     $cta_title = get_theme_mod('cta_ready_title', 'Ready to build?');
     $cta_desc = get_theme_mod('cta_ready_desc', 'I am currently available...');
     $cta_btn = get_theme_mod('cta_ready_btn', 'Start a Project');
+    $cta_page = get_theme_mod('cta_ready_page');
+    $cta_link = $cta_page ? get_permalink($cta_page) : home_url('/contact');
+    
+    // Stat URLs
+    $stat1_url = get_theme_mod('stat_1_url', '');
+    $stat2_url = get_theme_mod('stat_2_url', '');
+    $stat3_url = get_theme_mod('stat_3_url', '');
     ?>
 
     <main class="container">
@@ -48,8 +59,8 @@
             </h1>
             <p class="body-large reveal-on-scroll"><?php echo nl2br(esc_html($hero_desc)); ?></p>
             <div class="hero-actions reveal-on-scroll">
-              <?php if($btn1_text): ?><a href="<?php echo esc_url(home_url($btn1_link)); ?>" class="btn btn-primary"><?php echo esc_html($btn1_text); ?></a><?php endif; ?>
-              <?php if($btn2_text): ?><a href="<?php echo esc_url(home_url($btn2_link)); ?>" class="btn btn-secondary"><?php echo esc_html($btn2_text); ?></a><?php endif; ?>
+              <?php if($btn1_text): ?><a href="<?php echo esc_url($btn1_link); ?>" class="btn btn-primary"><?php echo esc_html($btn1_text); ?></a><?php endif; ?>
+              <?php if($btn2_text): ?><a href="<?php echo esc_url($btn2_link); ?>" class="btn btn-secondary"><?php echo esc_html($btn2_text); ?></a><?php endif; ?>
             </div>
         </div>
 
@@ -61,17 +72,18 @@
       </section>
 
       <!-- DYNAMIC STATS SECTION -->
-      <section class="section-container reveal-on-scroll">
+      <!-- CSS Fix: .achievements-strip uses var(--section-gap) in style.css so we remove section padding here -->
+      <section class="section-container reveal-on-scroll" style="padding-top: 0; padding-bottom: 0;">
           <div class="achievements-strip">
-              <a href="#" class="achieve-item">
+              <a href="<?php echo $stat1_url ? esc_url($stat1_url) : '#'; ?>" <?php echo $stat1_url ? 'target="_blank"' : ''; ?> class="achieve-item">
                   <div class="achieve-number"><?php echo get_theme_mod('stat_1_num', '#1'); ?></div>
                   <div class="achieve-label"><?php echo nl2br(get_theme_mod('stat_1_label', 'Ranked Designer')); ?></div>
               </a>
-              <a href="#" class="achieve-item">
+              <a href="<?php echo $stat2_url ? esc_url($stat2_url) : '#'; ?>" <?php echo $stat2_url ? 'target="_blank"' : ''; ?> class="achieve-item">
                   <div class="achieve-number"><?php echo get_theme_mod('stat_2_num', 'Top 1%'); ?></div>
                   <div class="achieve-label"><?php echo nl2br(get_theme_mod('stat_2_label', 'Verified Skills')); ?></div>
               </a>
-              <a href="#" class="achieve-item">
+              <a href="<?php echo $stat3_url ? esc_url($stat3_url) : '#'; ?>" <?php echo $stat3_url ? 'target="_blank"' : ''; ?> class="achieve-item">
                   <div class="achieve-number"><?php echo get_theme_mod('stat_3_num', '6+'); ?></div>
                   <div class="achieve-label"><?php echo nl2br(get_theme_mod('stat_3_label', 'Years Experience')); ?></div>
               </a>
@@ -109,7 +121,7 @@
         </div>
       </section>
 
-      <!-- TESTIMONIALS -->
+      <!-- TESTIMONIALS (Refined Layout) -->
       <section id="testimonials" class="testimonial-section reveal-on-scroll">
          <h2 class="section-title" style="text-align: center;">
              <span class="text-reveal-wrap">
@@ -139,25 +151,25 @@
          </div>
       </section>
 
-      <!-- INSIGHTS -->
+      <!-- INSIGHTS (No Border) -->
       <section class="section-container">
-          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px;" class="reveal-on-scroll">
-              <h2 class="section-title" style="margin-bottom: 0;"><?php echo esc_html($lbl_insight); ?></h2>
-              <?php 
-                $blog_url = get_post_type_archive_link('post');
-                if(!$blog_url) $blog_url = home_url('/blog');
-              ?>
-              <a href="<?php echo esc_url($blog_url); ?>" class="btn btn-secondary" style="padding: 12px 24px; font-size: 0.9rem;"><?php echo esc_html($btn_blog); ?></a>
-          </div>
+          <h2 class="section-title reveal-on-scroll" style="margin-bottom: 40px;">
+              <span class="text-reveal-wrap">
+                <span class="text-outline"><?php echo esc_html($lbl_insight); ?></span>
+                <span class="text-fill"><?php echo esc_html($lbl_insight); ?></span>
+            </span>
+          </h2>
           
           <div class="blog-grid reveal-on-scroll">
               <?php 
               $blogs = new WP_Query(array('post_type'=>'post', 'posts_per_page'=>3));
-              if($blogs->have_posts()): while($blogs->have_posts()): $blogs->the_post(); ?>
+              if($blogs->have_posts()): while($blogs->have_posts()): $blogs->the_post(); 
+                $read_time = get_post_meta(get_the_ID(), 'writing_read_time', true);
+              ?>
               <a href="<?php the_permalink(); ?>" class="blog-card-modern">
                   <div class="blog-card-meta">
                       <span><?php echo get_the_date('M d, Y'); ?></span>
-                      <span><?php $cat = get_the_category(); if($cat) echo $cat[0]->cat_name; ?></span>
+                      <span><?php echo $read_time ? esc_html($read_time) : 'Read'; ?></span>
                   </div>
                   <h3 class="blog-card-title"><?php the_title(); ?></h3>
                   <div class="blog-card-excerpt">
@@ -170,6 +182,17 @@
               </a>
               <?php endwhile; wp_reset_postdata(); endif; ?>
           </div>
+
+          <!-- Bottom Button centered -->
+          <div style="text-align: center; margin-top: 60px;">
+              <?php 
+                // Dynamic link to Blog Archive (Safe Fallback)
+                $blog_page_id = get_option( 'page_for_posts' );
+                $blog_url = $blog_page_id ? get_permalink( $blog_page_id ) : get_post_type_archive_link('post');
+                if(!$blog_url) $blog_url = home_url('/blog'); 
+              ?>
+              <a href="<?php echo esc_url($blog_url); ?>" class="btn btn-secondary"><?php echo esc_html($btn_blog); ?></a>
+          </div>
       </section>
 
       <!-- CTA -->
@@ -181,7 +204,7 @@
             </span>
           </h2>
           <p class="body-large" style="margin: 0 auto 48px auto; max-width: 600px;"><?php echo nl2br(esc_html($cta_desc)); ?></p>
-          <a href="<?php echo home_url('/contact'); ?>" class="btn btn-primary" style="font-size: 1.1rem; padding: 24px 56px;"><?php echo esc_html($cta_btn); ?></a>
+          <a href="<?php echo esc_url($cta_link); ?>" class="btn btn-primary" style="font-size: 1.1rem; padding: 24px 56px;"><?php echo esc_html($cta_btn); ?></a>
       </section>
 
     </main>

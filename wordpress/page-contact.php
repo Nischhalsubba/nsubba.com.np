@@ -12,6 +12,7 @@ get_header(); ?>
             </span>
           </h1>
           
+          <!-- .contact-grid uses grid-template-columns: 1fr 1.5fr in style.css -->
           <div class="contact-grid reveal-on-scroll">
               <div class="contact-details">
                   <p class="body-large" style="margin-bottom: 40px;">
